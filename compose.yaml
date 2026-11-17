@@ -95,9 +95,13 @@ services:
       S3_SECRET_KEY: ${S3_SECRET_KEY:-sb_minio_dev_secret}
       S3_PRIVATE_BUCKET: ${S3_PRIVATE_BUCKET:-sb-private}
       S3_PUBLIC_BUCKET: ${S3_PUBLIC_BUCKET:-sb-public}
-      SMTP_HOST: mailpit
-      SMTP_PORT: 1025
+      SPRING_MAIL_HOST: mailpit
+      SPRING_MAIL_PORT: 1025
       JWT_SECRET: ${JWT_SECRET:-dev-only-change-me-dev-only-change-me-dev-only-change-me}
+      SB_DATA_KEY: ${SB_DATA_KEY:-dev-only-data-key-change-me}
+      # Local demo data (fictional schools and *.test users)
+      SEED_ENABLED: ${SEED_ENABLED:-true}
+      SEED_PASSWORD: ${SEED_PASSWORD:-Shiksha@Dev2026}
     mem_limit: 1g
 
   site:
@@ -126,6 +130,7 @@ services:
       PORT: 3001
       SB_BASE_DOMAIN: ${SB_BASE_DOMAIN:-shikshablox.localhost}
       API_INTERNAL_URL: http://backend:8080
+      SB_SECURE_COOKIES: "false" # local stack is plain HTTP
     mem_limit: 512m
 
   caddy:

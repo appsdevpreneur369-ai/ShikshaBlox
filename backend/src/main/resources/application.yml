@@ -41,6 +41,9 @@ server:
     include-message: never
 
 management:
+  health:
+    mail:
+      enabled: false # an SMTP outage must not take the API out of rotation
   endpoints:
     web:
       exposure:
@@ -64,6 +67,19 @@ springdoc:
 shikshablox:
   # Base domain for tenant subdomains, e.g. moriah.shikshablox.localhost
   base-domain: ${SB_BASE_DOMAIN:shikshablox.localhost}
+  security:
+    # Development defaults only; staging/prod refuse to start with "dev-only" secrets.
+    jwt-secret: ${JWT_SECRET:dev-only-change-me-dev-only-change-me-dev-only-change-me}
+    data-key: ${SB_DATA_KEY:dev-only-data-key-change-me}
+  mail:
+    from: ${MAIL_FROM:ShikshaBlox <no-reply@shikshablox.localhost>}
+  seed:
+    # Creates the platform admin and demo schools on startup (idempotent). Never real people.
+    enabled: ${SEED_ENABLED:false}
+    password: ${SEED_PASSWORD:}
+    superadmin-email: ${SEED_SUPERADMIN_EMAIL:superadmin@shikshablox.test}
+    # Extra verified hosts per school, e.g. "moriah=moriah-site-xyz.a.run.app"
+    extra-domains: ${SEED_EXTRA_DOMAINS:}
 
 logging:
   level:

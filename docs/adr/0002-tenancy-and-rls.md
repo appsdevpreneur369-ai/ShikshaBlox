@@ -1,6 +1,6 @@
 # ADR 0002: Tenancy model, tenant resolution and Row-Level Security
 
-- Status: Accepted (implementation in M1a)
+- Status: Accepted (implemented in M1a)
 - Date: 2026-11-17
 
 ## Context
@@ -19,3 +19,10 @@
 ## Consequences
 - A missed `WHERE organization_id = ?` in application code cannot leak data.
 - Every query must run inside a transaction with tenant context; this is enforced by a connection/transaction hook.
+
+## Implementation notes (M1a)
+- `TenantContext` (thread-bound) holds organization, user and an explicit `system` flag. The application DataSource is wrapped so that **every connection checkout** runs `set_config('app.org_id' | 'app.user_id' | 'app.system', …)`; values are always overwritten (blank when absent), so a pooled connection cannot carry an earlier request's tenant. Opening a context inside a running transaction throws.
+- Policies use `sb_current_org()`, `sb_current_user()` and `sb_is_system()`. System context is only entered through `TenantContext.system(reason)` (login, onboarding, membership listing) and is logged.
+- Anonymous host lookups go through two `SECURITY DEFINER` functions (`sb_resolve_slug`, `sb_resolve_domain`) that return only an organization id. Because `FORCE ROW LEVEL SECURITY` also binds the owner, the owner role (migrations only, never application traffic) has read-only policies on `organization` and `site_domain`.
+- Flyway uses its own owner connection; the application pool connects as `sb_app`.
+- Tests: `RlsIsolationIT` (raw SQL as `sb_app`: cross-tenant reads return nothing, cross-tenant inserts/moves fail, updates/deletes affect 0 rows, no context = no rows, the role cannot disable RLS, pooled connections don't leak context) and `AuthFlowIT`.

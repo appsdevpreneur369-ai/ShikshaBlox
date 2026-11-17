@@ -32,7 +32,8 @@ class ModularityTests {
             "website",
             "disclosure",
             "admissions",
-            "recruitment");
+            "recruitment",
+            "seed");
   }
 
   @Test

@@ -1,17 +1,23 @@
 import type { Metadata } from "next";
+import { AuthCard } from "@/components/auth-card";
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = { title: "Sign in" };
 
-export default function LoginPage() {
+const ERRORS: Record<string, string> = {
+  expired: "That sign-in step expired. Please start again.",
+  unexpected: "Something went wrong. Please try again.",
+};
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
   return (
-    <main className="grid min-h-dvh place-items-center px-4 py-12">
-      <div className="bg-surface w-full max-w-md rounded-3xl p-8 shadow-xl ring-1 shadow-indigo-950/5 ring-black/5 sm:p-10">
-        <p className="text-primary text-sm font-semibold tracking-widest uppercase">ShikshaBlox</p>
-        <h1 className="mt-2 text-2xl font-bold">Sign in to Studio</h1>
-        <p className="text-ink-muted mt-1 text-sm">Manage your school website and content.</p>
-        <LoginForm />
-      </div>
-    </main>
+    <AuthCard title="Sign in to Studio" subtitle="Manage your school website and content.">
+      <LoginForm initialError={error ? ERRORS[error] : undefined} />
+    </AuthCard>
   );
 }

@@ -1,55 +1,89 @@
 "use client";
 
-import { Button } from "@shikshablox/ui";
-import { useId, useState } from "react";
+import { useActionState, useState } from "react";
+import { CodeField, FormMessage, SubmitButton, TextField } from "@/components/fields";
+import { passwordLogin, requestCode, verifyCode, type FormState } from "./actions";
 
-/** M0 shell: the form is accessible and validated client-side; authentication is wired in M1a. */
-export function LoginForm() {
-  const emailId = useId();
-  const passwordId = useId();
-  const [message, setMessage] = useState<string | null>(null);
+type Mode = "password" | "code";
 
+/** Sign in with a password, or with a one-time code sent by email. */
+export function LoginForm({ initialError }: { initialError?: string }) {
+  const [mode, setMode] = useState<Mode>("password");
   return (
-    <form
-      className="mt-8 space-y-5"
-      noValidate={false}
-      onSubmit={(e) => {
-        e.preventDefault();
-        setMessage("Sign-in will be available in the next milestone.");
-      }}
-    >
-      <div className="space-y-1.5">
-        <label htmlFor={emailId} className="text-sm font-medium">
-          Email
-        </label>
-        <input
-          id={emailId}
+    <div className="mt-8">
+      <div
+        role="tablist"
+        aria-label="Sign-in method"
+        className="bg-surface-muted grid grid-cols-2 gap-1 rounded-full p-1"
+      >
+        {(["password", "code"] as const).map((m) => (
+          <button
+            key={m}
+            type="button"
+            role="tab"
+            aria-selected={mode === m}
+            onClick={() => setMode(m)}
+            className="aria-selected:text-primary rounded-full px-3 py-2 text-sm font-medium transition aria-selected:bg-white aria-selected:shadow-sm"
+          >
+            {m === "password" ? "Password" : "Email code"}
+          </button>
+        ))}
+      </div>
+      {mode === "password" ? <PasswordForm initialError={initialError} /> : <EmailCodeForm />}
+    </div>
+  );
+}
+
+function PasswordForm({ initialError }: { initialError?: string }) {
+  const [state, action] = useActionState<FormState, FormData>(passwordLogin, {
+    error: initialError,
+  });
+  return (
+    <form action={action} className="mt-6 space-y-5">
+      <TextField label="Email" name="email" type="email" autoComplete="username" required />
+      <TextField
+        label="Password"
+        name="password"
+        type="password"
+        autoComplete="current-password"
+        required
+      />
+      <SubmitButton>Sign in</SubmitButton>
+      <FormMessage error={state.error} info={state.info} />
+    </form>
+  );
+}
+
+function EmailCodeForm() {
+  const [email, setEmail] = useState("");
+  const [sent, send] = useActionState<FormState, FormData>(requestCode, {});
+  const [verified, verify] = useActionState<FormState, FormData>(verifyCode, {});
+  const step = sent.step === "code" ? "code" : "email";
+
+  if (step === "email") {
+    return (
+      <form action={send} className="mt-6 space-y-5">
+        <TextField
+          label="Email"
           name="email"
           type="email"
           autoComplete="username"
           required
-          className="focus-visible:border-primary focus-visible:ring-primary/30 block h-11 w-full rounded-xl border border-black/10 bg-white px-3.5 text-base shadow-xs outline-none focus-visible:ring-2"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          hint="We'll email you a code that works for 10 minutes."
         />
-      </div>
-      <div className="space-y-1.5">
-        <label htmlFor={passwordId} className="text-sm font-medium">
-          Password
-        </label>
-        <input
-          id={passwordId}
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          className="focus-visible:border-primary focus-visible:ring-primary/30 block h-11 w-full rounded-xl border border-black/10 bg-white px-3.5 text-base shadow-xs outline-none focus-visible:ring-2"
-        />
-      </div>
-      <Button type="submit" className="w-full">
-        Sign in
-      </Button>
-      <p role="status" aria-live="polite" className="text-ink-muted min-h-5 text-sm">
-        {message}
-      </p>
+        <SubmitButton>Email me a code</SubmitButton>
+        <FormMessage error={sent.error} />
+      </form>
+    );
+  }
+  return (
+    <form action={verify} className="mt-6 space-y-5">
+      <input type="hidden" name="email" value={email} />
+      <FormMessage info={verified.error ? undefined : sent.info} error={verified.error} />
+      <CodeField />
+      <SubmitButton>Sign in</SubmitButton>
     </form>
   );
 }

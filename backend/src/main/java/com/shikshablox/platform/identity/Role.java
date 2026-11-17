@@ -1,0 +1,52 @@
+package com.shikshablox.platform.identity;
+
+import static com.shikshablox.platform.identity.Permission.AUDIT_VIEW;
+import static com.shikshablox.platform.identity.Permission.CONTENT_EDIT;
+import static com.shikshablox.platform.identity.Permission.CONTENT_PUBLISH;
+import static com.shikshablox.platform.identity.Permission.CONTENT_VIEW;
+import static com.shikshablox.platform.identity.Permission.ENQUIRY_MANAGE;
+import static com.shikshablox.platform.identity.Permission.PLATFORM_MANAGE;
+import static com.shikshablox.platform.identity.Permission.SCHOOL_MANAGE;
+
+import java.util.EnumSet;
+import java.util.Set;
+
+/**
+ * M01 roles. {@link #PLATFORM_SUPER_ADMIN} is platform-wide (no organization) and requires TOTP
+ * MFA; every other role is scoped to one organization.
+ */
+public enum Role {
+  PLATFORM_SUPER_ADMIN(
+      true,
+      EnumSet.of(
+          PLATFORM_MANAGE,
+          SCHOOL_MANAGE,
+          CONTENT_EDIT,
+          CONTENT_PUBLISH,
+          CONTENT_VIEW,
+          ENQUIRY_MANAGE,
+          AUDIT_VIEW)),
+  SCHOOL_ADMIN(
+      false,
+      EnumSet.of(
+          SCHOOL_MANAGE, CONTENT_EDIT, CONTENT_PUBLISH, CONTENT_VIEW, ENQUIRY_MANAGE, AUDIT_VIEW)),
+  CONTENT_APPROVER(false, EnumSet.of(CONTENT_EDIT, CONTENT_PUBLISH, CONTENT_VIEW)),
+  CONTENT_EDITOR(false, EnumSet.of(CONTENT_EDIT, CONTENT_VIEW)),
+  VIEWER(false, EnumSet.of(CONTENT_VIEW));
+
+  private final boolean platform;
+  private final Set<Permission> permissions;
+
+  Role(boolean platform, Set<Permission> permissions) {
+    this.platform = platform;
+    this.permissions = Set.copyOf(permissions);
+  }
+
+  public boolean platform() {
+    return platform;
+  }
+
+  public Set<Permission> permissions() {
+    return permissions;
+  }
+}

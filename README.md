@@ -48,6 +48,18 @@ The first build downloads dependencies and takes a while. On machines with limit
 
 **Custom domains locally:** add a line such as `127.0.0.1 www.example-school.test` to `C:\Windows\System32\drivers\etc\hosts` (admin PowerShell).
 
+## Demo sign-ins (local seed data)
+
+All accounts are fictional (`.test` addresses) and use the password from `SEED_PASSWORD` (default `Shiksha@Dev2026`).
+
+| Account                                                                  | Role                                                                     |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| `superadmin@shikshablox.test`                                            | Platform super admin (must set up an authenticator app on first sign-in) |
+| `admin@<school>.test`                                                    | School admin                                                             |
+| `editor@<school>.test`, `approver@<school>.test`, `viewer@<school>.test` | Content roles                                                            |
+
+Schools: `moriah`, `greenfield`, `sunrise`, `horizon` — e.g. http://moriah.shikshablox.localhost. The "Email code" sign-in sends a code to Mailpit (http://mail.shikshablox.localhost).
+
 ## Develop with hot reload
 
 ```powershell

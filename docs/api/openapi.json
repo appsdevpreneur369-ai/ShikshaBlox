@@ -1,10 +1,362 @@
 {
   "openapi" : "3.1.0",
   "info" : {
-    "title" : "OpenAPI definition",
-    "version" : "v0"
+    "title" : "ShikshaBlox API",
+    "version" : "v1"
   },
   "paths" : {
+    "/api/platform/v1/organizations" : {
+      "get" : {
+        "tags" : [ "Platform" ],
+        "summary" : "List all schools",
+        "operationId" : "listOrganizations",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/OrganizationView"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "Platform" ],
+        "summary" : "Create a school",
+        "operationId" : "createOrganization",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateOrganizationRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OrganizationView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/auth/v1/switch-organization" : {
+      "post" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Make another school the active one",
+        "operationId" : "switchOrganization",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SwitchOrganizationRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TokenPair"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/auth/v1/refresh" : {
+      "post" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Rotate the refresh token and get a new access token",
+        "operationId" : "refresh",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RefreshRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/TokenPair"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/v1/otp/verify" : {
+      "post" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Sign in with an emailed code",
+        "operationId" : "verifyOtp",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OtpVerifyRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/v1/otp/request" : {
+      "post" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Email a one-time sign-in code",
+        "operationId" : "requestOtp",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OtpRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "202" : {
+            "description" : "Accepted"
+          }
+        }
+      }
+    },
+    "/api/auth/v1/mfa/verify" : {
+      "post" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Complete sign-in with an authenticator code",
+        "operationId" : "verifyMfa",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MfaCodeRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/v1/mfa/enroll/start" : {
+      "post" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Start authenticator setup during sign-in",
+        "operationId" : "startMfaEnrollment",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MfaTokenRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MfaSetupResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/v1/mfa/enroll/confirm" : {
+      "post" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Confirm authenticator setup and sign in",
+        "operationId" : "confirmMfaEnrollment",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MfaCodeRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/v1/me/mfa/setup" : {
+      "post" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Start turning on two-step verification",
+        "operationId" : "startMyMfaSetup",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MfaSetupResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/auth/v1/me/mfa/confirm" : {
+      "post" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Confirm two-step verification",
+        "operationId" : "confirmMyMfaSetup",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CodeRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/auth/v1/logout" : {
+      "post" : {
+        "tags" : [ "Auth" ],
+        "summary" : "End the session (revokes the refresh token family)",
+        "operationId" : "logout",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RefreshRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      }
+    },
+    "/api/auth/v1/login" : {
+      "post" : {
+        "tags" : [ "Auth" ],
+        "summary" : "Sign in with email and password",
+        "operationId" : "login",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PasswordLoginRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/public/v1/system/ping" : {
       "get" : {
         "tags" : [ "System" ],
@@ -23,10 +375,247 @@
           }
         }
       }
+    },
+    "/api/public/v1/sites/resolve" : {
+      "get" : {
+        "tags" : [ "Public site" ],
+        "summary" : "Find the school that serves a host name",
+        "operationId" : "resolveSite",
+        "parameters" : [ {
+          "name" : "host",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ResolvedSite"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/v1/me" : {
+      "get" : {
+        "tags" : [ "Auth" ],
+        "summary" : "The signed-in user, active school and permissions",
+        "operationId" : "me",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MeResponse"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
     }
   },
   "components" : {
     "schemas" : {
+      "CreateOrganizationRequest" : {
+        "type" : "object",
+        "properties" : {
+          "slug" : {
+            "type" : "string",
+            "maxLength" : 63,
+            "minLength" : 0
+          },
+          "name" : {
+            "type" : "string",
+            "maxLength" : 200,
+            "minLength" : 2
+          }
+        },
+        "required" : [ "name", "slug" ]
+      },
+      "OrganizationView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "slug" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          }
+        }
+      },
+      "SwitchOrganizationRequest" : {
+        "type" : "object",
+        "properties" : {
+          "organizationId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "refreshToken" : {
+            "type" : "string",
+            "maxLength" : 200,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "organizationId", "refreshToken" ]
+      },
+      "TokenPair" : {
+        "type" : "object",
+        "properties" : {
+          "accessToken" : {
+            "type" : "string"
+          },
+          "accessTokenExpiresAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "refreshToken" : {
+            "type" : "string"
+          },
+          "refreshTokenExpiresAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "RefreshRequest" : {
+        "type" : "object",
+        "properties" : {
+          "refreshToken" : {
+            "type" : "string",
+            "maxLength" : 200,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "refreshToken" ]
+      },
+      "OtpVerifyRequest" : {
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string",
+            "format" : "email",
+            "maxLength" : 254,
+            "minLength" : 0
+          },
+          "code" : {
+            "type" : "string",
+            "minLength" : 1,
+            "pattern" : "\\d{6}"
+          }
+        },
+        "required" : [ "code", "email" ]
+      },
+      "LoginResponse" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string"
+          },
+          "tokens" : {
+            "$ref" : "#/components/schemas/TokenPair"
+          },
+          "mfaToken" : {
+            "type" : "string"
+          }
+        }
+      },
+      "OtpRequest" : {
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string",
+            "format" : "email",
+            "maxLength" : 254,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "email" ]
+      },
+      "MfaCodeRequest" : {
+        "type" : "object",
+        "properties" : {
+          "mfaToken" : {
+            "type" : "string",
+            "maxLength" : 2000,
+            "minLength" : 0
+          },
+          "code" : {
+            "type" : "string",
+            "minLength" : 1,
+            "pattern" : "\\d{6}"
+          }
+        },
+        "required" : [ "code", "mfaToken" ]
+      },
+      "MfaTokenRequest" : {
+        "type" : "object",
+        "properties" : {
+          "mfaToken" : {
+            "type" : "string",
+            "maxLength" : 2000,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "mfaToken" ]
+      },
+      "MfaSetupResponse" : {
+        "type" : "object",
+        "properties" : {
+          "secret" : {
+            "type" : "string"
+          },
+          "otpauthUri" : {
+            "type" : "string"
+          }
+        }
+      },
+      "CodeRequest" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string",
+            "minLength" : 1,
+            "pattern" : "\\d{6}"
+          }
+        },
+        "required" : [ "code" ]
+      },
+      "PasswordLoginRequest" : {
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string",
+            "format" : "email",
+            "maxLength" : 254,
+            "minLength" : 0
+          },
+          "password" : {
+            "type" : "string",
+            "maxLength" : 200,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "email", "password" ]
+      },
       "PingResponse" : {
         "type" : "object",
         "properties" : {
@@ -41,6 +630,87 @@
             "format" : "date-time"
           }
         }
+      },
+      "ResolvedSite" : {
+        "type" : "object",
+        "properties" : {
+          "slug" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "MeResponse" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "displayName" : {
+            "type" : "string"
+          },
+          "mfaEnabled" : {
+            "type" : "boolean"
+          },
+          "platformAdmin" : {
+            "type" : "boolean"
+          },
+          "activeOrganization" : {
+            "$ref" : "#/components/schemas/Membership"
+          },
+          "roles" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "permissions" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "memberships" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Membership"
+            }
+          }
+        }
+      },
+      "Membership" : {
+        "type" : "object",
+        "properties" : {
+          "organizationId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "slug" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "roles" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "bearer" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
       }
     }
   }
