@@ -24,6 +24,10 @@ spring:
         schema-initialization:
           enabled: false # table created by Flyway
       republish-outstanding-events-on-restart: true
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 52MB
   mvc:
     problemdetails:
       enabled: true
@@ -71,6 +75,17 @@ shikshablox:
     # Development defaults only; staging/prod refuse to start with "dev-only" secrets.
     jwt-secret: ${JWT_SECRET:dev-only-change-me-dev-only-change-me-dev-only-change-me}
     data-key: ${SB_DATA_KEY:dev-only-data-key-change-me}
+  storage:
+    endpoint: ${S3_ENDPOINT:http://localhost:9000}
+    region: ${S3_REGION:us-east-1}
+    access-key: ${S3_ACCESS_KEY:sb_minio}
+    secret-key: ${S3_SECRET_KEY:sb_minio_dev_secret}
+    private-bucket: ${S3_PRIVATE_BUCKET:sb-private}
+    public-bucket: ${S3_PUBLIC_BUCKET:sb-public}
+    # Browser-facing base URL of the public bucket (CDN in production)
+    public-base-url: ${MEDIA_PUBLIC_BASE_URL:http://localhost:9000/sb-public}
+    # Host used to sign private download links (must be reachable by browsers)
+    signing-endpoint: ${S3_SIGNING_ENDPOINT:}
   mail:
     from: ${MAIL_FROM:ShikshaBlox <no-reply@shikshablox.localhost>}
   seed:

@@ -5,6 +5,121 @@
     "version" : "v1"
   },
   "paths" : {
+    "/api/platform/v1/settings/{scope}/{key}" : {
+      "put" : {
+        "tags" : [ "Settings" ],
+        "summary" : "Change a platform or profile default",
+        "operationId" : "updatePlatformSetting",
+        "parameters" : [ {
+          "name" : "scope",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "DEFAULT", "PLATFORM", "PROFILE", "ORGANIZATION", "CAMPUS" ]
+          }
+        }, {
+          "name" : "key",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "profile",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SetValueRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/platform/v1/organizations/{organizationId}/plan" : {
+      "put" : {
+        "tags" : [ "Plan & entitlements" ],
+        "summary" : "Move a school to another plan",
+        "operationId" : "changePlan",
+        "parameters" : [ {
+          "name" : "organizationId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ChangePlanRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/settings/{key}" : {
+      "put" : {
+        "tags" : [ "Settings" ],
+        "summary" : "Change a school setting",
+        "operationId" : "updateSetting",
+        "parameters" : [ {
+          "name" : "key",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SetValueRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
     "/api/platform/v1/organizations" : {
       "get" : {
         "tags" : [ "Platform" ],
@@ -357,6 +472,291 @@
         }
       }
     },
+    "/api/admin/v1/media" : {
+      "get" : {
+        "tags" : [ "Media library" ],
+        "summary" : "Browse the media library",
+        "operationId" : "listMedia",
+        "parameters" : [ {
+          "name" : "kind",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "IMAGE", "DOCUMENT", "VIDEO" ]
+          }
+        }, {
+          "name" : "folder",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "q",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 40
+          }
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 0
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/MediaView"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "Media library" ],
+        "summary" : "Upload an image, document or MP4 video",
+        "operationId" : "uploadMedia",
+        "parameters" : [ {
+          "name" : "visibility",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "PUBLIC",
+            "enum" : [ "PUBLIC", "PRIVATE" ]
+          }
+        }, {
+          "name" : "altText",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "caption",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "folder",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "containsIdentifiableStudents",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean",
+            "default" : false
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "file" : {
+                    "type" : "string",
+                    "format" : "binary"
+                  }
+                },
+                "required" : [ "file" ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MediaView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/consents" : {
+      "get" : {
+        "tags" : [ "Consent" ],
+        "summary" : "Consent records for publishing student media",
+        "operationId" : "listConsents",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConsentSummary"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "Consent" ],
+        "summary" : "Record a school declaration or guardian consent reference",
+        "operationId" : "createConsent",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateConsentRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ConsentRecord"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/media/{id}" : {
+      "get" : {
+        "tags" : [ "Media library" ],
+        "summary" : "One media item",
+        "operationId" : "getMedia",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MediaView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "Media library" ],
+        "summary" : "Delete a media item and its files",
+        "operationId" : "deleteMedia",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "patch" : {
+        "tags" : [ "Media library" ],
+        "summary" : "Edit alt text, caption, folder or consent flags",
+        "operationId" : "updateMedia",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateMediaRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MediaView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
     "/api/public/v1/system/ping" : {
       "get" : {
         "tags" : [ "System" ],
@@ -403,6 +803,31 @@
         }
       }
     },
+    "/api/platform/v1/plans" : {
+      "get" : {
+        "tags" : [ "Plan & entitlements" ],
+        "summary" : "Available plans",
+        "operationId" : "listPlans",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/PlanView"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
     "/api/auth/v1/me" : {
       "get" : {
         "tags" : [ "Auth" ],
@@ -424,10 +849,212 @@
           "bearer" : [ ]
         } ]
       }
+    },
+    "/api/admin/v1/settings" : {
+      "get" : {
+        "tags" : [ "Settings" ],
+        "summary" : "Effective settings for the school and where each comes from",
+        "operationId" : "listSettings",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SettingView"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/media/{id}/download" : {
+      "get" : {
+        "tags" : [ "Media library" ],
+        "summary" : "A short-lived download link",
+        "operationId" : "mediaDownloadLink",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DownloadLink"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/entitlements" : {
+      "get" : {
+        "tags" : [ "Plan & entitlements" ],
+        "summary" : "Current plan, modules and limit usage",
+        "operationId" : "getEntitlements",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EntitlementsView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/audit" : {
+      "get" : {
+        "tags" : [ "Audit" ],
+        "summary" : "Search the school's audit log",
+        "operationId" : "searchAudit",
+        "parameters" : [ {
+          "name" : "action",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "entityType",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "entityId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "to",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 50
+          }
+        }, {
+          "name" : "beforeId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Entry"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/consents/{id}" : {
+      "delete" : {
+        "tags" : [ "Consent" ],
+        "summary" : "Revoke a consent record",
+        "operationId" : "revokeConsent",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
     }
   },
   "components" : {
     "schemas" : {
+      "JsonNode" : { },
+      "SetValueRequest" : {
+        "type" : "object",
+        "properties" : {
+          "value" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          }
+        },
+        "required" : [ "value" ]
+      },
+      "ChangePlanRequest" : {
+        "type" : "object",
+        "properties" : {
+          "planCode" : {
+            "type" : "string",
+            "minLength" : 1
+          }
+        },
+        "required" : [ "planCode" ]
+      },
       "CreateOrganizationRequest" : {
         "type" : "object",
         "properties" : {
@@ -616,6 +1243,197 @@
         },
         "required" : [ "email", "password" ]
       },
+      "MediaView" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kind" : {
+            "type" : "string"
+          },
+          "visibility" : {
+            "type" : "string"
+          },
+          "filename" : {
+            "type" : "string"
+          },
+          "contentType" : {
+            "type" : "string"
+          },
+          "sizeBytes" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "width" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "height" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "url" : {
+            "type" : "string"
+          },
+          "variants" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "$ref" : "#/components/schemas/VariantView"
+            }
+          },
+          "altText" : {
+            "type" : "string"
+          },
+          "caption" : {
+            "type" : "string"
+          },
+          "folder" : {
+            "type" : "string"
+          },
+          "containsIdentifiableStudents" : {
+            "type" : "boolean"
+          },
+          "consentRecordId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "publishable" : {
+            "type" : "boolean"
+          },
+          "needsAltText" : {
+            "type" : "boolean"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "VariantView" : {
+        "type" : "object",
+        "properties" : {
+          "url" : {
+            "type" : "string"
+          },
+          "width" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "height" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "CreateConsentRequest" : {
+        "type" : "object",
+        "properties" : {
+          "kind" : {
+            "type" : "string",
+            "enum" : [ "SCHOOL_DECLARATION", "GUARDIAN_CONSENT" ]
+          },
+          "reference" : {
+            "type" : "string",
+            "maxLength" : 300,
+            "minLength" : 3
+          },
+          "statement" : {
+            "type" : "string",
+            "maxLength" : 4000,
+            "minLength" : 0
+          },
+          "declaredBy" : {
+            "type" : "string",
+            "maxLength" : 200,
+            "minLength" : 0
+          },
+          "validFrom" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "validUntil" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        },
+        "required" : [ "declaredBy", "kind", "reference" ]
+      },
+      "ConsentRecord" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kind" : {
+            "type" : "string",
+            "enum" : [ "SCHOOL_DECLARATION", "GUARDIAN_CONSENT" ]
+          },
+          "purpose" : {
+            "type" : "string"
+          },
+          "reference" : {
+            "type" : "string"
+          },
+          "statement" : {
+            "type" : "string"
+          },
+          "declaredBy" : {
+            "type" : "string"
+          },
+          "source" : {
+            "type" : "string"
+          },
+          "validFrom" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "validUntil" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "revokedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "UpdateMediaRequest" : {
+        "type" : "object",
+        "properties" : {
+          "altText" : {
+            "type" : "string",
+            "maxLength" : 300,
+            "minLength" : 0
+          },
+          "caption" : {
+            "type" : "string",
+            "maxLength" : 1000,
+            "minLength" : 0
+          },
+          "folder" : {
+            "type" : "string",
+            "maxLength" : 60,
+            "minLength" : 0
+          },
+          "containsIdentifiableStudents" : {
+            "type" : "boolean"
+          },
+          "consentRecordId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "clearConsent" : {
+            "type" : "boolean"
+          }
+        }
+      },
       "PingResponse" : {
         "type" : "object",
         "properties" : {
@@ -635,6 +1453,17 @@
         "type" : "object",
         "properties" : {
           "slug" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        }
+      },
+      "PlanView" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
             "type" : "string"
           },
           "name" : {
@@ -702,6 +1531,159 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }
+      },
+      "SettingView" : {
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "editable" : {
+            "type" : "boolean"
+          },
+          "value" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "source" : {
+            "type" : "string"
+          }
+        }
+      },
+      "DownloadLink" : {
+        "type" : "object",
+        "properties" : {
+          "url" : {
+            "type" : "string"
+          }
+        }
+      },
+      "EntitlementsView" : {
+        "type" : "object",
+        "properties" : {
+          "plan" : {
+            "type" : "string"
+          },
+          "planName" : {
+            "type" : "string"
+          },
+          "modules" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ModuleView"
+            }
+          },
+          "limits" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/LimitView"
+            }
+          }
+        }
+      },
+      "LimitView" : {
+        "type" : "object",
+        "properties" : {
+          "module" : {
+            "type" : "string"
+          },
+          "key" : {
+            "type" : "string"
+          },
+          "limit" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "used" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "percent" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "state" : {
+            "type" : "string"
+          }
+        }
+      },
+      "ModuleView" : {
+        "type" : "object",
+        "properties" : {
+          "module" : {
+            "type" : "string"
+          },
+          "depth" : {
+            "type" : "string"
+          },
+          "features" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "ConsentSummary" : {
+        "type" : "object",
+        "properties" : {
+          "activeDeclaration" : {
+            "type" : "boolean"
+          },
+          "records" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ConsentRecord"
+            }
+          }
+        }
+      },
+      "Entry" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "organizationId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "actorUserId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "action" : {
+            "type" : "string"
+          },
+          "entityType" : {
+            "type" : "string"
+          },
+          "entityId" : {
+            "type" : "string"
+          },
+          "before" : {
+            "type" : "string"
+          },
+          "after" : {
+            "type" : "string"
+          },
+          "ip" : {
+            "type" : "string"
+          },
+          "requestId" : {
+            "type" : "string"
+          },
+          "occurredAt" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       }

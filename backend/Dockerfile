@@ -9,7 +9,8 @@ RUN --mount=type=cache,target=/root/.m2 sh ./mvnw -B -q package -DskipTests -Dsp
  && java -Djarmode=tools -jar target/shikshablox.jar extract --layers --launcher --destination target/extracted
 
 FROM eclipse-temurin:21-jre-alpine
-RUN addgroup -S app && adduser -S app -G app
+# cwebp/dwebp for WebP image variants
+RUN apk add --no-cache libwebp-tools && addgroup -S app && adduser -S app -G app
 WORKDIR /app
 COPY --from=build /workspace/target/extracted/dependencies/ ./
 COPY --from=build /workspace/target/extracted/spring-boot-loader/ ./

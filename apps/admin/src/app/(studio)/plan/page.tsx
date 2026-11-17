@@ -1,0 +1,153 @@
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { CheckCircle2, Sparkles } from "lucide-react";
+import { api, currentUser } from "@/lib/session";
+
+export const metadata: Metadata = { title: "Plan & usage" };
+
+const LIMIT_LABEL: Record<string, string> = {
+  custom_pages: "Custom pages (the 14 standard pages are always included)",
+  storage_bytes: "Storage",
+  languages: "Website languages",
+  custom_domains: "Custom domains",
+};
+
+const FEATURE_LABEL: Record<string, string> = {
+  notices: "Notices & circulars",
+  events: "Events calendar",
+  gallery: "Photo & video gallery",
+  staff: "Staff directory",
+  news: "News",
+  faqs: "FAQs",
+  careers: "Careers",
+  analytics: "Analytics",
+  approval_workflow: "Approval workflow",
+  custom_domain: "Custom domain",
+  remove_branding: "Remove ShikshaBlox badge",
+  export_import: "Site export & import",
+  review_reminders: "Review reminders",
+  csv_export: "CSV export",
+  email_alerts: "Email alerts",
+};
+
+const MODULE_LABEL: Record<string, string> = {
+  WEBSITE: "School website",
+  DISCLOSURE: "Mandatory public disclosure",
+  ADMISSIONS_ENQUIRY: "Admissions enquiries",
+};
+
+function formatValue(key: string, value: number) {
+  if (key === "storage_bytes") {
+    const gb = value / 1024 ** 3;
+    return gb >= 1 ? `${gb.toFixed(gb >= 10 ? 0 : 1)} GB` : `${(value / 1024 ** 2).toFixed(1)} MB`;
+  }
+  return String(value);
+}
+
+export default async function PlanPage() {
+  const session = await currentUser();
+  if (!session) redirect("/login");
+  const client = await api(session.accessToken);
+  const { data } = await client.GET("/api/admin/v1/entitlements");
+  if (!data) redirect("/dashboard");
+
+  return (
+    <div className="space-y-8">
+      <section className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-ink-muted text-sm font-medium">Current plan</p>
+          <h1 className="text-3xl font-bold tracking-tight">{data.planName ?? "No plan"}</h1>
+        </div>
+        {data.plan === "WEB_FREE" ? (
+          <p className="inline-flex items-center gap-2 rounded-full bg-amber-50 px-4 py-2 text-sm font-medium text-amber-900 ring-1 ring-amber-200">
+            <Sparkles className="size-4" aria-hidden /> Web Pro unlocks unlimited pages, 10 GB, two
+            languages and your own domain.
+          </p>
+        ) : null}
+      </section>
+
+      <section
+        aria-labelledby="usage-heading"
+        className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5"
+      >
+        <h2 id="usage-heading" className="text-lg font-semibold">
+          Usage
+        </h2>
+        <ul className="mt-5 space-y-6">
+          {(data.limits ?? []).map((l) => {
+            const unlimited = l.limit === -1;
+            const notIncluded = l.limit === 0;
+            const pct = l.percent ?? 0;
+            const tone =
+              l.state === "BLOCKED"
+                ? "bg-red-500"
+                : l.state === "WARNING"
+                  ? "bg-amber-500"
+                  : "bg-indigo-500";
+            return (
+              <li key={`${l.module}-${l.key}`}>
+                <div className="flex flex-wrap items-baseline justify-between gap-2 text-sm">
+                  <span className="font-medium">{LIMIT_LABEL[l.key!] ?? l.key}</span>
+                  <span className="text-ink-muted">
+                    {notIncluded
+                      ? "Not included in this plan"
+                      : unlimited
+                        ? `${formatValue(l.key!, l.used ?? 0)} used · unlimited`
+                        : `${formatValue(l.key!, l.used ?? 0)} of ${formatValue(l.key!, l.limit ?? 0)}`}
+                  </span>
+                </div>
+                {!unlimited && !notIncluded ? (
+                  <div
+                    className="mt-2 h-2.5 overflow-hidden rounded-full bg-black/5"
+                    role="progressbar"
+                    aria-label={LIMIT_LABEL[l.key!] ?? l.key}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={pct}
+                  >
+                    <div
+                      className={`h-full rounded-full ${tone} transition-all`}
+                      style={{ width: `${Math.max(pct, 2)}%` }}
+                    />
+                  </div>
+                ) : null}
+                {l.state === "WARNING" ? (
+                  <p className="mt-1 text-xs text-amber-800">
+                    You have used over 80% of this limit.
+                  </p>
+                ) : null}
+                {l.state === "BLOCKED" && !notIncluded ? (
+                  <p className="mt-1 text-xs text-red-700">
+                    Limit reached — remove items or upgrade to add more.
+                  </p>
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <section aria-labelledby="modules-heading">
+        <h2 id="modules-heading" className="text-lg font-semibold">
+          Included
+        </h2>
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
+          {(data.modules ?? []).map((m) => (
+            <div key={m.module} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-black/5">
+              <p className="font-semibold">{MODULE_LABEL[m.module!] ?? m.module}</p>
+              <p className="text-ink-muted text-xs tracking-wide uppercase">{m.depth}</p>
+              <ul className="mt-3 space-y-1.5 text-sm">
+                {(m.features ?? []).map((f) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <CheckCircle2 className="size-4 text-emerald-600" aria-hidden />
+                    {FEATURE_LABEL[f] ?? f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}

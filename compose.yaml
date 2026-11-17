@@ -95,6 +95,8 @@ services:
       S3_SECRET_KEY: ${S3_SECRET_KEY:-sb_minio_dev_secret}
       S3_PRIVATE_BUCKET: ${S3_PRIVATE_BUCKET:-sb-private}
       S3_PUBLIC_BUCKET: ${S3_PUBLIC_BUCKET:-sb-public}
+      MEDIA_PUBLIC_BASE_URL: http://media.${SB_BASE_DOMAIN:-shikshablox.localhost}${SB_HTTP_PORT_SUFFIX:-}/${S3_PUBLIC_BUCKET:-sb-public}
+      S3_SIGNING_ENDPOINT: http://media.${SB_BASE_DOMAIN:-shikshablox.localhost}${SB_HTTP_PORT_SUFFIX:-}
       SPRING_MAIL_HOST: mailpit
       SPRING_MAIL_PORT: 1025
       JWT_SECRET: ${JWT_SECRET:-dev-only-change-me-dev-only-change-me-dev-only-change-me}

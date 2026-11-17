@@ -53,5 +53,5 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   // Studio pages only; sign-in pages, health and static assets are public.
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/((?!login|api/health|_next/|favicon.ico).+)"],
 };

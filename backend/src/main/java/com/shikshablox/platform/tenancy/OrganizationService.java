@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -43,10 +44,12 @@ public class OrganizationService {
 
   private final JdbcClient jdbc;
   private final TransactionTemplate tx;
+  private final ApplicationEventPublisher events;
 
-  OrganizationService(JdbcClient jdbc, TransactionTemplate tx) {
+  OrganizationService(JdbcClient jdbc, TransactionTemplate tx, ApplicationEventPublisher events) {
     this.jdbc = jdbc;
     this.tx = tx;
+    this.events = events;
   }
 
   /** Creates a school with its default campus. Platform operation (system context). */
@@ -75,7 +78,7 @@ public class OrganizationService {
               Organization org =
                   jdbc.sql(
                           "insert into organization (slug, name) values (?, ?)"
-                              + " returning id, slug, name, status, created_at")
+                              + " returning id, slug, name, status, config_profile, created_at")
                       .params(normalised, cleanName)
                       .query(OrganizationService::map)
                       .single();
@@ -84,6 +87,8 @@ public class OrganizationService {
                           + " values (?, ?, true)")
                   .params(org.id(), "Main campus")
                   .update();
+              // Listeners (default plan, audit) run in this transaction and system context.
+              events.publishEvent(new OrganizationCreated(org.id(), org.slug(), org.name()));
               return org;
             }));
   }
@@ -95,7 +100,8 @@ public class OrganizationService {
 
   /** Reads an organization visible in the current context. */
   public Optional<Organization> findVisible(UUID id) {
-    return jdbc.sql("select id, slug, name, status, created_at from organization where id = ?")
+    return jdbc.sql(
+            "select id, slug, name, status, config_profile, created_at from organization where id = ?")
         .param(id)
         .query(OrganizationService::map)
         .optional();
@@ -113,7 +119,7 @@ public class OrganizationService {
         "list organizations of a member",
         () ->
             jdbc.sql(
-                    "select id, slug, name, status, created_at from organization"
+                    "select id, slug, name, status, config_profile, created_at from organization"
                         + " where id = any(?) order by name")
                 .param(ids.toArray(UUID[]::new))
                 .query(OrganizationService::map)
@@ -125,7 +131,8 @@ public class OrganizationService {
     return TenantContext.callAsSystem(
         "platform organization list",
         () ->
-            jdbc.sql("select id, slug, name, status, created_at from organization order by name")
+            jdbc.sql(
+                    "select id, slug, name, status, config_profile, created_at from organization order by name")
                 .query(OrganizationService::map)
                 .list());
   }
@@ -134,7 +141,8 @@ public class OrganizationService {
     return TenantContext.callAsSystem(
         "find organization by slug",
         () ->
-            jdbc.sql("select id, slug, name, status, created_at from organization where slug = ?")
+            jdbc.sql(
+                    "select id, slug, name, status, config_profile, created_at from organization where slug = ?")
                 .param(slug.toLowerCase(Locale.ROOT))
                 .query(OrganizationService::map)
                 .optional());
@@ -164,6 +172,7 @@ public class OrganizationService {
         rs.getString("slug"),
         rs.getString("name"),
         rs.getString("status"),
+        rs.getString("config_profile"),
         rs.getTimestamp("created_at").toInstant());
   }
 }

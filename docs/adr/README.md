@@ -9,3 +9,5 @@
 | [0005](0005-authentication.md) | Authentication and session model | Accepted |
 
 New ADRs: copy the format, next number, one decision per file.
+- [0006 Media pipeline and object storage](0006-media-storage.md)
+- [0007 Entitlements, configuration and audit](0007-entitlements-config-audit.md)

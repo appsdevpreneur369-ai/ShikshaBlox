@@ -1,5 +1,7 @@
 package com.shikshablox.platform.identity;
 
+import com.shikshablox.platform.config.ConfigKey;
+import com.shikshablox.platform.config.ConfigService;
 import com.shikshablox.platform.identity.TokenService.IssuedTokens;
 import com.shikshablox.platform.identity.UserRepository.AppUser;
 import com.shikshablox.platform.identity.UserRepository.Assignment;
@@ -63,6 +65,7 @@ class AuthService {
   private final ApplicationEventPublisher events;
   private final TransactionTemplate tx;
   private final JdbcClient jdbc;
+  private final ConfigService config;
   private final String dummyHash;
 
   AuthService(
@@ -76,7 +79,8 @@ class AuthService {
       IdentityProperties props,
       ApplicationEventPublisher events,
       TransactionTemplate tx,
-      JdbcClient jdbc) {
+      JdbcClient jdbc,
+      ConfigService config) {
     this.users = users;
     this.tokens = tokens;
     this.passwords = passwords;
@@ -88,6 +92,7 @@ class AuthService {
     this.events = events;
     this.tx = tx;
     this.jdbc = jdbc;
+    this.config = config;
     this.dummyHash = passwords.encode("timing-equaliser-" + UUID.randomUUID());
   }
 
@@ -267,24 +272,25 @@ class AuthService {
           null,
           tokens.issueMfaChallenge(user.id(), PURPOSE_VERIFY, List.of(method)));
     }
-    if (superAdmin) {
+    // Schools can require an authenticator for their administrators (config hierarchy).
+    boolean schoolRequiresMfa =
+        assignments.stream()
+            .filter(a -> a.role() == Role.SCHOOL_ADMIN)
+            .anyMatch(a ->
+                config.getBooleanFor(
+                    a.organizationId(), ConfigKey.SECURITY_REQUIRE_MFA_SCHOOL_ADMIN));
+    if (superAdmin || schoolRequiresMfa) {
       return new AuthResult(
           Status.MFA_ENROLLMENT_REQUIRED,
           null,
           tokens.issueMfaChallenge(user.id(), PURPOSE_ENROLL, List.of(method)));
     }
     users.recordSuccessfulLogin(user.id());
-    publish(SecurityEvent.LOGIN, user.id(), null, client, true);
+    UUID org = defaultOrganization(assignments);
+    publish(SecurityEvent.LOGIN, user.id(), org, client, true);
     return new AuthResult(
         Status.AUTHENTICATED,
-        tokens.issue(
-            user.id(),
-            defaultOrganization(assignments),
-            false,
-            List.of(method),
-            null,
-            client.ip(),
-            client.userAgent()),
+        tokens.issue(user.id(), org, false, List.of(method), null, client.ip(), client.userAgent()),
         null);
   }
 
@@ -386,8 +392,8 @@ class AuthService {
 
   private AuthResult authenticated(AppUser user, List<String> amr, ClientInfo client) {
     users.recordSuccessfulLogin(user.id());
-    publish(SecurityEvent.LOGIN, user.id(), null, client, true);
     UUID org = defaultOrganization(users.assignments(user.id()));
+    publish(SecurityEvent.LOGIN, user.id(), org, client, true);
     return new AuthResult(
         Status.AUTHENTICATED,
         tokens.issue(user.id(), org, true, amr, null, client.ip(), client.userAgent()),

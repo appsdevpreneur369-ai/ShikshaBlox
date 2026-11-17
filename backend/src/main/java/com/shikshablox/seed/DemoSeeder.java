@@ -1,9 +1,11 @@
 package com.shikshablox.seed;
 
+import com.shikshablox.platform.entitlement.EntitlementService;
 import com.shikshablox.platform.identity.Role;
 import com.shikshablox.platform.identity.UserService;
 import com.shikshablox.platform.tenancy.Organization;
 import com.shikshablox.platform.tenancy.OrganizationService;
+import com.shikshablox.platform.tenancy.TenantContext;
 import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -27,17 +29,18 @@ class DemoSeeder implements ApplicationRunner {
 
   private static final Logger log = LoggerFactory.getLogger(DemoSeeder.class);
 
-  record School(String slug, String name) {}
+  record School(String slug, String name, String plan) {}
 
   static final List<School> SCHOOLS =
       List.of(
-          new School("moriah", "Moriah School"),
-          new School("greenfield", "Greenfield Public School"),
-          new School("sunrise", "Sunrise High School"),
-          new School("horizon", "Horizon International School"));
+          new School("moriah", "Moriah School", "WEB_PRO"),
+          new School("greenfield", "Greenfield Public School", "WEB_FREE"),
+          new School("sunrise", "Sunrise High School", "WEB_FREE"),
+          new School("horizon", "Horizon International School", "WEB_PRO"));
 
   private final OrganizationService organizations;
   private final UserService users;
+  private final EntitlementService entitlements;
   private final String password;
   private final String superadminEmail;
   private final String extraDomains;
@@ -45,11 +48,13 @@ class DemoSeeder implements ApplicationRunner {
   DemoSeeder(
       OrganizationService organizations,
       UserService users,
+      EntitlementService entitlements,
       @Value("${shikshablox.seed.password:}") String password,
       @Value("${shikshablox.seed.superadmin-email}") String superadminEmail,
       @Value("${shikshablox.seed.extra-domains:}") String extraDomains) {
     this.organizations = organizations;
     this.users = users;
+    this.entitlements = entitlements;
     this.password = password;
     this.superadminEmail = superadminEmail;
     this.extraDomains = extraDomains;
@@ -69,6 +74,11 @@ class DemoSeeder implements ApplicationRunner {
           organizations
               .findBySlug(s.slug())
               .orElseGet(() -> organizations.create(s.slug(), s.name()));
+      String plan =
+          TenantContext.callInTenant(org.id(), () -> entitlements.currentPlan().orElse(null));
+      if (!s.plan().equals(plan)) {
+        entitlements.applyPlan(org.id(), s.plan());
+      }
       seedUser(org, "admin", "School Administrator", Role.SCHOOL_ADMIN);
       seedUser(org, "editor", "Content Editor", Role.CONTENT_EDITOR);
       seedUser(org, "approver", "Content Approver", Role.CONTENT_APPROVER);

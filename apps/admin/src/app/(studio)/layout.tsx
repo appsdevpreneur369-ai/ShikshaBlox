@@ -2,7 +2,18 @@ import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { LogOut } from "lucide-react";
 import { currentUser } from "@/lib/session";
+import { StudioNav, type NavItem } from "@/components/studio-nav";
 import { logout } from "../login/actions";
+
+function navItems(permissions: string[], hasSchool: boolean): NavItem[] {
+  const items: NavItem[] = [{ href: "/dashboard", label: "Dashboard" }];
+  if (hasSchool) {
+    items.push({ href: "/plan", label: "Plan & usage" });
+    items.push({ href: "/settings", label: "Settings" });
+    if (permissions.includes("audit:view")) items.push({ href: "/audit", label: "Audit log" });
+  }
+  return items;
+}
 
 export const dynamic = "force-dynamic";
 
@@ -65,6 +76,7 @@ export default async function StudioLayout({ children }: { children: ReactNode }
           </div>
         </div>
       </header>
+      <StudioNav items={navItems(me.permissions ?? [], Boolean(me.activeOrganization))} />
       <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
     </div>
   );

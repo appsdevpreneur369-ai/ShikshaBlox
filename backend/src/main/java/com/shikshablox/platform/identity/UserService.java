@@ -50,14 +50,18 @@ public class UserService {
     if (role.platform() != (organizationId == null)) {
       throw ApiException.badRequest("invalid_role_scope", "That role does not fit this scope.");
     }
-    TenantContext.runAsSystem("grant role", () -> users.assign(userId, organizationId, role));
-    events.publishEvent(
-        new SecurityEvent(
-            SecurityEvent.ROLE_GRANTED,
-            userId,
-            organizationId,
-            null,
-            true,
-            java.time.Instant.now()));
+    TenantContext.runAsSystem(
+        "grant role",
+        () -> {
+          users.assign(userId, organizationId, role);
+          events.publishEvent(
+              new SecurityEvent(
+                  SecurityEvent.ROLE_GRANTED,
+                  userId,
+                  organizationId,
+                  null,
+                  true,
+                  java.time.Instant.now()));
+        });
   }
 }

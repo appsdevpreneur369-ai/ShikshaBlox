@@ -4,6 +4,57 @@
  */
 
 export interface paths {
+    "/api/platform/v1/settings/{scope}/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Change a platform or profile default */
+        put: operations["updatePlatformSetting"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/platform/v1/organizations/{organizationId}/plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Move a school to another plan */
+        put: operations["changePlan"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/settings/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Change a school setting */
+        put: operations["updateSetting"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/platform/v1/organizations": {
         parameters: {
             query?: never;
@@ -209,6 +260,61 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/v1/media": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Browse the media library */
+        get: operations["listMedia"];
+        put?: never;
+        /** Upload an image, document or MP4 video */
+        post: operations["uploadMedia"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Consent records for publishing student media */
+        get: operations["listConsents"];
+        put?: never;
+        /** Record a school declaration or guardian consent reference */
+        post: operations["createConsent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/media/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One media item */
+        get: operations["getMedia"];
+        put?: never;
+        post?: never;
+        /** Delete a media item and its files */
+        delete: operations["deleteMedia"];
+        options?: never;
+        head?: never;
+        /** Edit alt text, caption, folder or consent flags */
+        patch: operations["updateMedia"];
+        trace?: never;
+    };
     "/api/public/v1/system/ping": {
         parameters: {
             query?: never;
@@ -243,6 +349,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/platform/v1/plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Available plans */
+        get: operations["listPlans"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/v1/me": {
         parameters: {
             query?: never;
@@ -260,10 +383,102 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/v1/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Effective settings for the school and where each comes from */
+        get: operations["listSettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/media/{id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A short-lived download link */
+        get: operations["mediaDownloadLink"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/entitlements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Current plan, modules and limit usage */
+        get: operations["getEntitlements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Search the school's audit log */
+        get: operations["searchAudit"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/v1/consents/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Revoke a consent record */
+        delete: operations["revokeConsent"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        JsonNode: unknown;
+        SetValueRequest: {
+            value: components["schemas"]["JsonNode"];
+        };
+        ChangePlanRequest: {
+            planCode: string;
+        };
         CreateOrganizationRequest: {
             slug: string;
             name: string;
@@ -324,6 +539,80 @@ export interface components {
             email: string;
             password: string;
         };
+        MediaView: {
+            /** Format: uuid */
+            id?: string;
+            kind?: string;
+            visibility?: string;
+            filename?: string;
+            contentType?: string;
+            /** Format: int64 */
+            sizeBytes?: number;
+            /** Format: int32 */
+            width?: number;
+            /** Format: int32 */
+            height?: number;
+            url?: string;
+            variants?: {
+                [key: string]: components["schemas"]["VariantView"];
+            };
+            altText?: string;
+            caption?: string;
+            folder?: string;
+            containsIdentifiableStudents?: boolean;
+            /** Format: uuid */
+            consentRecordId?: string;
+            publishable?: boolean;
+            needsAltText?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        VariantView: {
+            url?: string;
+            /** Format: int32 */
+            width?: number;
+            /** Format: int32 */
+            height?: number;
+        };
+        CreateConsentRequest: {
+            /** @enum {string} */
+            kind: "SCHOOL_DECLARATION" | "GUARDIAN_CONSENT";
+            reference: string;
+            statement?: string;
+            declaredBy: string;
+            /** Format: date */
+            validFrom?: string;
+            /** Format: date */
+            validUntil?: string;
+        };
+        ConsentRecord: {
+            /** Format: uuid */
+            id?: string;
+            /** @enum {string} */
+            kind?: "SCHOOL_DECLARATION" | "GUARDIAN_CONSENT";
+            purpose?: string;
+            reference?: string;
+            statement?: string;
+            declaredBy?: string;
+            source?: string;
+            /** Format: date */
+            validFrom?: string;
+            /** Format: date */
+            validUntil?: string;
+            /** Format: date-time */
+            revokedAt?: string;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        UpdateMediaRequest: {
+            altText?: string;
+            caption?: string;
+            folder?: string;
+            containsIdentifiableStudents?: boolean;
+            /** Format: uuid */
+            consentRecordId?: string;
+            clearConsent?: boolean;
+        };
         PingResponse: {
             status?: string;
             service?: string;
@@ -332,6 +621,10 @@ export interface components {
         };
         ResolvedSite: {
             slug?: string;
+            name?: string;
+        };
+        PlanView: {
+            code?: string;
             name?: string;
         };
         MeResponse: {
@@ -353,6 +646,60 @@ export interface components {
             name?: string;
             roles?: string[];
         };
+        SettingView: {
+            key?: string;
+            type?: string;
+            description?: string;
+            editable?: boolean;
+            value?: components["schemas"]["JsonNode"];
+            source?: string;
+        };
+        DownloadLink: {
+            url?: string;
+        };
+        EntitlementsView: {
+            plan?: string;
+            planName?: string;
+            modules?: components["schemas"]["ModuleView"][];
+            limits?: components["schemas"]["LimitView"][];
+        };
+        LimitView: {
+            module?: string;
+            key?: string;
+            /** Format: int64 */
+            limit?: number;
+            /** Format: int64 */
+            used?: number;
+            /** Format: int32 */
+            percent?: number;
+            state?: string;
+        };
+        ModuleView: {
+            module?: string;
+            depth?: string;
+            features?: string[];
+        };
+        ConsentSummary: {
+            activeDeclaration?: boolean;
+            records?: components["schemas"]["ConsentRecord"][];
+        };
+        Entry: {
+            /** Format: int64 */
+            id?: number;
+            /** Format: uuid */
+            organizationId?: string;
+            /** Format: uuid */
+            actorUserId?: string;
+            action?: string;
+            entityType?: string;
+            entityId?: string;
+            before?: string;
+            after?: string;
+            ip?: string;
+            requestId?: string;
+            /** Format: date-time */
+            occurredAt?: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -362,6 +709,81 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    updatePlatformSetting: {
+        parameters: {
+            query?: {
+                profile?: string;
+            };
+            header?: never;
+            path: {
+                scope: "DEFAULT" | "PLATFORM" | "PROFILE" | "ORGANIZATION" | "CAMPUS";
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetValueRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    changePlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePlanRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateSetting: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetValueRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     listOrganizations: {
         parameters: {
             query?: never;
@@ -660,6 +1082,177 @@ export interface operations {
             };
         };
     };
+    listMedia: {
+        parameters: {
+            query?: {
+                kind?: "IMAGE" | "DOCUMENT" | "VIDEO";
+                folder?: string;
+                q?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaView"][];
+                };
+            };
+        };
+    };
+    uploadMedia: {
+        parameters: {
+            query?: {
+                visibility?: "PUBLIC" | "PRIVATE";
+                altText?: string;
+                caption?: string;
+                folder?: string;
+                containsIdentifiableStudents?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaView"];
+                };
+            };
+        };
+    };
+    listConsents: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentSummary"];
+                };
+            };
+        };
+    };
+    createConsent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateConsentRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentRecord"];
+                };
+            };
+        };
+    };
+    getMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaView"];
+                };
+            };
+        };
+    };
+    deleteMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateMedia: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateMediaRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MediaView"];
+                };
+            };
+        };
+    };
     ping: {
         parameters: {
             query?: never;
@@ -702,6 +1295,26 @@ export interface operations {
             };
         };
     };
+    listPlans: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanView"][];
+                };
+            };
+        };
+    };
     me: {
         parameters: {
             query?: never;
@@ -719,6 +1332,116 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["MeResponse"];
                 };
+            };
+        };
+    };
+    listSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettingView"][];
+                };
+            };
+        };
+    };
+    mediaDownloadLink: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DownloadLink"];
+                };
+            };
+        };
+    };
+    getEntitlements: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EntitlementsView"];
+                };
+            };
+        };
+    };
+    searchAudit: {
+        parameters: {
+            query?: {
+                action?: string;
+                entityType?: string;
+                entityId?: string;
+                from?: string;
+                to?: string;
+                limit?: number;
+                beforeId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Entry"][];
+                };
+            };
+        };
+    };
+    revokeConsent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
