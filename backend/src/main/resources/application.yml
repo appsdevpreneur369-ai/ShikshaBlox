@@ -1,0 +1,81 @@
+spring:
+  application:
+    name: shikshablox-backend
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    # Runtime connects as a NON-owner role (no BYPASSRLS) so Row-Level Security applies.
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/shikshablox}
+    username: ${DB_APP_USER:sb_app}
+    password: ${DB_APP_PASSWORD:sb_app_dev}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:20}
+  flyway:
+    # Migrations run as the schema owner.
+    user: ${DB_OWNER_USER:sb_owner}
+    password: ${DB_OWNER_PASSWORD:sb_owner_dev}
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+  modulith:
+    detection-strategy: explicitly-annotated
+    events:
+      jdbc:
+        schema-initialization:
+          enabled: false # table created by Flyway
+      republish-outstanding-events-on-restart: true
+  mvc:
+    problemdetails:
+      enabled: true
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+  shutdown: graceful
+  error:
+    include-stacktrace: never
+    include-message: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  info:
+    env:
+      enabled: false
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  default-produces-media-type: application/json
+
+shikshablox:
+  # Base domain for tenant subdomains, e.g. moriah.shikshablox.localhost
+  base-domain: ${SB_BASE_DOMAIN:shikshablox.localhost}
+
+logging:
+  level:
+    root: INFO
+    com.shikshablox: ${LOG_LEVEL:INFO}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+logging:
+  structured:
+    format:
+      console: ecs # JSON logs incl. MDC (requestId, tenantId)

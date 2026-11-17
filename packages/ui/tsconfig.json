@@ -1,0 +1,5 @@
+{
+  "extends": "@shikshablox/config/tsconfig.base.json",
+  "compilerOptions": { "noEmit": true, "jsx": "react-jsx" },
+  "include": ["src", "vitest.config.ts"]
+}

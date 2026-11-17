@@ -1,0 +1,32 @@
+@import "tailwindcss";
+@import "@shikshablox/ui/styles/tokens.css";
+
+@source "../../../../packages/ui/src";
+
+@theme inline {
+  --color-primary: var(--sb-color-primary);
+  --color-on-primary: var(--sb-color-on-primary);
+  --color-accent: var(--sb-color-accent);
+  --color-surface: var(--sb-color-surface);
+  --color-surface-muted: var(--sb-color-surface-muted);
+  --color-ink: var(--sb-color-text);
+  --color-ink-muted: var(--sb-color-text-muted);
+  --font-heading: var(--sb-font-heading);
+  --font-body: var(--sb-font-body);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--sb-color-surface);
+  color: var(--sb-color-text);
+  font-family: var(--sb-font-body);
+}

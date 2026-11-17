@@ -1,0 +1,17 @@
+/*
+ * ShikshaBlox design tokens (CSS custom properties).
+ * Each site's theme overrides these at runtime from its theme settings (M2).
+ * Defaults pass WCAG 2.1 AA contrast: text on surface, on-primary on primary.
+ */
+:root {
+  --sb-color-primary: #1e3a8a;
+  --sb-color-on-primary: #ffffff;
+  --sb-color-accent: #f59e0b;
+  --sb-color-surface: #ffffff;
+  --sb-color-surface-muted: #f8fafc;
+  --sb-color-text: #0f172a;
+  --sb-color-text-muted: #475569;
+  --sb-radius: 1rem;
+  --sb-font-heading: ui-serif, Georgia, serif;
+  --sb-font-body: ui-sans-serif, system-ui, sans-serif;
+}

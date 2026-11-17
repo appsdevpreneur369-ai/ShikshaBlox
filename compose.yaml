@@ -1,0 +1,151 @@
+# ShikshaBlox local stack: `docker compose up --build`
+# Copy .env.example to .env to override any value. The defaults are for local development only.
+name: shikshablox
+
+x-db-env: &db-env
+  DB_OWNER_USER: ${DB_OWNER_USER:-sb_owner}
+  DB_OWNER_PASSWORD: ${DB_OWNER_PASSWORD:-sb_owner_dev}
+  DB_APP_USER: ${DB_APP_USER:-sb_app}
+  DB_APP_PASSWORD: ${DB_APP_PASSWORD:-sb_app_dev}
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      <<: *db-env
+      POSTGRES_USER: ${POSTGRES_SUPERUSER:-sb_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_SUPERUSER_PASSWORD:-sb_admin_dev}
+      POSTGRES_DB: shikshablox
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "${SB_PG_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d shikshablox"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    ports:
+      - "${SB_REDIS_PORT:-6380}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # MinIO no longer publishes images on Docker Hub; Chainguard's free build is used locally.
+  # Any S3-compatible store works (production: AWS S3 / Cloudflare R2 / managed MinIO).
+  minio:
+    image: cgr.dev/chainguard/minio:latest
+    command: ["server", "/data", "--console-address", ":9001"]
+    user: "0:0" # local dev only: lets the server write to the root-owned named volume
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-sb_minio}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-sb_minio_dev_secret}
+    volumes:
+      - miniodata:/data
+    ports:
+      - "${SB_MINIO_PORT:-9000}:9000"
+      - "${SB_MINIO_CONSOLE_PORT:-9001}:9001"
+
+  minio-init:
+    image: amazon/aws-cli:latest
+    depends_on:
+      - minio
+    environment:
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-sb_minio}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-sb_minio_dev_secret}
+      S3_PRIVATE_BUCKET: ${S3_PRIVATE_BUCKET:-sb-private}
+      S3_PUBLIC_BUCKET: ${S3_PUBLIC_BUCKET:-sb-public}
+    volumes:
+      - ./infra/minio/init.sh:/init.sh:ro
+    entrypoint: ["sh", "/init.sh"]
+    restart: "no"
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "${SB_SMTP_PORT:-1025}:1025"
+      - "${SB_MAILPIT_UI_PORT:-8025}:8025"
+
+  backend:
+    build:
+      context: ./backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+    environment:
+      <<: *db-env
+      SPRING_PROFILES_ACTIVE: docker
+      DB_URL: jdbc:postgresql://postgres:5432/shikshablox
+      SB_BASE_DOMAIN: ${SB_BASE_DOMAIN:-shikshablox.localhost}
+      REDIS_URL: redis://redis:6379
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-sb_minio}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-sb_minio_dev_secret}
+      S3_PRIVATE_BUCKET: ${S3_PRIVATE_BUCKET:-sb-private}
+      S3_PUBLIC_BUCKET: ${S3_PUBLIC_BUCKET:-sb-public}
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      JWT_SECRET: ${JWT_SECRET:-dev-only-change-me-dev-only-change-me-dev-only-change-me}
+    mem_limit: 1g
+
+  site:
+    build:
+      context: .
+      dockerfile: infra/docker/next.Dockerfile
+      args:
+        APP: site
+    depends_on:
+      - backend
+    environment:
+      PORT: 3000
+      SB_BASE_DOMAIN: ${SB_BASE_DOMAIN:-shikshablox.localhost}
+      API_INTERNAL_URL: http://backend:8080
+    mem_limit: 512m
+
+  admin:
+    build:
+      context: .
+      dockerfile: infra/docker/next.Dockerfile
+      args:
+        APP: admin
+    depends_on:
+      - backend
+    environment:
+      PORT: 3001
+      SB_BASE_DOMAIN: ${SB_BASE_DOMAIN:-shikshablox.localhost}
+      API_INTERNAL_URL: http://backend:8080
+    mem_limit: 512m
+
+  caddy:
+    image: caddy:2-alpine
+    depends_on:
+      - site
+      - admin
+      - backend
+    environment:
+      SB_BASE_DOMAIN: ${SB_BASE_DOMAIN:-shikshablox.localhost}
+      SITE_UPSTREAM: ${SITE_UPSTREAM:-site:3000}
+      ADMIN_UPSTREAM: ${ADMIN_UPSTREAM:-admin:3001}
+      API_UPSTREAM: ${API_UPSTREAM:-backend:8080}
+      MEDIA_UPSTREAM: ${MEDIA_UPSTREAM:-minio:9000}
+      MAIL_UPSTREAM: ${MAIL_UPSTREAM:-mailpit:8025}
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    ports:
+      - "${SB_HTTP_PORT:-80}:80"
+
+volumes:
+  pgdata:
+  miniodata:

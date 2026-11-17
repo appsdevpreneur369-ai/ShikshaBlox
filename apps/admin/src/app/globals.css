@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@import "@shikshablox/ui/styles/tokens.css";
+
+@source "../../../../packages/ui/src";
+
+/* Admin uses the platform brand, not a school theme. */
+:root {
+  --sb-color-primary: #4338ca;
+  --sb-color-on-primary: #ffffff;
+  --sb-color-surface: #ffffff;
+  --sb-color-surface-muted: #f4f5fb;
+  --sb-color-text: #111827;
+  --sb-color-text-muted: #4b5563;
+  --sb-font-body: ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --sb-font-heading: ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+}
+
+@theme inline {
+  --color-primary: var(--sb-color-primary);
+  --color-on-primary: var(--sb-color-on-primary);
+  --color-surface: var(--sb-color-surface);
+  --color-surface-muted: var(--sb-color-surface-muted);
+  --color-ink: var(--sb-color-text);
+  --color-ink-muted: var(--sb-color-text-muted);
+}
+
+body {
+  background: var(--sb-color-surface-muted);
+  color: var(--sb-color-text);
+  font-family: var(--sb-font-body);
+}

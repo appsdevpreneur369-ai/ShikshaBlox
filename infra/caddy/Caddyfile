@@ -1,0 +1,36 @@
+# Local edge proxy. Production uses on-demand TLS for custom domains (see docs/adr/0004).
+{
+	auto_https off
+	admin off
+}
+
+(common) {
+	header -Server
+	request_header X-Request-Id {http.request.uuid}
+}
+
+http://admin.{$SB_BASE_DOMAIN} {
+	import common
+	reverse_proxy {$ADMIN_UPSTREAM}
+}
+
+http://api.{$SB_BASE_DOMAIN} {
+	import common
+	reverse_proxy {$API_UPSTREAM}
+}
+
+# Public media (public bucket only; private objects require signed URLs).
+http://media.{$SB_BASE_DOMAIN} {
+	import common
+	reverse_proxy {$MEDIA_UPSTREAM}
+}
+
+http://mail.{$SB_BASE_DOMAIN} {
+	reverse_proxy {$MAIL_UPSTREAM}
+}
+
+# Every other host is a school site: <school>.{$SB_BASE_DOMAIN} or a custom domain.
+:80 {
+	import common
+	reverse_proxy {$SITE_UPSTREAM}
+}

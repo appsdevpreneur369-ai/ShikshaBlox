@@ -1,0 +1,23 @@
+{
+  "name": "shikshablox",
+  "private": true,
+  "packageManager": "pnpm@10.34.9",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter ./apps/* dev",
+    "build": "pnpm -r --filter ./packages/* --filter ./apps/* build",
+    "lint": "pnpm -r --filter ./packages/* --filter ./apps/* lint",
+    "typecheck": "pnpm -r --filter ./packages/* --filter ./apps/* typecheck",
+    "test": "pnpm -r --filter ./packages/* --filter ./apps/* test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "api:generate": "pnpm --filter @shikshablox/api-client generate",
+    "e2e": "pnpm --filter @shikshablox/e2e test"
+  },
+  "devDependencies": {
+    "prettier": "^3.10.1",
+    "prettier-plugin-tailwindcss": "^0.8.1"
+  }
+}
