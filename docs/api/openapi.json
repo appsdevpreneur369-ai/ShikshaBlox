@@ -87,6 +87,102 @@
         } ]
       }
     },
+    "/api/admin/v1/site/profile" : {
+      "put" : {
+        "tags" : [ "Website" ],
+        "summary" : "School details shown on the website",
+        "operationId" : "updateSiteProfile",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ProfileRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SiteView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/site/languages" : {
+      "put" : {
+        "tags" : [ "Website" ],
+        "summary" : "Website languages (first is the default)",
+        "operationId" : "updateSiteLanguages",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LanguagesRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SiteView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/site/design" : {
+      "put" : {
+        "tags" : [ "Website" ],
+        "summary" : "Theme, colours, fonts and logo",
+        "operationId" : "updateSiteDesign",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DesignRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SiteView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
     "/api/admin/v1/settings/{key}" : {
       "put" : {
         "tags" : [ "Settings" ],
@@ -113,6 +209,247 @@
         "responses" : {
           "204" : {
             "description" : "No Content"
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/reusable-blocks/{id}" : {
+      "put" : {
+        "tags" : [ "Website" ],
+        "summary" : "Update a reusable block (changes every page using it)",
+        "operationId" : "updateReusableBlock",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ReusableRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReusableBlock"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "Website" ],
+        "summary" : "Delete an unused reusable block",
+        "operationId" : "deleteReusableBlock",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/pages/{id}" : {
+      "get" : {
+        "tags" : [ "Website" ],
+        "summary" : "A page with its draft and published content",
+        "operationId" : "getPage",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en",
+            "pattern" : "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "Website" ],
+        "summary" : "Save the page draft",
+        "operationId" : "savePage",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en",
+            "pattern" : "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SavePageRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "Website" ],
+        "summary" : "Delete a custom page",
+        "operationId" : "deletePage",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/menus/{location}" : {
+      "get" : {
+        "tags" : [ "Website" ],
+        "summary" : "Header or footer menu",
+        "operationId" : "getMenu",
+        "parameters" : [ {
+          "name" : "location",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonNode"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "Website" ],
+        "summary" : "Save a menu (goes live immediately)",
+        "operationId" : "saveMenu",
+        "parameters" : [ {
+          "name" : "location",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/JsonNode"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonNode"
+                }
+              }
+            }
           }
         },
         "security" : [ {
@@ -472,6 +809,257 @@
         }
       }
     },
+    "/api/admin/v1/site/onboarding" : {
+      "post" : {
+        "tags" : [ "Website" ],
+        "summary" : "Save the wizard and generate the website",
+        "operationId" : "completeOnboarding",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/OnboardingRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SiteView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/reusable-blocks" : {
+      "get" : {
+        "tags" : [ "Website" ],
+        "summary" : "Reusable blocks",
+        "operationId" : "listReusableBlocks",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ReusableBlock"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "Website" ],
+        "summary" : "Save a block for reuse",
+        "operationId" : "createReusableBlock",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ReusableRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReusableBlock"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/pages" : {
+      "get" : {
+        "tags" : [ "Website" ],
+        "summary" : "All pages with status",
+        "operationId" : "listPages",
+        "parameters" : [ {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en",
+            "pattern" : "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/PageSummary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "Website" ],
+        "summary" : "Add a custom page",
+        "operationId" : "createPage",
+        "parameters" : [ {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en",
+            "pattern" : "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreatePageRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/pages/{id}/unpublish" : {
+      "post" : {
+        "tags" : [ "Website" ],
+        "summary" : "Take a page off the website",
+        "operationId" : "unpublishPage",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en",
+            "pattern" : "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/pages/{id}/publish" : {
+      "post" : {
+        "tags" : [ "Website" ],
+        "summary" : "Publish the current draft",
+        "operationId" : "publishPage",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en",
+            "pattern" : "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/PublishRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
     "/api/admin/v1/media" : {
       "get" : {
         "tags" : [ "Media library" ],
@@ -803,6 +1391,102 @@
         }
       }
     },
+    "/api/public/v1/site" : {
+      "get" : {
+        "tags" : [ "Public site" ],
+        "summary" : "Site settings, navigation and branding for a host",
+        "operationId" : "publicSite",
+        "parameters" : [ {
+          "name" : "host",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonNode"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/public/v1/site/paths" : {
+      "get" : {
+        "tags" : [ "Public site" ],
+        "summary" : "Published page paths (sitemap)",
+        "operationId" : "publicPaths",
+        "parameters" : [ {
+          "name" : "host",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonNode"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/public/v1/site/page" : {
+      "get" : {
+        "tags" : [ "Public site" ],
+        "summary" : "A published page with its media",
+        "operationId" : "publicPage",
+        "parameters" : [ {
+          "name" : "host",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "path",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : ""
+          }
+        }, {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonNode"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/platform/v1/plans" : {
       "get" : {
         "tags" : [ "Plan & entitlements" ],
@@ -850,6 +1534,28 @@
         } ]
       }
     },
+    "/api/admin/v1/site" : {
+      "get" : {
+        "tags" : [ "Website" ],
+        "summary" : "Site design, profile and languages",
+        "operationId" : "getSite",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SiteView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
     "/api/admin/v1/settings" : {
       "get" : {
         "tags" : [ "Settings" ],
@@ -864,6 +1570,49 @@
                   "type" : "array",
                   "items" : {
                     "$ref" : "#/components/schemas/SettingView"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/pages/{id}/revisions" : {
+      "get" : {
+        "tags" : [ "Website" ],
+        "summary" : "Published versions of a page",
+        "operationId" : "pageRevisions",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en",
+            "pattern" : "^[a-z]{2}(-[A-Z]{2})?$"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Revision"
                   }
                 }
               }
@@ -1055,6 +1804,198 @@
         },
         "required" : [ "planCode" ]
       },
+      "ProfileRequest" : {
+        "type" : "object",
+        "properties" : {
+          "profile" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          }
+        },
+        "required" : [ "profile" ]
+      },
+      "SiteView" : {
+        "type" : "object",
+        "properties" : {
+          "theme" : {
+            "type" : "string"
+          },
+          "brand" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "profile" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "logoMediaId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "languages" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "defaultLanguage" : {
+            "type" : "string"
+          },
+          "onboardingCompleted" : {
+            "type" : "boolean"
+          },
+          "themes" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            },
+            "uniqueItems" : true
+          },
+          "fonts" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            },
+            "uniqueItems" : true
+          },
+          "radii" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            },
+            "uniqueItems" : true
+          },
+          "supportedLanguages" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            },
+            "uniqueItems" : true
+          }
+        }
+      },
+      "LanguagesRequest" : {
+        "type" : "object",
+        "properties" : {
+          "languages" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            },
+            "maxItems" : 5,
+            "minItems" : 1
+          }
+        },
+        "required" : [ "languages" ]
+      },
+      "DesignRequest" : {
+        "type" : "object",
+        "properties" : {
+          "theme" : {
+            "type" : "string",
+            "minLength" : 1
+          },
+          "brand" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "logoMediaId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "required" : [ "brand", "theme" ]
+      },
+      "ReusableRequest" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "maxLength" : 120,
+            "minLength" : 0
+          },
+          "block" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          }
+        },
+        "required" : [ "block", "name" ]
+      },
+      "ReusableBlock" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "block" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "SavePageRequest" : {
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "maxLength" : 160,
+            "minLength" : 0
+          },
+          "seo" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "document" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          }
+        },
+        "required" : [ "document", "title" ]
+      },
+      "PageDetail" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "slug" : {
+            "type" : "string"
+          },
+          "kind" : {
+            "type" : "string"
+          },
+          "templateKey" : {
+            "type" : "string"
+          },
+          "language" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "seo" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "draftDocument" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "publishedDocument" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "publishedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
       "CreateOrganizationRequest" : {
         "type" : "object",
         "properties" : {
@@ -1242,6 +2183,52 @@
           }
         },
         "required" : [ "email", "password" ]
+      },
+      "OnboardingRequest" : {
+        "type" : "object",
+        "properties" : {
+          "theme" : {
+            "type" : "string",
+            "minLength" : 1
+          },
+          "brand" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "profile" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "logoMediaId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "required" : [ "brand", "profile", "theme" ]
+      },
+      "CreatePageRequest" : {
+        "type" : "object",
+        "properties" : {
+          "slug" : {
+            "type" : "string",
+            "maxLength" : 120,
+            "minLength" : 0
+          },
+          "title" : {
+            "type" : "string",
+            "maxLength" : 160,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "slug", "title" ]
+      },
+      "PublishRequest" : {
+        "type" : "object",
+        "properties" : {
+          "note" : {
+            "type" : "string",
+            "maxLength" : 300,
+            "minLength" : 0
+          }
+        }
       },
       "MediaView" : {
         "type" : "object",
@@ -1554,6 +2541,77 @@
           },
           "source" : {
             "type" : "string"
+          }
+        }
+      },
+      "PageSummary" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "slug" : {
+            "type" : "string"
+          },
+          "kind" : {
+            "type" : "string"
+          },
+          "templateKey" : {
+            "type" : "string"
+          },
+          "sortOrder" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "language" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "hasUnpublishedChanges" : {
+            "type" : "boolean"
+          },
+          "publishedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "Revision" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "language" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "action" : {
+            "type" : "string"
+          },
+          "note" : {
+            "type" : "string"
+          },
+          "createdBy" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },

@@ -114,6 +114,18 @@
       <artifactId>url-connection-client</artifactId>
     </dependency>
 
+    <!-- Page documents: JSON Schema validation + HTML allow-list sanitising -->
+    <dependency>
+      <groupId>com.networknt</groupId>
+      <artifactId>json-schema-validator</artifactId>
+      <version>1.5.9</version>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+      <artifactId>owasp-java-html-sanitizer</artifactId>
+      <version>20240325.1</version>
+    </dependency>
+
     <!-- Module boundaries + event publication registry (transactional outbox) -->
     <dependency>
       <groupId>org.springframework.modulith</groupId>

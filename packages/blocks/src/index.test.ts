@@ -20,3 +20,34 @@ describe("pageDocument", () => {
     expect(schema.type).toBe("object");
   });
 });
+
+describe("block catalogue", () => {
+  it("validates hero links and rejects javascript: URLs", () => {
+    const ok = {
+      schemaVersion: 1,
+      blocks: [
+        {
+          id: "h",
+          type: "hero",
+          props: {
+            variant: "split",
+            heading: "Welcome",
+            primaryCta: { label: "Apply", href: "/admissions" },
+          },
+        },
+      ],
+    };
+    expect(pageDocument.safeParse(ok).success).toBe(true);
+    const bad = structuredClone(ok);
+    bad.blocks[0]!.props.primaryCta.href = "javascript:alert(1)";
+    expect(pageDocument.safeParse(bad).success).toBe(false);
+  });
+
+  it("requires media ids to be UUIDs", () => {
+    const doc = {
+      schemaVersion: 1,
+      blocks: [{ id: "i", type: "image", props: { imageId: "../etc/passwd", size: "wide" } }],
+    };
+    expect(pageDocument.safeParse(doc).success).toBe(false);
+  });
+});

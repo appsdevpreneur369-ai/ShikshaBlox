@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "build": "tsc --noEmit"
+    "build": "tsc --noEmit",
+    "gen:schema": "tsx scripts/gen-schema.ts"
   },
   "dependencies": {
     "zod": "^4.6.7"
@@ -21,6 +22,7 @@
     "@shikshablox/config": "workspace:*",
     "eslint": "^9.39.5",
     "typescript": "~5.9.3",
-    "vitest": "^4.1.12"
+    "vitest": "^4.1.12",
+    "tsx": "^4.20.6"
   }
 }
