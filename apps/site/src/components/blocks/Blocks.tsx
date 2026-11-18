@@ -101,7 +101,7 @@ function Hero({ b, ctx }: { b: BlockOf<"hero">; ctx: Ctx }) {
   if (p.variant === "split" && hasImage) {
     return (
       <section id={b.settings?.anchor} className="relative overflow-hidden bg-primary-soft">
-        <div className="sb-blob" style={{ width: 380, height: 380, left: -140, top: -120, background: "var(--sb-color-accent)" }} />
+        <div className="sb-blob" style={{ width: 380, height: 380, left: -140, top: -120, backgroundImage: "radial-gradient(circle, var(--sb-color-accent) 0%, var(--sb-color-accent) 55%, transparent 72%)" }} />
         <div className="sb-container relative grid items-center gap-10 py-14 md:grid-cols-2 md:py-20">
           <div>
             {p.eyebrow && <p className="sb-eyebrow mb-4">{p.eyebrow}</p>}
@@ -130,7 +130,7 @@ function Hero({ b, ctx }: { b: BlockOf<"hero">; ctx: Ctx }) {
   }
   return (
     <section id={b.settings?.anchor} className="relative overflow-hidden bg-primary text-on-primary">
-      <div className="sb-blob" style={{ width: 420, height: 420, right: -120, top: -160, background: "var(--sb-color-accent)" }} />
+      <div className="sb-blob" style={{ width: 420, height: 420, right: -120, top: -160, backgroundImage: "radial-gradient(circle, var(--sb-color-accent) 0%, var(--sb-color-accent) 55%, transparent 72%)" }} />
       <div className="sb-container relative py-20 text-center md:py-28">
         {p.eyebrow && <p className="mb-4 text-sm font-bold tracking-[0.14em] text-accent uppercase">{p.eyebrow}</p>}
         <Tag className="mx-auto max-w-4xl text-4xl leading-[1.1] font-extrabold sm:text-5xl">{p.heading}</Tag>
@@ -300,8 +300,8 @@ function CtaBlock({ b }: { b: BlockOf<"cta"> }) {
     <section id={b.settings?.anchor} className="sb-section" data-spacing={b.settings?.spacing ?? "compact"}>
       <div className="sb-container">
         <div className="sb-reveal relative overflow-hidden rounded-[calc(var(--sb-radius)*1.8)] bg-primary px-6 py-14 text-center text-on-primary md:px-16">
-          <div className="sb-blob" style={{ width: 300, height: 300, left: -80, bottom: -140, background: "var(--sb-color-accent)" }} />
-          <div className="sb-blob" style={{ width: 240, height: 240, right: -60, top: -100, background: "#fff", opacity: 0.18 }} />
+          <div className="sb-blob" style={{ width: 300, height: 300, left: -80, bottom: -140, backgroundImage: "radial-gradient(circle, var(--sb-color-accent) 0%, var(--sb-color-accent) 55%, transparent 72%)" }} />
+          <div className="sb-blob" style={{ width: 240, height: 240, right: -60, top: -100, backgroundImage: "radial-gradient(circle, #fff 0%, #fff 55%, transparent 72%)", opacity: 0.18 }} />
           <h2 className="sb-h2 relative">{p.heading}</h2>
           {p.text && <p className="relative mx-auto mt-4 max-w-2xl text-lg">{p.text}</p>}
           <div className="relative mt-8 flex flex-wrap justify-center gap-3">

@@ -24,7 +24,7 @@ export function FeedDetail({ kind, item, media }: { kind: FeedKind; item: FeedIt
   return (
     <article>
       <header className="relative overflow-hidden bg-primary-soft">
-        <div className="sb-blob" style={{ width: 340, height: 340, right: -100, top: -140, background: "var(--sb-color-accent)" }} />
+        <div className="sb-blob" style={{ width: 340, height: 340, right: -100, top: -140, backgroundImage: "radial-gradient(circle, var(--sb-color-accent) 0%, var(--sb-color-accent) 55%, transparent 72%)" }} />
         <div className="sb-container relative max-w-4xl py-14 md:py-20">
           <Link href={back.href} className="sb-focus -ml-2 inline-flex min-h-11 items-center gap-1.5 rounded-full px-2 text-sm font-semibold text-primary hover:underline">
             <ArrowRight width={16} height={16} className="rotate-180" /> {back.label}

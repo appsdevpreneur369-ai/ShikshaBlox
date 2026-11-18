@@ -29,7 +29,7 @@ export function SiteFooter({ site, lang }: { site: PublicSite; lang: string }) {
     <footer className="relative mt-auto overflow-hidden bg-[color-mix(in_srgb,var(--sb-color-primary)_92%,#000)] text-white">
       <div
         className="sb-blob"
-        style={{ width: 420, height: 420, right: -120, top: -160, background: "var(--sb-color-accent)" }}
+        style={{ width: 420, height: 420, right: -120, top: -160, backgroundImage: "radial-gradient(circle, var(--sb-color-accent) 0%, var(--sb-color-accent) 55%, transparent 72%)" }}
       />
       <div className="sb-container relative grid gap-10 py-16 md:grid-cols-12">
         <div className="md:col-span-5">

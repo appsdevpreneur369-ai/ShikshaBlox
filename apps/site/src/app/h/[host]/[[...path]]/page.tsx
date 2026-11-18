@@ -92,7 +92,7 @@ export default async function SitePage({ params }: { params: Promise<Params> }) 
     <>
       {!startsWithHero && (
         <section className="relative overflow-hidden bg-primary-soft">
-          <div className="sb-blob" style={{ width: 340, height: 340, right: -100, top: -140, background: "var(--sb-color-accent)" }} />
+          <div className="sb-blob" style={{ width: 340, height: 340, right: -100, top: -140, backgroundImage: "radial-gradient(circle, var(--sb-color-accent) 0%, var(--sb-color-accent) 55%, transparent 72%)" }} />
           <div className="sb-container relative py-14 md:py-20">
             <p className="sb-eyebrow mb-3">{site.name}</p>
             <h1 className="text-4xl font-extrabold sm:text-5xl">{page.title}</h1>
