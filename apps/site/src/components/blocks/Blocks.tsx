@@ -79,8 +79,8 @@ function Hero({ b, ctx }: { b: BlockOf<"hero">; ctx: Ctx }) {
   if (p.variant === "fullBleed" && hasImage) {
     return (
       <section id={b.settings?.anchor} className="sb-hero-full">
-        <Img id={p.imageId} media={ctx.media} priority={ctx.first} />
-        <div className="sb-container pt-40 pb-16 md:pb-24">
+        <Img id={p.imageId} media={ctx.media} priority={ctx.first} sizes="100vw" />
+        <div className="sb-container pt-8 pb-12 lg:pt-40 lg:pb-24">
           <div className="max-w-3xl">
             {p.eyebrow && (
               <p className="mb-4 inline-flex rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold backdrop-blur">

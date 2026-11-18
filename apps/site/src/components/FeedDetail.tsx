@@ -26,7 +26,7 @@ export function FeedDetail({ kind, item, media }: { kind: FeedKind; item: FeedIt
       <header className="relative overflow-hidden bg-primary-soft">
         <div className="sb-blob" style={{ width: 340, height: 340, right: -100, top: -140, background: "var(--sb-color-accent)" }} />
         <div className="sb-container relative max-w-4xl py-14 md:py-20">
-          <Link href={back.href} className="sb-focus inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
+          <Link href={back.href} className="sb-focus -ml-2 inline-flex min-h-11 items-center gap-1.5 rounded-full px-2 text-sm font-semibold text-primary hover:underline">
             <ArrowRight width={16} height={16} className="rotate-180" /> {back.label}
           </Link>
           <h1 className="mt-4 text-4xl font-extrabold sm:text-5xl">{item.title}</h1>

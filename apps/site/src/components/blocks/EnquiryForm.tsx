@@ -83,8 +83,8 @@ export function EnquiryForm() {
       <label className="hidden" aria-hidden="true">
         Website <input name="website" tabIndex={-1} autoComplete="off" />
       </label>
-      <label className="flex items-start gap-3 text-sm sm:col-span-2">
-        <input type="checkbox" name="consent" required className="mt-1 h-4 w-4 accent-[var(--sb-color-primary)]" />
+      <label className="flex cursor-pointer items-start gap-3 text-sm sm:col-span-2">
+        <input type="checkbox" name="consent" required className="mt-0.5 h-6 w-6 shrink-0 accent-[var(--sb-color-primary)]" />
         <span className="sb-muted">
           I agree that the school may use these details to respond to my enquiry. They will not be shared with anyone else.
         </span>

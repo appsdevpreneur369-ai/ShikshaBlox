@@ -85,6 +85,19 @@
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
     </dependency>
+    <!-- Cloud SQL connector (staging on Cloud Run); unused locally. -->
+    <dependency>
+      <groupId>com.google.cloud.sql</groupId>
+      <artifactId>postgres-socket-factory</artifactId>
+      <version>1.21.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- Google Cloud Storage with workload identity (staging); S3 client stays for MinIO/R2/S3. -->
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-storage</artifactId>
+      <version>2.40.1</version>
+    </dependency>
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>

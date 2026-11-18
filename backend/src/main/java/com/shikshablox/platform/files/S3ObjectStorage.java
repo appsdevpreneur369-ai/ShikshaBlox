@@ -5,6 +5,7 @@ import java.net.URI;
 import java.time.Duration;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -27,6 +28,10 @@ import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignReques
  * required" keep it compatible with non-AWS stores.
  */
 @Component
+@ConditionalOnProperty(
+    name = "shikshablox.storage.provider",
+    havingValue = "s3",
+    matchIfMissing = true)
 class S3ObjectStorage implements ObjectStorage, DisposableBean {
 
   private final S3Client s3;

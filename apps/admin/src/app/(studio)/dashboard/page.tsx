@@ -3,10 +3,11 @@ import { redirect } from "next/navigation";
 import { Building2, ShieldCheck, ShieldAlert, Globe } from "lucide-react";
 import { api, currentUser } from "@/lib/session";
 import { switchSchool } from "../actions";
+import { siteUrl } from "@/lib/site-url";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
-const BASE_DOMAIN = process.env.SB_BASE_DOMAIN ?? "shikshablox.localhost";
+const host = (slug?: string) => (siteUrl(slug) ?? "").replace(/^https?:\/\//, "");
 
 export default async function Dashboard() {
   const session = await currentUser();
@@ -46,11 +47,11 @@ export default async function Dashboard() {
               <p className="text-lg font-semibold">{active.name}</p>
               <a
                 className="text-primary mt-1 inline-flex items-center gap-1 text-sm font-medium hover:underline"
-                href={`http://${active.slug}.${BASE_DOMAIN}`}
+                href={siteUrl(active.slug) ?? "#"}
                 target="_blank"
                 rel="noreferrer"
               >
-                <Globe className="size-4" aria-hidden /> {active.slug}.{BASE_DOMAIN}
+                <Globe className="size-4" aria-hidden /> {host(active.slug)}
               </a>
             </>
           ) : (
@@ -114,7 +115,7 @@ export default async function Dashboard() {
                     >
                       <p className="font-semibold">{s.name}</p>
                       <p className="text-ink-muted text-sm">
-                        {s.slug}.{BASE_DOMAIN}
+                        {host(s.slug)}
                       </p>
                       <p className="text-primary mt-3 text-sm font-medium">
                         {isActive ? "Active" : "Switch to this school →"}

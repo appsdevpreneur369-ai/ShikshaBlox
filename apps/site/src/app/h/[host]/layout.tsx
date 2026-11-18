@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getSite } from "@/lib/api";
 import { normaliseHost } from "@/lib/host";
 import { brandStyle } from "@/lib/theme";
+import { schoolJsonLd } from "@/lib/seo";
 import { t } from "@/lib/types";
 import { Img } from "@/components/Img";
 import { SiteHeader, type NavItem } from "@/components/SiteHeader";
@@ -59,6 +60,10 @@ export default async function SiteLayout({
             ? { label: "Apply now", href: "/admissions#enquire" }
             : undefined
         }
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schoolJsonLd(site, host)).replace(/</g, "\\u003c") }}
       />
       <main id="main" className="flex-1">
         {children}

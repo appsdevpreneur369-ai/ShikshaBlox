@@ -1,0 +1,29 @@
+# Builds the three staging images in Cloud Build (no local Docker needed).
+#   gcloud builds submit --project <project> --config infra/gcp/cloudbuild.yaml --substitutions=_TAG=<tag>
+substitutions:
+  _REGION: asia-south1
+  _REPO: shikshablox
+  _TAG: latest
+options:
+  machineType: E2_HIGHCPU_8
+  env: ["DOCKER_BUILDKIT=1"]
+steps:
+  - id: api
+    name: gcr.io/cloud-builders/docker
+    args: ["build", "-t", "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/api:${_TAG}", "backend"]
+    waitFor: ["-"]
+  - id: site
+    name: gcr.io/cloud-builders/docker
+    args: ["build", "-f", "infra/docker/next.Dockerfile", "--build-arg", "APP=site",
+           "-t", "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/site:${_TAG}", "."]
+    waitFor: ["-"]
+  - id: admin
+    name: gcr.io/cloud-builders/docker
+    args: ["build", "-f", "infra/docker/next.Dockerfile", "--build-arg", "APP=admin",
+           "-t", "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/admin:${_TAG}", "."]
+    waitFor: ["-"]
+images:
+  - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/api:${_TAG}"
+  - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/site:${_TAG}"
+  - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/admin:${_TAG}"
+timeout: 2400s

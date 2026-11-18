@@ -294,7 +294,8 @@ h4 {
     visibility 0.2s;
 }
 .sb-has-dropdown:hover .sb-dropdown,
-.sb-has-dropdown:focus-within .sb-dropdown {
+.sb-has-dropdown:focus-within .sb-dropdown,
+.sb-has-dropdown[data-open] .sb-dropdown {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -342,6 +343,25 @@ h4 {
 .sb-hero-full > .sb-container {
   position: relative;
   z-index: 1;
+}
+/* Phones and tablets: show the whole photo (no cropping of the school name or children),
+   with the text on a brand panel underneath instead of over the image. */
+@media (max-width: 1023px) {
+  .sb-hero-full {
+    display: block;
+    min-height: 0;
+    background: color-mix(in srgb, var(--sb-color-primary) 85%, #000);
+  }
+  .sb-hero-full > img {
+    position: relative;
+    display: block;
+    height: auto;
+    object-fit: contain;
+    animation: none;
+  }
+  .sb-hero-full::after {
+    display: none;
+  }
 }
 @keyframes sb-kenburns {
   from {

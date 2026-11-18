@@ -4,6 +4,9 @@ import { getFeedItem, getPage, getSite } from "@/lib/api";
 import { normaliseHost } from "@/lib/host";
 import { RenderBlock } from "@/components/blocks/Blocks";
 import { FeedDetail, isFeedPath } from "@/components/FeedDetail";
+import { absoluteUrl, describe, enrich, firstImage } from "@/lib/seo";
+
+
 
 type Params = { host: string; path?: string[] };
 
@@ -30,20 +33,48 @@ async function loadFeed(host: string, segments: string[]) {
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { host, site, segments } = await load(params);
-  const page = await getPage(host, segments.join("/"));
-  const ogId = page?.seo.ogImageId;
-  const og = ogId ? page?.media[ogId]?.src : undefined;
+  const path = segments.join("/");
+  const url = absoluteUrl(host, path);
+  const page = await getPage(host, path);
   if (!page) {
     const f = await loadFeed(host, segments);
     if (!f) return { title: site.name };
-    return { title: `${f.item.title} | ${site.name}`, description: f.item.summary };
+    const title = `${f.item.title} | ${site.name}`;
+    const description = enrich(f.item.summary || f.item.title, site);
+    const img = f.item.imageId ? f.media[f.item.imageId]?.src : undefined;
+    return {
+      title,
+      description,
+      alternates: { canonical: url },
+      openGraph: { title, description, url, siteName: site.name, images: img ? [img] : undefined, type: "article" },
+      twitter: { card: img ? "summary_large_image" : "summary", title, description },
+    };
   }
-  const title = page.seo.metaTitle || (page.slug === "" ? `${site.name}${site.profile.tagline ? ` – ${site.profile.tagline}` : ""}` : `${page.title} | ${site.name}`);
+  const ogId = page.seo.ogImageId;
+  const og = (ogId ? page.media[ogId]?.src : undefined) ?? firstImage(page.document.blocks, page.media);
+  const title =
+    page.seo.metaTitle ||
+    (page.slug === ""
+      ? `${site.name}${site.profile.tagline ? ` – ${site.profile.tagline}` : ""}`
+      : `${page.title} | ${site.name}`);
+  const description =
+    page.seo.metaDescription ||
+    enrich(describe(page.document.blocks, `${page.title} at ${site.name}`), site);
   return {
     title,
-    description: page.seo.metaDescription || site.profile.tagline,
-    robots: page.seo.noindex ? { index: false } : undefined,
-    openGraph: { title, siteName: site.name, images: og ? [og] : undefined, type: "website" },
+    description,
+    alternates: { canonical: url },
+    robots: page.seo.noindex ? { index: false, follow: true } : { index: true, follow: true },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: site.name,
+      locale: "en_IN",
+      images: og ? [og] : undefined,
+      type: "website",
+    },
+    twitter: { card: og ? "summary_large_image" : "summary", title, description },
   };
 }
 
