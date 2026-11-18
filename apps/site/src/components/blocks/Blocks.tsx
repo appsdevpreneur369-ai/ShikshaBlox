@@ -322,7 +322,7 @@ function Stats({ b }: { b: BlockOf<"stats"> }) {
         <SectionHeading heading={p.heading} center />
         <dl className="grid grid-cols-2 gap-6 md:grid-cols-4">
           {p.items.map((it, i) => (
-            <div key={i} className="sb-reveal rounded-[var(--sb-radius)] bg-white/10 p-6 text-center backdrop-blur transition hover:bg-white/15">
+            <div key={i} className="sb-reveal rounded-[var(--sb-radius)] bg-black/15 p-6 text-center backdrop-blur transition hover:bg-black/20">
               <dt className="sr-only">{it.label}</dt>
               <dd>
                 <span className="font-heading block text-3xl font-extrabold whitespace-nowrap md:text-4xl lg:text-5xl">{it.value}</span>
