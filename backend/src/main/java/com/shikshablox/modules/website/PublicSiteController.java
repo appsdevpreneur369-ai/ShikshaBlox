@@ -9,6 +9,7 @@ import java.time.Duration;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,11 +21,36 @@ import org.springframework.web.bind.annotation.RestController;
 class PublicSiteController {
 
   private final PublicSiteService site;
+  private final PublicFeedService feeds;
   private final RateLimiter limiter;
 
-  PublicSiteController(PublicSiteService site, RateLimiter limiter) {
+  PublicSiteController(PublicSiteService site, PublicFeedService feeds, RateLimiter limiter) {
     this.site = site;
+    this.feeds = feeds;
     this.limiter = limiter;
+  }
+
+  @GetMapping("/feeds/{type}")
+  @Operation(operationId = "publicFeed", summary = "Published items of a content type")
+  ResponseEntity<JsonNode> feed(
+      @PathVariable String type,
+      @RequestParam String host,
+      @RequestParam(defaultValue = "20") int limit,
+      @RequestParam(defaultValue = "all") String show,
+      @RequestParam(required = false) String department) {
+    limit(host);
+    return cached(
+        feeds
+            .feed(host, type, limit, show, department)
+            .orElseThrow(() -> ApiException.notFound("Feed")));
+  }
+
+  @GetMapping("/feeds/{type}/{slug}")
+  @Operation(operationId = "publicFeedItem", summary = "One published item (news, event, album)")
+  ResponseEntity<JsonNode> feedItem(
+      @PathVariable String type, @PathVariable String slug, @RequestParam String host) {
+    limit(host);
+    return cached(feeds.item(host, type, slug).orElseThrow(() -> ApiException.notFound("Item")));
   }
 
   @GetMapping

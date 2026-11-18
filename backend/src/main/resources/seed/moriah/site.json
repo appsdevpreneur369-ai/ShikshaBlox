@@ -1,0 +1,159 @@
+{
+  "_note": "Moriah School launch content, restructured from the previous public website (moriaheducation.com). '@img:<file>' is replaced with the uploaded media id. Text marked for the school to confirm is listed in docs/moriah-content-review.md.",
+  "theme": "modern",
+  "brand": { "primary": "#0f766e", "accent": "#db2777", "fontHeading": "Poppins", "fontBody": "Inter", "radius": "round" },
+  "logo": "logo.jpg",
+  "profile": {
+    "tagline": "Bringing out the best in every child",
+    "board": "State Board",
+    "boardName": "Recognised by the Government of Andhra Pradesh · English medium",
+    "established": "1999",
+    "mapQuery": "Old Pattabhipuram, Guntur, Andhra Pradesh 522004",
+    "admissionsText": "Admissions are open for Pre-KG to Class 10. Fees are charged on a sliding scale and financial aid is available for families who need it.",
+    "admissionsOpen": true,
+    "officeHours": "Monday – Saturday, 9:00 am – 4:00 pm",
+    "address": { "line1": "1st Line, Old Pattabhipuram", "city": "Guntur", "pincode": "522004", "state": "Andhra Pradesh", "country": "India" },
+    "social": { "facebook": "https://www.facebook.com/moriahschool/", "instagram": "https://www.instagram.com/moriahchildren" }
+  },
+  "images": {
+    "students-assembly-front.jpg": { "alt": "Moriah High School students gathered in front of the school building", "students": true },
+    "school-gate.jpg": { "alt": "The gate and front building of Moriah High School", "students": false },
+    "school-building.jpg": { "alt": "The three-storey Moriah School building", "students": false },
+    "school-banner.jpg": { "alt": "Moriah High School banner, recognised by the Government of A.P.", "students": false },
+    "we-are-moriah.jpg": { "alt": "Notice board chalk drawing reading We are Moriah", "students": false },
+    "teacher-blackboard.jpg": { "alt": "A teacher writing on the blackboard during a lesson", "students": true },
+    "reading-corner.jpg": { "alt": "Students reading with their teacher beside a world map", "students": true },
+    "writing.jpg": { "alt": "A student writing carefully in a notebook", "students": false },
+    "science-lab.jpg": { "alt": "Microscope, flasks and test tubes in the science room", "students": false },
+    "stem-kids.jpg": { "alt": "Students in safety goggles ready for a science activity", "students": true },
+    "robotics.jpg": { "alt": "A small humanoid robot in front of a chalkboard reading Robotics", "students": false },
+    "library-room.jpg": { "alt": "The freshly painted office and teachers' room", "students": false },
+    "classroom.jpg": { "alt": "A bright, newly painted classroom with wooden benches", "students": false },
+    "school-bus.jpg": { "alt": "The yellow Moriah School bus", "students": false },
+    "dining-hall.jpg": { "alt": "The dining hall with long tables", "students": false },
+    "dance-assembly.jpg": { "alt": "Students learning a dance routine in the school courtyard", "students": true },
+    "dance-circle.jpg": { "alt": "Ballet students sitting in a circle during a dance class", "students": true },
+    "ballet-line.jpg": { "alt": "Students practising ballet positions in a line", "students": true },
+    "friends-smiling.jpg": { "alt": "Two smiling students waving at the camera", "students": true },
+    "girls-smiling.jpg": { "alt": "A smiling student at her desk", "students": true },
+    "classmates-group.jpg": { "alt": "A group of young classmates smiling together at a desk", "students": true },
+    "boys-group.jpg": { "alt": "Four classmates laughing together", "students": true },
+    "kindergarten-girls.jpg": { "alt": "Kindergarten students in uniform standing together", "students": true },
+    "girl-slate.jpg": { "alt": "A young student proudly holding up her slate", "students": true },
+    "boy-slate.jpg": { "alt": "A student showing his slate with sums", "students": true },
+    "boy-portrait.jpg": { "alt": "A smiling young student", "students": true },
+    "girl-pigtails.jpg": { "alt": "A cheerful student holding her pigtails", "students": true },
+    "art-supplies.jpg": { "alt": "Students receiving new art supplies", "students": true },
+    "lkg-2025.jpg": { "alt": "Lower Kindergarten class of 2025–26 with their teacher", "students": true },
+    "class-2025.jpg": { "alt": "A Moriah class of 2025–26 in their classroom", "students": true },
+    "staff-training.jpg": { "alt": "Moriah teachers after an early childhood training workshop", "students": false },
+    "logo.jpg": { "alt": "Moriah School & Home logo", "students": false }
+  },
+  "pages": {
+    "home": [
+      { "id": "hero", "type": "hero", "props": { "variant": "fullBleed", "eyebrow": "Guntur, Andhra Pradesh · Since 1999", "heading": "Bringing out the best in every child", "subheading": "Moriah School is an English-medium school for Pre-KG to Class 10, where every child is known, valued and equipped to grow into a capable, compassionate adult.", "imageId": "@img:students-assembly-front.jpg", "primaryCta": { "label": "Admissions 2027–28", "href": "/admissions" }, "secondaryCta": { "label": "Discover Moriah", "href": "/about" } } },
+      { "id": "stats", "type": "stats", "props": { "items": [ { "value": "1999", "label": "Serving Guntur since" }, { "value": "Pre-KG–10", "label": "Classes offered" }, { "value": "250+", "label": "Students enrolled" }, { "value": "8", "label": "Early childhood classrooms" } ] } },
+      { "id": "welcome", "type": "imageText", "props": { "eyebrow": "Welcome to Moriah", "heading": "An education that brings out each child's best", "html": "<p>Since 1999, Moriah School has served students from pre-kindergarten through Class 10 in Guntur. Our school was founded on a simple conviction: every child deserves an education that nurtures <strong>character, curiosity and competence</strong> — not just exam scores.</p><p>Our students are known and valued. They are equipped not only for academic success, but to grow into capable, compassionate adults who are committed to serving their neighbours.</p>", "imageId": "@img:reading-corner.jpg", "imagePosition": "right", "cta": { "label": "Our story", "href": "/about" } } },
+      { "id": "why", "type": "cards", "props": { "heading": "Why families choose Moriah", "intro": "A safe, joyful school where children learn deeply and grow in confidence.", "columns": 3, "items": [ { "title": "Every child known", "text": "Caring teachers who know each student by name, encourage them and keep families closely involved.", "icon": "heart" }, { "title": "Learning through play", "text": "Our Early Childhood Education Center uses hands-on, play-based learning in eight well-equipped classrooms.", "icon": "palette" }, { "title": "Strong English foundation", "text": "An English-medium school with a dedicated English language programme supported by mentors.", "icon": "book" }, { "title": "Science & discovery", "text": "Practical science, STEM activities and early robotics spark curiosity and problem solving.", "icon": "flask" }, { "title": "Arts, dance & sport", "text": "Dance, art and games build confidence, teamwork and joy alongside academics.", "icon": "music" }, { "title": "Open to all", "text": "Sliding-scale fees and financial aid so that no child is turned away for lack of means.", "icon": "users" } ] } },
+      { "id": "notices", "type": "noticesFeed", "settings": { "background": "muted" }, "props": { "heading": "Notice board", "limit": 4 } },
+      { "id": "life", "type": "galleryStrip", "props": { "heading": "Life at Moriah", "intro": "Classrooms, courtyards and celebrations — a glimpse of a day at school.", "layout": "grid", "imageIds": [ "@img:dance-assembly.jpg", "@img:friends-smiling.jpg", "@img:stem-kids.jpg", "@img:girl-slate.jpg", "@img:boys-group.jpg", "@img:dance-circle.jpg", "@img:kindergarten-girls.jpg", "@img:girl-pigtails.jpg", "@img:boy-slate.jpg" ], "cta": { "label": "View the gallery", "href": "/gallery" } } },
+      { "id": "events", "type": "eventsFeed", "props": { "heading": "Upcoming events", "limit": 4, "show": "upcoming" } },
+      { "id": "news", "type": "newsFeed", "settings": { "background": "muted" }, "props": { "heading": "News & stories", "limit": 3 } },
+      { "id": "cta", "type": "cta", "props": { "heading": "Admissions are open for 2027–28", "text": "Come and see Moriah for yourself. Visit the campus, meet our teachers and ask us anything.", "primary": { "label": "Enquire now", "href": "/admissions#enquire" }, "secondary": { "label": "Contact us", "href": "/contact" } } }
+    ],
+    "about": [
+      { "id": "intro", "type": "hero", "props": { "variant": "split", "eyebrow": "About us", "heading": "Improving lives through education", "subheading": "Moriah School has given children from Guntur's working families a quality education for more than 25 years.", "imageId": "@img:school-gate.jpg", "primaryCta": { "label": "Admissions", "href": "/admissions" } } },
+      { "id": "school", "type": "imageText", "props": { "eyebrow": "Moriah School", "heading": "A school for every child", "html": "<p>Moriah School is a private, English-medium school for students from Pre-Kindergarten to Class 10, recognised by the Government of Andhra Pradesh. It was founded for children and families who could not otherwise obtain a quality education — many of our students' parents work as day labourers.</p><p>Our school is open to all children, with tuition charged on a sliding scale. Financial aid for qualified students is funded by generous donors, and we strive continuously to improve the learning environment for the children we serve.</p>", "imageId": "@img:school-building.jpg", "imagePosition": "left" } },
+      { "id": "home", "type": "imageText", "props": { "eyebrow": "Moriah Home", "heading": "A safe and nurturing home", "html": "<p>Since 1985, Moriah Home has been a full-time residential home for orphaned and semi-orphaned children, and for children in need of reliable care and safe living conditions. Every child living at Moriah Home attends Moriah School and is supported in a safe, structured and flourishing environment.</p>", "imageId": "@img:dining-hall.jpg", "imagePosition": "right" } },
+      { "id": "history", "type": "richText", "settings": { "background": "muted" }, "props": { "width": "narrow", "html": "<h2>Our history</h2><p>Moriah School was established in 1999 in Guntur by the late Mrs. Devakaruna Dasari. As a young girl she attended a school much like Moriah, and her vision was for underprivileged children to receive a quality education that leads to serving their neighbours.</p><p>Over the years Moriah has educated hundreds of students, with enrolment ranging from a few dozen to more than 400. Our location, uniform and staff have changed over time, but our commitment to quality education for every child has not. Through the COVID pandemic and difficult years, the school has continued its mission quietly and faithfully.</p><p>Many Moriah students have gone on to become teachers, nurses, software engineers, optometrists, pastors and professors — productive lives made possible, in part, by the generosity of our supporters.</p>" } },
+      { "id": "timeline", "type": "steps", "props": { "heading": "Milestones", "items": [ { "title": "1985", "text": "Moriah Home opens as a residential home for children in need." }, { "title": "1999", "text": "Moriah School is founded for Pre-KG to Class 10." }, { "title": "2018", "text": "Classrooms repainted; dance and arts programmes begin." }, { "title": "2022", "text": "The Early Childhood Education Center opens with eight classrooms." } ] } },
+      { "id": "cta", "type": "cta", "props": { "heading": "See Moriah for yourself", "text": "We would love to welcome you to our campus in Old Pattabhipuram, Guntur.", "primary": { "label": "Plan a visit", "href": "/contact" } } }
+    ],
+    "principal": [
+      { "id": "msg", "type": "imageText", "props": { "eyebrow": "From the Principal", "heading": "Welcome to Moriah School", "html": "<p>Dear parents and friends,</p><p>At Moriah, we believe that education is about far more than marks. It is about helping every child discover their gifts, grow in character and gain the confidence to make a difference in the world.</p><p>Our teachers know each student personally. We combine strong foundations in English, mathematics and science with art, dance, games and plenty of hands-on learning — because children learn best when they are curious, safe and happy.</p><p>Thank you for considering Moriah for your child. Our doors are always open: please visit us, meet our teachers and see our classrooms for yourself.</p><p><strong>The Principal</strong><br>Moriah School, Guntur</p>", "imageId": "@img:teacher-blackboard.jpg", "imagePosition": "right" } }
+    ],
+    "vision": [
+      { "id": "vm", "type": "cards", "props": { "heading": "Our vision & mission", "columns": 2, "items": [ { "title": "Vision", "text": "That every child — whatever their background — receives an education that brings out his or her best and nurtures character, curiosity and competence.", "icon": "star" }, { "title": "Mission", "text": "To provide a learning environment in which students are known and valued, and equipped not only for academic success but to grow into capable, compassionate adults committed to serving their neighbours.", "icon": "heart" } ] } },
+      { "id": "values", "type": "cards", "settings": { "background": "muted" }, "props": { "heading": "Our values", "columns": 4, "items": [ { "title": "Care", "text": "Every child is known, valued and safe.", "icon": "shield" }, { "title": "Curiosity", "text": "We ask questions and learn by doing.", "icon": "sun" }, { "title": "Integrity", "text": "We are honest, respectful and responsible.", "icon": "leaf" }, { "title": "Service", "text": "We use what we learn to serve others.", "icon": "users" } ] } },
+      { "id": "img", "type": "image", "props": { "imageId": "@img:we-are-moriah.jpg", "size": "wide", "caption": "We are Moriah." } }
+    ],
+    "academics": [
+      { "id": "intro", "type": "imageText", "props": { "eyebrow": "Academics", "heading": "Strong foundations, joyful learning", "html": "<p>Moriah follows the Andhra Pradesh State Board curriculum in English medium from Pre-KG to Class 10. Lessons build solid foundations in reading, writing and mathematics, and grow into science, social studies and languages in the higher classes.</p><p>Our teaching is increasingly hands-on and activity-based, in line with the National Education Policy 2020.</p>", "imageId": "@img:reading-corner.jpg", "imagePosition": "left" } },
+      { "id": "stages", "type": "cards", "settings": { "background": "muted" }, "props": { "heading": "Stages of learning", "columns": 3, "items": [ { "title": "Early years (Pre-KG – UKG)", "text": "Play-based learning in our Early Childhood Education Center: blocks, puzzles, music, pretend play, art and early literacy and numeracy.", "imageId": "@img:lkg-2025.jpg" }, { "title": "Primary (Classes 1 – 5)", "text": "Confident reading and writing in English and Telugu, number sense, environmental studies and plenty of activities.", "imageId": "@img:girl-slate.jpg" }, { "title": "High school (Classes 6 – 10)", "text": "Mathematics, sciences, social studies and languages, with careful preparation for the Class 10 State Board examinations.", "imageId": "@img:class-2025.jpg" } ] } },
+      { "id": "beyond", "type": "cards", "props": { "heading": "Beyond the textbook", "columns": 4, "items": [ { "title": "English programme", "text": "Phonics, reading and spoken English with support from mentor teachers.", "icon": "globe" }, { "title": "Science & STEM", "text": "Practical experiments, microscopes and simple robotics.", "icon": "flask" }, { "title": "Arts & dance", "text": "Drawing, painting, music and dance, including ballet workshops.", "icon": "music" }, { "title": "Games & sport", "text": "Outdoor games and sport that build teamwork.", "icon": "trophy" } ] } },
+      { "id": "g", "type": "galleryStrip", "props": { "layout": "grid", "imageIds": [ "@img:stem-kids.jpg", "@img:science-lab.jpg", "@img:robotics.jpg", "@img:writing.jpg" ] } }
+    ],
+    "admissions": [
+      { "id": "hero", "type": "hero", "props": { "variant": "split", "eyebrow": "Admissions 2027–28", "heading": "Join the Moriah family", "subheading": "Admissions are open for Pre-KG to Class 10. Fees are charged on a sliding scale, and financial aid is available for families who need it.", "imageId": "@img:kindergarten-girls.jpg", "primaryCta": { "label": "Send an enquiry", "href": "#enquire" }, "secondaryCta": { "label": "Admissions FAQs", "href": "/faqs" } } },
+      { "id": "steps", "type": "steps", "props": { "heading": "How to apply", "intro": "Our admissions process is simple and personal.", "items": [ { "title": "Enquire", "text": "Fill in the enquiry form below or visit the school office." }, { "title": "Visit", "text": "Tour the campus with your child and meet our teachers." }, { "title": "Interaction", "text": "A friendly, informal interaction to understand your child's needs." }, { "title": "Enrol", "text": "Submit the documents, agree the fee plan and welcome to Moriah!" } ] } },
+      { "id": "docs", "type": "richText", "settings": { "background": "muted" }, "props": { "width": "narrow", "html": "<h2>Documents required</h2><ul><li>Birth certificate of the child</li><li>Aadhaar card of the child and parent / guardian (if available)</li><li>Transfer certificate and previous report card (Class 1 and above)</li><li>Two recent passport-size photographs</li></ul><h2>Fees and financial aid</h2><p>Moriah charges tuition on a <strong>sliding-scale</strong> basis according to what each family can afford. Financial aid for qualified students is funded by our supporters, so that no child is turned away for lack of means. Please speak to the school office about your situation.</p>" } },
+      { "id": "enquire", "type": "enquiryForm", "settings": { "anchor": "enquire" }, "props": { "heading": "Admissions enquiry", "intro": "Tell us a little about your child and we will call you back within two working days." } }
+    ],
+    "facilities": [
+      { "id": "intro", "type": "richText", "props": { "width": "narrow", "html": "<p>Moriah's campus in Old Pattabhipuram, Guntur spreads across three buildings, with bright classrooms, an early childhood centre and spaces for science, art and play.</p>" } },
+      { "id": "fac", "type": "cards", "props": { "columns": 3, "items": [ { "title": "Bright classrooms", "text": "Freshly painted, airy classrooms with instructional murals that make learning fun.", "imageId": "@img:classroom.jpg" }, { "title": "Early Childhood Education Center", "text": "Eight classrooms equipped with blocks, puzzles, pretend kitchens, costumes, art and music corners.", "imageId": "@img:lkg-2025.jpg" }, { "title": "Science room", "text": "Microscopes and lab equipment for hands-on experiments and STEM activities.", "imageId": "@img:science-lab.jpg" }, { "title": "School transport", "text": "A school bus for students from the colonies we serve.", "imageId": "@img:school-bus.jpg" }, { "title": "Dining hall", "text": "A clean dining hall where children share meals together.", "imageId": "@img:dining-hall.jpg" }, { "title": "Office & staff room", "text": "A welcoming office where parents can meet teachers and staff.", "imageId": "@img:library-room.jpg" } ] } }
+    ],
+    "faculty": [
+      { "id": "intro", "type": "imageText", "props": { "eyebrow": "Our teachers", "heading": "Caring, committed and always learning", "html": "<p>Our teachers are the heart of Moriah. They know every child personally and work closely with families.</p><p>Moriah teachers take part in regular training with experienced mentor educators — including workshops on early childhood education, play-based learning and English teaching — so that our classrooms keep improving year after year.</p>", "imageId": "@img:staff-training.jpg", "imagePosition": "right" } },
+      { "id": "staff", "type": "staffGrid", "settings": { "background": "muted" }, "props": { "heading": "Meet our staff", "intro": "The school will add staff profiles here." } }
+    ],
+    "events": [
+      { "id": "up", "type": "eventsFeed", "props": { "heading": "Upcoming events", "limit": 20, "show": "upcoming" } },
+      { "id": "past", "type": "eventsFeed", "settings": { "background": "muted" }, "props": { "heading": "Past events", "limit": 12, "show": "past" } }
+    ],
+    "gallery": [
+      { "id": "albums", "type": "albumsFeed", "props": { "heading": "Photo albums", "limit": 24 } },
+      { "id": "best", "type": "galleryStrip", "settings": { "background": "muted" }, "props": { "heading": "Moments at Moriah", "layout": "masonry", "imageIds": [ "@img:dance-circle.jpg", "@img:classmates-group.jpg", "@img:boy-portrait.jpg", "@img:art-supplies.jpg", "@img:ballet-line.jpg", "@img:girls-smiling.jpg", "@img:friends-smiling.jpg", "@img:boy-slate.jpg" ] } }
+    ],
+    "news": [
+      { "id": "notices", "type": "noticesFeed", "props": { "heading": "Circulars & notices", "limit": 20 } },
+      { "id": "news", "type": "newsFeed", "settings": { "background": "muted" }, "props": { "heading": "News & stories", "limit": 12 } }
+    ],
+    "contact": [
+      { "id": "c", "type": "contactDetails", "props": { "heading": "Get in touch", "showMap": true } },
+      { "id": "f", "type": "enquiryForm", "props": { "heading": "Send us a message", "intro": "Questions about admissions, fees or visiting the school? We are happy to help." } }
+    ],
+    "careers": [
+      { "id": "intro", "type": "richText", "props": { "width": "narrow", "html": "<p>Do you love teaching and want to make a real difference to children's lives? Moriah is always glad to hear from caring, committed teachers and staff.</p>" } },
+      { "id": "jobs", "type": "careersFeed", "props": { "heading": "Open positions" } }
+    ],
+    "faqs": [
+      { "id": "faq", "type": "faq", "props": { "heading": "Frequently asked questions", "source": "faqs", "items": [] } },
+      { "id": "cta", "type": "cta", "props": { "heading": "Still have a question?", "text": "Our office is happy to help.", "primary": { "label": "Contact us", "href": "/contact" } } }
+    ]
+  },
+  "content": {
+    "notices": [
+      { "title": "Admissions open for 2027–28", "summary": "Admissions are open for Pre-KG to Class 10. Parents may collect forms from the school office or send an enquiry through this website.", "category": "Admissions", "pinned": true, "date": "+0" },
+      { "title": "Parent–teacher meeting", "summary": "A parent–teacher meeting will be held for all classes. Parents are requested to attend and collect progress reports.", "category": "Academics", "date": "-2" },
+      { "title": "Annual Day rehearsals", "summary": "Rehearsals for Annual Day performances begin next week after school hours.", "category": "Events", "date": "-6" }
+    ],
+    "events": [
+      { "title": "Children's Day celebrations", "summary": "Games, performances and treats for every class.", "date": "-4", "location": "School courtyard", "image": "dance-assembly.jpg" },
+      { "title": "Science exhibition", "summary": "Students from Classes 6–10 present their science projects to parents and guests.", "date": "+12", "location": "Moriah School", "image": "stem-kids.jpg", "bodyHtml": "<p>Our high school students will present working models and experiments. Parents and families are warmly invited.</p>" },
+      { "title": "Annual Day 2026", "summary": "An evening of dance, music and drama by Moriah students.", "date": "+30", "location": "Moriah School", "image": "ballet-line.jpg" },
+      { "title": "Sankranti holidays begin", "summary": "School closes for the Sankranti holidays.", "date": "+55" }
+    ],
+    "news": [
+      { "title": "Early Childhood Education Center equipped and open", "date": "2022-08-05", "image": "lkg-2025.jpg", "summary": "Eight classrooms full of blocks, puzzles, pretend kitchens, costumes and art corners — our youngest learners now learn through play.", "bodyHtml": "<p>Today if you visit the Early Childhood Education Center, you will see children playing in eight different rooms — building with many kinds of blocks, pretend cooking with pots and pans, setting tables, role-playing with costumes, painting and drawing.</p><p>This new approach is built on a simple idea: children learn best by playing and following their own curiosity, by solving real problems — how to balance and stack blocks, how to use a zipper, how to put together a puzzle — and by making mistakes and trying again.</p><p>Three visiting educators spent five days at Moriah preparing the classrooms and training our teachers, and weekly collaboration continues with our early childhood coordinator.</p>" },
+      { "title": "Enrolment reaches 250 students", "date": "2022-08-01", "image": "class-2025.jpg", "summary": "Moriah begins the school year with 250 students across three buildings.", "bodyHtml": "<p>Enrolment at Moriah School has reached 250 students. Classrooms are now spread across three buildings to accommodate the growing number of families choosing Moriah.</p>" },
+      { "title": "Teachers complete early childhood training", "date": "2022-05-30", "image": "staff-training.jpg", "summary": "Moriah teachers took part in a five-day workshop on play-based early childhood education.", "bodyHtml": "<p>Visiting educators worked alongside our teachers for five days, preparing classrooms and training staff in new, play-based teaching methods — with plenty of laughter and Telugu translation along the way.</p>" },
+      { "title": "Three weeks of ballet at Moriah", "date": "2018-05-28", "image": "dance-circle.jpg", "summary": "A visiting ballet teacher spent three weeks teaching dance to Moriah children.", "bodyHtml": "<p>Our children enjoyed three wonderful weeks of ballet classes with a visiting dance teacher. Students learned positions, stretches and short routines — and performed with great joy for the whole school.</p>" },
+      { "title": "A fresh coat of paint for our classrooms", "date": "2018-05-20", "image": "classroom.jpg", "summary": "Newly painted classrooms and murals give the school a bright new look.", "bodyHtml": "<p>Thanks to generous donors, classrooms and walls across the school were repainted, and instructional murals now brighten the corridors. Families tell us the cheerful new look is one of the reasons enrolment has grown.</p>" }
+    ],
+    "albums": [
+      { "title": "Dance & the arts", "date": "2018-05-28", "summary": "Ballet workshops and dance in the courtyard.", "images": [ "dance-circle.jpg", "dance-assembly.jpg", "ballet-line.jpg", "art-supplies.jpg" ] },
+      { "title": "Our classrooms", "date": "2025-12-29", "summary": "Moriah classes of 2025–26.", "images": [ "lkg-2025.jpg", "class-2025.jpg", "kindergarten-girls.jpg", "classmates-group.jpg", "reading-corner.jpg" ] },
+      { "title": "Science & discovery", "date": "2025-02-10", "summary": "Hands-on science and STEM.", "images": [ "stem-kids.jpg", "science-lab.jpg", "robotics.jpg", "writing.jpg" ] },
+      { "title": "Smiles of Moriah", "date": "2018-08-01", "summary": "Friends, fun and everyday moments.", "images": [ "friends-smiling.jpg", "girls-smiling.jpg", "boys-group.jpg", "girl-pigtails.jpg", "boy-portrait.jpg", "girl-slate.jpg", "boy-slate.jpg" ] }
+    ],
+    "faqs": [
+      { "title": "Which classes does Moriah School offer?", "summary": "Moriah offers Pre-KG, LKG and UKG in our Early Childhood Education Center, and Classes 1 to 10.", "category": "Admissions" },
+      { "title": "What is the medium of instruction?", "summary": "Moriah is an English-medium school following the Andhra Pradesh State Board curriculum. Telugu is taught as a language.", "category": "Academics" },
+      { "title": "How much are the fees?", "summary": "Fees are charged on a sliding scale according to what each family can afford, and financial aid is available for families in need. Please contact the school office to discuss your situation.", "category": "Admissions" },
+      { "title": "When can I apply?", "summary": "Admissions are open now for the 2027–28 school year. Send an enquiry through the Admissions page or visit the school office.", "category": "Admissions" },
+      { "title": "Is school transport available?", "summary": "Yes, the school bus serves several of the colonies around the school. Please ask the office about routes.", "category": "General" },
+      { "title": "Can we visit the school before applying?", "summary": "Of course — we encourage it. Contact us to arrange a visit during school hours.", "category": "General" }
+    ]
+  }
+}

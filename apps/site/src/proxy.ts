@@ -26,6 +26,6 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skip Next internals, static files and the health endpoint.
-  matcher: ["/((?!_next/|api/health|favicon.ico|robots.txt|sitemap.xml|.*\\.[a-z0-9]+$).*)"],
+  // Skip Next internals, static files and route handlers (api/*).
+  matcher: ["/((?!_next/|api/|favicon.ico|robots.txt|sitemap.xml|.*\\.[a-z0-9]+$).*)"],
 };

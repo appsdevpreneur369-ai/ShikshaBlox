@@ -223,7 +223,7 @@ public class PublicSiteService {
   }
 
   /** Adds publishable media to the map; identifiable media without consent is left out. */
-  private void addMedia(Set<UUID> ids, ObjectNode map, boolean enforceConsent) {
+  void addMedia(Set<UUID> ids, ObjectNode map, boolean enforceConsent) {
     for (UUID id : ids) {
       media
           .find(id)
