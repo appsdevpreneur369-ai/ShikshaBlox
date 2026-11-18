@@ -1,5 +1,5 @@
 import { timingSafeEqual } from "node:crypto";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
@@ -19,6 +19,11 @@ export async function POST(request: NextRequest) {
   const tags = Array.isArray(body?.tags)
     ? body.tags.filter((t): t is string => typeof t === "string" && /^host:[a-z0-9.-]{1,253}$/.test(t)).slice(0, 50)
     : [];
-  for (const tag of tags) revalidateTag(tag, { expire: 0 });
+  for (const tag of tags) {
+    revalidateTag(tag, { expire: 0 });
+    // Also drop every cached route of that school (and the fetches made while rendering them),
+    // so the very next visit renders fresh data instead of serving one stale render first.
+    revalidatePath(`/h/${tag.slice("host:".length)}`, "layout");
+  }
   return NextResponse.json({ revalidated: tags.length });
 }

@@ -457,6 +457,240 @@
         } ]
       }
     },
+    "/api/admin/v1/enquiries/{id}" : {
+      "put" : {
+        "tags" : [ "Enquiries" ],
+        "summary" : "Change status or notes",
+        "operationId" : "updateEnquiry",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Enquiry"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/content/{type}/{id}" : {
+      "get" : {
+        "tags" : [ "Content" ],
+        "summary" : "One item",
+        "operationId" : "getContent",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Item"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "Content" ],
+        "summary" : "Update an item",
+        "operationId" : "updateContent",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SaveRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Item"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "Content" ],
+        "summary" : "Delete an item",
+        "operationId" : "deleteContent",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/content/{type}/order" : {
+      "put" : {
+        "tags" : [ "Content" ],
+        "summary" : "Set the display order",
+        "operationId" : "reorderContent",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ReorderRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/public/v1/enquiries" : {
+      "post" : {
+        "tags" : [ "Enquiries" ],
+        "summary" : "Website enquiry form submission",
+        "operationId" : "submitEnquiry",
+        "parameters" : [ {
+          "name" : "host",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "X-Client-IP",
+          "in" : "header",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/JsonNode"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "202" : {
+            "description" : "Accepted",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "additionalProperties" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/platform/v1/organizations" : {
       "get" : {
         "tags" : [ "Platform" ],
@@ -1011,6 +1245,239 @@
         } ]
       }
     },
+    "/api/admin/v1/pages/{id}/submit" : {
+      "post" : {
+        "tags" : [ "Publishing" ],
+        "summary" : "Submit the draft for approval",
+        "operationId" : "submitPage",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NoteRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/pages/{id}/schedule" : {
+      "post" : {
+        "tags" : [ "Publishing" ],
+        "summary" : "Publish the draft at a future time",
+        "operationId" : "schedulePage",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ScheduleRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/pages/{id}/schedule/cancel" : {
+      "post" : {
+        "tags" : [ "Publishing" ],
+        "summary" : "Cancel a scheduled publish",
+        "operationId" : "cancelSchedule",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/pages/{id}/rollback" : {
+      "post" : {
+        "tags" : [ "Publishing" ],
+        "summary" : "Restore and publish an earlier revision",
+        "operationId" : "rollbackPage",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RollbackRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/pages/{id}/reject" : {
+      "post" : {
+        "tags" : [ "Publishing" ],
+        "summary" : "Send the draft back with a note",
+        "operationId" : "rejectPage",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/NoteRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
     "/api/admin/v1/pages/{id}/publish" : {
       "post" : {
         "tags" : [ "Website" ],
@@ -1050,6 +1517,48 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/PageDetail"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/pages/{id}/preview-token" : {
+      "post" : {
+        "tags" : [ "Publishing" ],
+        "summary" : "Short-lived link to preview the draft",
+        "operationId" : "previewToken",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        }, {
+          "name" : "lang",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "en"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "additionalProperties" : {
+                    "type" : "string"
+                  }
                 }
               }
             }
@@ -1191,6 +1700,197 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/MediaView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/disclosures/review" : {
+      "get" : {
+        "tags" : [ "Publishing" ],
+        "summary" : "When disclosures were last reviewed",
+        "operationId" : "disclosureReview",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "additionalProperties" : { }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "Publishing" ],
+        "summary" : "Mark disclosures as reviewed today",
+        "operationId" : "markDisclosureReviewed",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "additionalProperties" : { }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/content/{type}" : {
+      "get" : {
+        "tags" : [ "Content" ],
+        "summary" : "Items of a content type",
+        "operationId" : "listContent",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Item"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "Content" ],
+        "summary" : "Create an item (publishing needs publish rights)",
+        "operationId" : "createContent",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SaveRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Created",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Item"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/content/{type}/{id}/unpublish" : {
+      "post" : {
+        "tags" : [ "Content" ],
+        "summary" : "Unpublish an item",
+        "operationId" : "unpublishContent",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Item"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/content/{type}/{id}/publish" : {
+      "post" : {
+        "tags" : [ "Content" ],
+        "summary" : "Publish an item",
+        "operationId" : "publishContent",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Item"
                 }
               }
             }
@@ -1418,6 +2118,40 @@
         }
       }
     },
+    "/api/public/v1/site/preview" : {
+      "get" : {
+        "tags" : [ "Publishing" ],
+        "summary" : "Draft page for a valid preview token",
+        "operationId" : "publicPreview",
+        "parameters" : [ {
+          "name" : "host",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "token",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonNode"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/public/v1/site/paths" : {
       "get" : {
         "tags" : [ "Public site" ],
@@ -1469,6 +2203,105 @@
           "name" : "lang",
           "in" : "query",
           "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonNode"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/public/v1/site/feeds/{type}" : {
+      "get" : {
+        "tags" : [ "Public site" ],
+        "summary" : "Published items of a content type",
+        "operationId" : "publicFeed",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "host",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 20
+          }
+        }, {
+          "name" : "show",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "all"
+          }
+        }, {
+          "name" : "department",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/JsonNode"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/public/v1/site/feeds/{type}/{slug}" : {
+      "get" : {
+        "tags" : [ "Public site" ],
+        "summary" : "One published item (news, event, album)",
+        "operationId" : "publicFeedItem",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "slug",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "host",
+          "in" : "query",
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
@@ -1667,6 +2500,97 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/EntitlementsView"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/enquiries" : {
+      "get" : {
+        "tags" : [ "Enquiries" ],
+        "summary" : "Enquiry inbox",
+        "operationId" : "listEnquiries",
+        "parameters" : [ {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "q",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Enquiry"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/enquiries/counts" : {
+      "get" : {
+        "tags" : [ "Enquiries" ],
+        "summary" : "Enquiries per status",
+        "operationId" : "enquiryCounts",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "additionalProperties" : {
+                    "type" : "integer",
+                    "format" : "int64"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearer" : [ ]
+        } ]
+      }
+    },
+    "/api/admin/v1/content/types" : {
+      "get" : {
+        "tags" : [ "Content" ],
+        "summary" : "Content types and their fields",
+        "operationId" : "contentTypes",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TypeView"
+                  }
                 }
               }
             }
@@ -1996,6 +2920,124 @@
           }
         }
       },
+      "UpdateRequest" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "string"
+          },
+          "notes" : {
+            "type" : "string",
+            "maxLength" : 4000,
+            "minLength" : 0
+          }
+        }
+      },
+      "Enquiry" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "phone" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "gradeSought" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "sourcePage" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "notes" : {
+            "type" : "string"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "SaveRequest" : {
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "publish" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "data" ]
+      },
+      "Item" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "type" : {
+            "type" : "string"
+          },
+          "slug" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/JsonNode"
+          },
+          "sortOrder" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "itemDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "publishedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "updatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "ReorderRequest" : {
+        "type" : "object",
+        "properties" : {
+          "ids" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            },
+            "maxItems" : 500,
+            "minItems" : 0
+          }
+        },
+        "required" : [ "ids" ]
+      },
       "CreateOrganizationRequest" : {
         "type" : "object",
         "properties" : {
@@ -2219,6 +3261,36 @@
           }
         },
         "required" : [ "slug", "title" ]
+      },
+      "NoteRequest" : {
+        "type" : "object",
+        "properties" : {
+          "note" : {
+            "type" : "string",
+            "maxLength" : 500,
+            "minLength" : 0
+          }
+        }
+      },
+      "ScheduleRequest" : {
+        "type" : "object",
+        "properties" : {
+          "at" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        },
+        "required" : [ "at" ]
+      },
+      "RollbackRequest" : {
+        "type" : "object",
+        "properties" : {
+          "revisionId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "required" : [ "revisionId" ]
       },
       "PublishRequest" : {
         "type" : "object",
@@ -2686,6 +3758,47 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }
+      },
+      "FieldView" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "kind" : {
+            "type" : "string"
+          },
+          "required" : {
+            "type" : "boolean"
+          },
+          "max" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "label" : {
+            "type" : "string"
+          }
+        }
+      },
+      "TypeView" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string"
+          },
+          "label" : {
+            "type" : "string"
+          },
+          "fields" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/FieldView"
+            }
+          },
+          "slugged" : {
+            "type" : "boolean"
           }
         }
       },

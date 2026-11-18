@@ -71,6 +71,8 @@ springdoc:
 shikshablox:
   # Base domain for tenant subdomains, e.g. moriah.shikshablox.localhost
   base-domain: ${SB_BASE_DOMAIN:shikshablox.localhost}
+  # Studio address used in notification emails (enquiries, approvals, reminders)
+  admin-base-url: ${ADMIN_BASE_URL:http://admin.shikshablox.localhost}
   security:
     # Development defaults only; staging/prod refuse to start with "dev-only" secrets.
     jwt-secret: ${JWT_SECRET:dev-only-change-me-dev-only-change-me-dev-only-change-me}

@@ -101,6 +101,9 @@ services:
       SPRING_MAIL_PORT: 1025
       JWT_SECRET: ${JWT_SECRET:-dev-only-change-me-dev-only-change-me-dev-only-change-me}
       SB_DATA_KEY: ${SB_DATA_KEY:-dev-only-data-key-change-me}
+      SITE_REVALIDATE_URL: ${SITE_REVALIDATE_URL:-http://site:3000/api/revalidate}
+      SITE_REVALIDATE_SECRET: ${SITE_REVALIDATE_SECRET:-dev-revalidate-secret-0123456789}
+      ADMIN_BASE_URL: http://admin.${SB_BASE_DOMAIN:-shikshablox.localhost}${SB_HTTP_PORT_SUFFIX:-}
       # Local demo data (fictional schools and *.test users)
       SEED_ENABLED: ${SEED_ENABLED:-true}
       SEED_PASSWORD: ${SEED_PASSWORD:-Shiksha@Dev2026}
@@ -118,6 +121,7 @@ services:
       PORT: 3000
       SB_BASE_DOMAIN: ${SB_BASE_DOMAIN:-shikshablox.localhost}
       API_INTERNAL_URL: http://backend:8080
+      SITE_REVALIDATE_SECRET: ${SITE_REVALIDATE_SECRET:-dev-revalidate-secret-0123456789}
     mem_limit: 512m
 
   admin:

@@ -90,16 +90,26 @@ class WebsiteAdminController {
   private final PageService pages;
   private final NavigationService navigation;
   private final OnboardingService onboarding;
+  private final org.springframework.context.ApplicationEventPublisher events;
 
   WebsiteAdminController(
       SiteService sites,
       PageService pages,
       NavigationService navigation,
-      OnboardingService onboarding) {
+      OnboardingService onboarding,
+      org.springframework.context.ApplicationEventPublisher events) {
     this.sites = sites;
     this.pages = pages;
     this.navigation = navigation;
     this.onboarding = onboarding;
+    this.events = events;
+  }
+
+  /** Design and profile appear on every page, so refresh the whole public site. */
+  private void siteChanged() {
+    events.publishEvent(
+        new PageService.PagePublished(
+            com.shikshablox.platform.tenancy.TenantContext.requireOrganizationId(), null, null));
   }
 
   private static boolean canUseRawHtml() {
@@ -123,14 +133,18 @@ class WebsiteAdminController {
   @PreAuthorize("hasAuthority('school:manage')")
   @Operation(operationId = "updateSiteDesign", summary = "Theme, colours, fonts and logo")
   SiteView design(@Valid @RequestBody DesignRequest req) {
-    return SiteView.of(sites.updateDesign(req.theme(), req.brand(), req.logoMediaId()));
+    SiteView v = SiteView.of(sites.updateDesign(req.theme(), req.brand(), req.logoMediaId()));
+    siteChanged();
+    return v;
   }
 
   @PutMapping("/site/profile")
   @PreAuthorize("hasAuthority('school:manage')")
   @Operation(operationId = "updateSiteProfile", summary = "School details shown on the website")
   SiteView profile(@Valid @RequestBody ProfileRequest req) {
-    return SiteView.of(sites.updateProfile(req.profile()));
+    SiteView v = SiteView.of(sites.updateProfile(req.profile()));
+    siteChanged();
+    return v;
   }
 
   @PutMapping("/site/languages")
@@ -242,7 +256,9 @@ class WebsiteAdminController {
   @PreAuthorize("hasAuthority('content:publish')")
   @Operation(operationId = "saveMenu", summary = "Save a menu (goes live immediately)")
   JsonNode saveMenu(@PathVariable String location, @RequestBody JsonNode items) {
-    return navigation.saveMenu(location, items);
+    JsonNode out = navigation.saveMenu(location, items);
+    siteChanged();
+    return out;
   }
 
   @GetMapping("/reusable-blocks")

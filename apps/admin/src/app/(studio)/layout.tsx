@@ -4,10 +4,16 @@ import { LogOut } from "lucide-react";
 import { currentUser } from "@/lib/session";
 import { StudioNav, type NavItem } from "@/components/studio-nav";
 import { logout } from "../login/actions";
+import { ToastProvider } from "@/components/kit";
 
 function navItems(permissions: string[], hasSchool: boolean): NavItem[] {
   const items: NavItem[] = [{ href: "/dashboard", label: "Dashboard" }];
   if (hasSchool) {
+    items.push({ href: "/pages", label: "Pages" });
+    items.push({ href: "/content", label: "Content" });
+    items.push({ href: "/media", label: "Media" });
+    if (permissions.includes("enquiry:manage")) items.push({ href: "/enquiries", label: "Enquiries" });
+    if (permissions.includes("school:manage")) items.push({ href: "/design", label: "Design & profile" });
     items.push({ href: "/plan", label: "Plan & usage" });
     items.push({ href: "/settings", label: "Settings" });
     if (permissions.includes("audit:view")) items.push({ href: "/audit", label: "Audit log" });
@@ -77,7 +83,9 @@ export default async function StudioLayout({ children }: { children: ReactNode }
         </div>
       </header>
       <StudioNav items={navItems(me.permissions ?? [], Boolean(me.activeOrganization))} />
-      <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
+      <main className="mx-auto max-w-6xl px-4 py-8">
+        <ToastProvider>{children}</ToastProvider>
+      </main>
     </div>
   );
 }

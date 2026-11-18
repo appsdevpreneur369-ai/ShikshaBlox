@@ -31,7 +31,11 @@ class SiteRevalidator {
   private static final Logger log = LoggerFactory.getLogger(SiteRevalidator.class);
 
   private final HttpClient http =
-      HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(3)).build();
+      // HTTP/1.1: Node servers drop the h2c upgrade the JDK client attempts by default.
+      HttpClient.newBuilder()
+          .version(HttpClient.Version.HTTP_1_1)
+          .connectTimeout(Duration.ofSeconds(3))
+          .build();
   private final JdbcClient jdbc;
   private final OrganizationService organizations;
   private final ObjectMapper json;

@@ -81,3 +81,11 @@ export async function getFeedItem(
     host,
   );
 }
+
+/** A draft page for a signed preview token (never cached). */
+export async function getPreview(host: string, token: string): Promise<PublicPage | null> {
+  const q = new URLSearchParams({ host, token });
+  const res = await fetch(`${API}/api/public/v1/site/preview?${q}`, { cache: "no-store" });
+  if (!res.ok) return null;
+  return (await res.json()) as PublicPage;
+}

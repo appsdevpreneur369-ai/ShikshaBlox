@@ -261,12 +261,12 @@ public class PublishingService {
         Base64.getUrlEncoder()
             .withoutPadding()
             .encodeToString(payload.getBytes(StandardCharsets.UTF_8));
-    return p64 + "." + sign(p64);
+    return p64 + "~" + sign(p64);
   }
 
   /** The draft page for a valid preview token, shaped like the public page response. */
   Optional<ObjectNode> preview(String host, String token) {
-    String[] parts = token == null ? new String[0] : token.split("\\.");
+    String[] parts = token == null ? new String[0] : token.split("~");
     if (parts.length != 2
         || !MessageDigest.isEqual(
             sign(parts[0]).getBytes(StandardCharsets.UTF_8),

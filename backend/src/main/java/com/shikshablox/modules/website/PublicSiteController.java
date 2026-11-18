@@ -88,7 +88,9 @@ class PublicSiteController {
 
   private static ResponseEntity<JsonNode> cached(JsonNode body) {
     return ResponseEntity.ok()
-        .cacheControl(CacheControl.maxAge(Duration.ofSeconds(30)).cachePublic())
+        // The site's ISR cache (revalidated on publish) is the cache; HTTP caching here would
+        // serve stale JSON to a fresh render right after publishing.
+        .cacheControl(CacheControl.noCache())
         .body(body);
   }
 }

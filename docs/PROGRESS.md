@@ -1,28 +1,39 @@
 # ShikshaBlox M01 — Progress & resume point
 
-**Saved 2026-11-17 at user request (power outage). Resume here when the user says "resume".**
+**Updated 2026-11-18 (evening before the Moriah demo on 2026-11-19).**
 
-## Done and pushed (GitHub appsdevpreneur369-ai/ShikshaBlox)
-- `main`: M0 dd1660f (scaffold), M1a d03e3a2 (tenancy, RLS, auth: password/email OTP/TOTP, JWT+rotating refresh, roles, admin BFF login, seed), M1b 82596d1 (plans Web Free/Pro + entitlements, config hierarchy, append-only audit, media pipeline with WebP variants via cwebp + private originals, consent registry, notifications, studio Plan/Settings/Audit pages).
-- Branch `wip/m2-cms` (pushed): M2 backend done, 50/50 backend tests green:
-  - `packages/blocks/src/index.ts`: 24 block types (hero, richText, imageText, image, galleryStrip, cards, cta, stats, testimonials, steps, faq, map, video, downloads, contactDetails, noticesFeed, newsFeed, eventsFeed, albumsFeed, staffGrid, careersFeed, enquiryForm, customHtml, reusable); `pnpm --filter @shikshablox/blocks gen:schema` writes `backend/src/main/resources/schemas/page-document.schema.json`.
-  - Migration `V2026_11_17_0004__website_cms.sql` (site, page, page_content per language, page_revision, menu, reusable_block; RLS).
-  - `modules/website`: DocumentValidator (networknt 1.5.9 + OWASP sanitizer), SiteService, SiteTemplates (14 standard pages + default menus), PageService (custom_pages UsageMeter), NavigationService, OnboardingService, PublicSiteService/Controller (`/api/public/v1/site`, `/site/page`, `/site/paths`), SiteRevalidator (POST to SITE_REVALIDATE_URL with X-Revalidate-Secret, tags `host:<host>`), WebsiteAdminController (`/api/admin/v1/site|pages|menus|reusable-blocks`), WebsiteIT.
+## Done (pushed to GitHub appsdevpreneur369-ai/ShikshaBlox, `main`)
+- M0 scaffold, M1a tenancy/RLS/auth, M1b entitlements/config/audit/media/consent (see git history).
+- **M2 CMS core:** block schema (24 blocks), sites/themes/menus/pages/revisions, onboarding with 14 standard pages;
+  `apps/site` renderer (themes via CSS tokens, next/font set, header with dropdowns + mobile menu, footer credits
+  aurora-blossom.com + ShikshaBlox badge, CSS scroll reveal, reduced motion, `<img srcset>` variants, on-demand
+  revalidation `POST /api/revalidate` — revalidates tag + school path tree); Studio: Pages list, block editor
+  (schema-driven forms, rich text, media picker, reorder/duplicate/delete, section style), Media library, Design & profile.
+- **M3 content types** (`content_item`, one validated JSON store): notices, news, events, albums, staff, FAQs, careers,
+  disclosures; public feeds `/api/public/v1/site/feeds/{type}` (+ detail `/{slug}` for news/events/albums);
+  Studio Content manager.
+- **M4:** enquiry form → `/api/public/v1/enquiries` (rate limits, honeypot, consent), email alert to school admins,
+  `EnquiryReceived` event, Studio inbox (status + notes); disclosures type + "last reviewed" + daily reminder job.
+- **M5:** submit for review / request changes / approve & publish, scheduled publishing (minute job), rollback to a
+  revision, signed 2-hour draft preview links (`/preview/<token>`, separator `~`).
+- **Moriah seed** (`MoriahSiteSeeder`, `seed/moriah/site.json` + 32 curated photos): runs once when Moriah isn't
+  onboarded. Demo runbook + content-to-confirm list: `docs/DEMO-MORIAH.md`.
 
-## Next steps (M2 remainder), in order
-1. `apps/site` renderer: fetch site+page with tags `host:<host>`; themes classic/modern/playful via CSS vars + data-theme; next/font set (Inter, Poppins, Merriweather, Playfair Display, Nunito, Lora, Baloo 2, preload false); header w/ dropdowns + mobile nav, footer ("© {year} school" + "aurora-blossom.com" credit always; ShikshaBlox badge unless showBadge=false); block renderers with rounded corners, hover lift/zoom, CSS scroll reveal, prefers-reduced-motion; `<img srcset>` from media map (no Next optimizer); `app/api/revalidate/route.ts` using `revalidateTag(tag, { expire: 0 })` (Next 16 signature needs 2nd arg); proxy matcher must exclude `api/`; CSP allowing media host + youtube-nocookie/vimeo/google maps.
-2. Admin CMS UI: onboarding wizard, pages list, block editor (generic field-spec forms, @dnd-kit ordering, TipTap rich text), menu builder, theme & brand page, media library.
-3. Moriah seed: curated best images from `old legacy Site Content/Images` copied into backend seed resources; restructure content into the 14 pages (no individuals' personal contacts/staff names; identifiable children photos need consent record — flag "migrated, school to confirm"). Moriah = WEB_PRO.
-4. Compose: add SITE_REVALIDATE_URL/SECRET to backend and site; then E2E; merge wip branch to main as "M2"; then M3..M7, then staging.
+## Tests
+- Backend `mvnw verify`: 50/50 green (no new backend ITs yet for content/enquiry/publishing — covered by E2E).
+- E2E `e2e/tests/cms.spec.ts` (desktop): 4/4 green against the local dev stack.
 
-## Staging (see shikshablox-staging)
-GCP project `project-87cd233e-951b-43e4-886` (APIs run/artifactregistry/secretmanager/iam already enabled). Waiting on user: Supabase `STAGING_DB_URL` in `.env` (not yet provided as of save).
+## Next
+1. Backend ITs for ContentService / EnquiryService / PublishingService (RLS, validation, workflow).
+2. Menu builder UI; staff photos consent UX; TipTap if richer editing is needed.
+3. M6 SEO/i18n/a11y (sitemap.xml, robots, structured data, hreflang, Lighthouse), M7 domains/export/hardening.
+4. Staging (GCP Cloud Run + Supabase) — waiting on `STAGING_DB_URL` from the user.
 
 ## Gotchas
-- Bash heredocs with apostrophes break in Git Bash: use Write tool / python for files.
-- Windows Python/Node don't resolve *.localhost: patch getaddrinfo to 127.0.0.1 (scratchpad media_check.py pattern); curl works.
-- Spotless rewraps Java after edits — re-read before string replacements; run `mvnw -q spotless:apply` before verify. Maven: `MAVEN_OPTS="-Xmx768m -XX:+UseSerialGC"`, `-DargLine="-Xmx512m -XX:+UseSerialGC"`; build Docker images one at a time.
-- Editing an already-applied Flyway migration locally requires removing volume `shikshablox_pgdata` (dev data only).
-- `TenantContext` must be opened before a transaction (throws inside tx). FORCE RLS binds the owner too.
-
-Related: m01-decisions, shikshablox-staging
+- Node/Python on Windows don't resolve `*.localhost` (use a browser tab in Playwright, or curl).
+- JDK HttpClient must use HTTP/1.1 to call Next (h2c upgrade is dropped).
+- Public JSON must not carry HTTP cache headers (ISR is the cache).
+- Tailwind v4: custom component CSS must live in `@layer components`, or it overrides utilities.
+- Git Bash rewrites `/path` args for node: prefix `MSYS_NO_PATHCONV=1`.
+- Sign-in is rate limited (in-memory): restart the API to clear during testing.
+- Spotless rewraps Java; Maven `MAVEN_OPTS="-Xmx768m -XX:+UseSerialGC"`.
