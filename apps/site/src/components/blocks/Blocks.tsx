@@ -114,13 +114,13 @@ function Hero({ b, ctx }: { b: BlockOf<"hero">; ctx: Ctx }) {
           </div>
           <div className="relative">
             <div className="absolute -inset-3 rotate-2 rounded-[calc(var(--sb-radius)*1.6)] bg-accent/30" />
-            <div className="sb-zoom relative overflow-hidden rounded-[calc(var(--sb-radius)*1.5)] shadow-2xl">
+            <div className="sb-zoom relative mx-auto w-fit max-w-full overflow-hidden rounded-[calc(var(--sb-radius)*1.5)] shadow-2xl">
               <Img
                 id={p.imageId}
                 media={ctx.media}
                 priority={ctx.first}
                 sizes="(min-width: 768px) 50vw, 100vw"
-                className="aspect-[4/3] w-full object-cover"
+                className="block h-auto w-auto max-w-full max-h-[min(34rem,80vh)]"
               />
             </div>
           </div>
@@ -164,8 +164,8 @@ function ImageText({ b, ctx }: { b: BlockOf<"imageText">; ctx: Ctx }) {
       <div className="sb-container grid items-center gap-10 md:grid-cols-2 md:gap-16">
         {img && (
           <div className={`sb-reveal relative ${p.imagePosition === "right" ? "md:order-2" : ""}`}>
-            <div className="sb-zoom overflow-hidden rounded-[calc(var(--sb-radius)*1.4)] shadow-xl">
-              <Img id={p.imageId} media={ctx.media} sizes="(min-width: 768px) 50vw, 100vw" className="aspect-[4/3] w-full object-cover" />
+            <div className="sb-zoom mx-auto w-fit max-w-full overflow-hidden rounded-[calc(var(--sb-radius)*1.4)] shadow-xl">
+              <Img id={p.imageId} media={ctx.media} sizes="(min-width: 768px) 50vw, 100vw" className="block h-auto w-auto max-w-full max-h-[min(34rem,80vh)]" />
             </div>
             <div
               className={`absolute -bottom-4 ${p.imagePosition === "right" ? "-left-4" : "-right-4"} -z-10 h-28 w-28 rounded-[var(--sb-radius)] bg-accent/40`}
@@ -194,7 +194,7 @@ function ImageBlock({ b, ctx }: { b: BlockOf<"image">; ctx: Ctx }) {
     <Section block={b}>
       <figure className={`sb-container ${width} sb-reveal`}>
         <div className={`sb-zoom overflow-hidden ${p.size === "full" ? "" : "rounded-[calc(var(--sb-radius)*1.4)] shadow-lg"}`}>
-          <Img id={p.imageId} media={ctx.media} className="w-full object-cover" />
+          <Img id={p.imageId} media={ctx.media} className="block h-auto w-full" />
         </div>
         {(p.caption || ctx.media[p.imageId]?.caption) && (
           <figcaption className="sb-muted mt-3 text-center text-sm">{p.caption || ctx.media[p.imageId]?.caption}</figcaption>
@@ -229,7 +229,7 @@ function GalleryStrip({ b, ctx }: { b: BlockOf<"galleryStrip">; ctx: Ctx }) {
                   i === 0 && ids.length > 4 ? "col-span-2 row-span-2" : ""
                 }`}
               >
-                <Img id={id} media={ctx.media} sizes="(min-width: 1024px) 25vw, 50vw" className="h-full w-full object-cover aspect-square" />
+                <Img id={id} media={ctx.media} sizes="(min-width: 1024px) 25vw, 50vw" className="aspect-[4/3] h-full w-full bg-primary-soft object-contain" />
               </figure>
             ))}
           </div>
@@ -258,7 +258,7 @@ function Cards({ b, ctx }: { b: BlockOf<"cards">; ctx: Ctx }) {
               <>
                 {hasImg && (
                   <div className="sb-zoom">
-                    <Img id={it.imageId} media={ctx.media} sizes="(min-width: 1024px) 33vw, 100vw" className="aspect-[16/10] w-full object-cover" />
+                    <Img id={it.imageId} media={ctx.media} sizes="(min-width: 1024px) 33vw, 100vw" className="aspect-[4/3] w-full bg-primary-soft object-contain" />
                   </div>
                 )}
                 <div className="flex flex-1 flex-col p-6">

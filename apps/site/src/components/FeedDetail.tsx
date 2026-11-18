@@ -51,7 +51,7 @@ export function FeedDetail({ kind, item, media }: { kind: FeedKind; item: FeedIt
         <div className="sb-container max-w-4xl">
           {kind !== "albums" && item.imageId && media[item.imageId]?.src && (
             <div className="sb-reveal mb-10 overflow-hidden rounded-[calc(var(--sb-radius)*1.4)] shadow-xl">
-              <Img id={item.imageId} media={media} priority className="w-full object-cover" />
+              <Img id={item.imageId} media={media} priority className="block h-auto w-full" />
             </div>
           )}
           {item.summary && kind === "albums" && <p className="sb-muted mb-8 text-lg">{item.summary}</p>}

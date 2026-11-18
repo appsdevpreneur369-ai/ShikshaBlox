@@ -20,18 +20,22 @@ const sizes = [
 ];
 
 const problems = [];
+// AUDIT_HOST: test a local build that serves this school's host (sent as X-Forwarded-Host).
+const HOST = process.env.AUDIT_HOST;
+const hdrs = HOST ? { "x-forwarded-host": HOST } : {};
+const local = (u) => (HOST ? u.replace("https://" + HOST, base) : u);
 const bad = (m) => problems.push(m);
 
-const sitemap = await (await fetch(base + "/sitemap.xml")).text();
-const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+const sitemap = await (await fetch(base + "/sitemap.xml", { headers: hdrs })).text();
+const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => local(m[1]));
 console.log(`sitemap: ${urls.length} urls`);
-const robots = await (await fetch(base + "/robots.txt")).text();
+const robots = await (await fetch(base + "/robots.txt", { headers: hdrs })).text();
 if (!/Sitemap:/.test(robots)) bad("robots.txt has no Sitemap line");
 
 // Every internal link on every page resolves.
 const browser = await chromium.launch();
 {
-  const ctx = await browser.newContext();
+  const ctx = await browser.newContext({ extraHTTPHeaders: hdrs });
   const page = await ctx.newPage();
   page.setDefaultNavigationTimeout(120000);
   const links = new Set();
@@ -43,7 +47,7 @@ const browser = await chromium.launch();
     }
   }
   for (const l of links) {
-    const r = await fetch(l, { redirect: "manual" });
+    const r = await fetch(l, { redirect: "manual", headers: hdrs });
     if (r.status >= 400) bad(`broken link ${new URL(l).pathname}: HTTP ${r.status}`);
   }
   console.log(`checked ${links.size} internal links`);
@@ -52,7 +56,7 @@ const browser = await chromium.launch();
 
 for (const s of sizes) {
   const { name, defaultBrowserType, ...opts } = s;
-  const ctx = await browser.newContext({ ...opts, reducedMotion: "reduce" });
+  const ctx = await browser.newContext({ ...opts, reducedMotion: "reduce", extraHTTPHeaders: hdrs });
   const page = await ctx.newPage();
   page.setDefaultTimeout(90000);
   page.setDefaultNavigationTimeout(120000);
@@ -73,6 +77,11 @@ for (const s of sizes) {
       continue;
     }
     if (!res || res.status() !== 200) bad(`${name} ${path}: HTTP ${res?.status()}`);
+    await page.evaluate(async () => {
+      for (let y = 0; y < document.documentElement.scrollHeight; y += 600) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 60)); }
+      window.scrollTo(0, 0);
+    });
+    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     const r = await page.evaluate(() => {
       const doc = document.documentElement;
       const wide = [...document.querySelectorAll("body *")]
@@ -106,7 +115,22 @@ for (const s of sizes) {
         const expected = (b.width * hero.naturalHeight) / hero.naturalWidth;
         heroCrop = { fit, ratio: b.height / expected };
       }
+      // Any image shown cropped (object-fit cover/fill with a box whose shape differs from the photo).
+      const cropped = [...document.images]
+        .filter((im) => {
+          if (!im.naturalWidth || !im.offsetParent) return false;
+          if (im.closest(".sb-hero-full") && window.innerWidth >= 1024) return false; // desktop banner background
+          const b = im.getBoundingClientRect();
+          if (b.width < 40 || b.height < 40) return false;
+          const fit = getComputedStyle(im).objectFit;
+          if (fit === "contain" || fit === "scale-down") return false;
+          const boxRatio = b.width / b.height, imgRatio = im.naturalWidth / im.naturalHeight;
+          return Math.abs(boxRatio / imgRatio - 1) > 0.03;
+        })
+        .slice(0, 3)
+        .map((im) => (im.alt || im.src.split("/").slice(-2).join("/")).slice(0, 40));
       return {
+        cropped,
         overflow: Math.max(doc.scrollWidth - window.innerWidth, window.innerWidth - Math.round(window.visualViewport.width)),
         wide,
         tall: doc.scrollHeight > window.innerHeight + 50,
@@ -126,6 +150,7 @@ for (const s of sizes) {
     });
     if (r.overflow > 1) bad(`${name} ${path}: horizontal overflow ${r.overflow}px ${r.wide.join(", ")}`);
     if (r.tiny) bad(`${name} ${path}: ${r.tiny} text elements under 12px`);
+    if (r.cropped.length) bad(`${name} ${path}: cropped images: ${r.cropped.join(" | ")}`);
     if (r.brokenImgs.length) bad(`${name} ${path}: broken images ${r.brokenImgs.join(" ")}`);
     if (r.smallTargets.length) bad(`${name} ${path}: small tap targets: ${r.smallTargets.join(" | ")}`);
     if (r.bodyOverflow === "hidden") bad(`${name} ${path}: page scroll locked`);
@@ -218,7 +243,7 @@ for (const s of sizes) {
   } catch (e) {
     bad(`${name}: navigation — ${e.message.split("\n")[0]}`);
   }
-  const uniq = [...new Set(errors)].filter((e) => !/favicon/.test(e));
+  const uniq = [...new Set(errors)].filter((e) => !/favicon|maps.googleapis.com|www.google.com|net::ERR_FAILED/.test(e)); // third-party map iframe noise
   if (uniq.length) bad(`${name}: console errors: ${uniq.slice(0, 3).join(" || ")}`);
   await ctx.close();
 }

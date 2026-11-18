@@ -105,7 +105,7 @@ export async function NewsFeed({ host, heading, limit }: { host: string; heading
             <Link key={n.id} href={`/news/${n.slug}`} className="sb-card sb-lift sb-reveal sb-focus flex flex-col">
               <div className="sb-zoom bg-primary-soft">
                 {n.imageId && media[n.imageId]?.src ? (
-                  <Img id={n.imageId} media={media} sizes="(min-width: 1024px) 33vw, 100vw" className="aspect-[16/10] w-full object-cover" />
+                  <Img id={n.imageId} media={media} sizes="(min-width: 1024px) 33vw, 100vw" className="aspect-[16/10] w-full bg-primary-soft object-contain" />
                 ) : (
                   <div className="aspect-[16/10]" />
                 )}
@@ -150,7 +150,7 @@ export async function EventsFeed({
               <Link href={`/events/${e.slug}`} className="sb-card sb-lift sb-reveal sb-focus flex h-full flex-col">
                 {e.imageId && media[e.imageId]?.src && (
                   <div className="sb-zoom">
-                    <Img id={e.imageId} media={media} sizes="(min-width: 768px) 50vw, 100vw" className="aspect-[16/9] w-full object-cover" />
+                    <Img id={e.imageId} media={media} sizes="(min-width: 768px) 50vw, 100vw" className="aspect-[16/9] w-full bg-primary-soft object-contain" />
                   </div>
                 )}
                 <div className="flex flex-1 gap-4 p-6">
@@ -185,7 +185,7 @@ export async function AlbumsFeed({ host, heading, limit }: { host: string; headi
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((a) => (
             <Link key={a.id} href={`/gallery/${a.slug}`} className="sb-zoom sb-reveal sb-focus group relative block overflow-hidden rounded-[calc(var(--sb-radius)*1.3)] shadow-md">
-              <Img id={a.imageId} media={media} sizes="(min-width: 1024px) 33vw, 50vw" className="aspect-[4/3] w-full object-cover" />
+              <Img id={a.imageId} media={media} sizes="(min-width: 1024px) 33vw, 50vw" className="aspect-[4/3] w-full bg-primary-soft object-contain" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                 <h3 className="text-xl font-bold">{a.title}</h3>
@@ -222,9 +222,9 @@ export async function StaffGrid({
         <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
           {items.map((s) => (
             <div key={s.id} className="sb-card sb-lift sb-reveal p-5 text-center">
-              <div className="sb-zoom mx-auto h-28 w-28 overflow-hidden rounded-full bg-primary-soft ring-4 ring-primary-soft">
+              <div className="sb-zoom mx-auto aspect-[4/5] w-full max-w-40 overflow-hidden rounded-[var(--sb-radius)] bg-primary-soft">
                 {s.imageId && media[s.imageId]?.src ? (
-                  <Img id={s.imageId} media={media} sizes="112px" className="h-full w-full object-cover" />
+                  <Img id={s.imageId} media={media} sizes="160px" className="h-full w-full object-contain" />
                 ) : (
                   <span className="font-heading flex h-full w-full items-center justify-center text-3xl font-bold text-primary">
                     {s.title

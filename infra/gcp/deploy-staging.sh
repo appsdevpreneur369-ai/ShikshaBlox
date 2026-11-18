@@ -21,12 +21,13 @@ ADMIN_URL="https://shikshablox-studio-$N.$R.run.app"
 SITE_URL="https://$SITE_HOST"
 JDBC="jdbc:postgresql:///shikshablox?cloudSqlInstance=$SQL&socketFactory=com.google.cloud.sql.postgres.SocketFactory&sslmode=disable"
 
+# API: one instance and a small pool fit the db-f1-micro connection limit (~25).
 echo "== API"
 gcloud run deploy shikshablox-api --project "$P" --region "$R" --image "$IMG/api:$TAG" \
   --service-account "$API_SA" --allow-unauthenticated --port 8080 \
-  --cpu 1 --memory 1Gi --min-instances 1 --max-instances 3 --no-cpu-throttling \
+  --cpu 1 --memory 1Gi --min-instances 1 --max-instances 1 --no-cpu-throttling \
   --add-cloudsql-instances "$SQL" \
-  --set-env-vars "^@^SPRING_PROFILES_ACTIVE=staging,docker@DB_URL=$JDBC@DB_APP_USER=sb_app@DB_OWNER_USER=sb_owner@DB_POOL_SIZE=8\
+  --set-env-vars "^@^SPRING_PROFILES_ACTIVE=staging,docker@DB_URL=$JDBC@DB_APP_USER=sb_app@DB_OWNER_USER=sb_owner@DB_POOL_SIZE=4\
 @STORAGE_PROVIDER=gcs@S3_PUBLIC_BUCKET=sb-stg-$N-public@S3_PRIVATE_BUCKET=sb-stg-$N-private\
 @MEDIA_PUBLIC_BASE_URL=https://storage.googleapis.com/sb-stg-$N-public\
 @SITE_REVALIDATE_URL=$SITE_URL/api/revalidate@ADMIN_BASE_URL=$ADMIN_URL\
