@@ -134,7 +134,7 @@ function Hero({ b, ctx }: { b: BlockOf<"hero">; ctx: Ctx }) {
       <div className="sb-container relative py-20 text-center md:py-28">
         {p.eyebrow && <p className="mb-4 text-sm font-bold tracking-[0.14em] text-accent uppercase">{p.eyebrow}</p>}
         <Tag className="mx-auto max-w-4xl text-4xl leading-[1.1] font-extrabold sm:text-5xl">{p.heading}</Tag>
-        {p.subheading && <p className="mx-auto mt-5 max-w-2xl text-lg opacity-90 md:text-xl">{p.subheading}</p>}
+        {p.subheading && <p className="mx-auto mt-5 max-w-2xl text-lg md:text-xl">{p.subheading}</p>}
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Cta link={p.primaryCta} variant="accent" />
           <Cta link={p.secondaryCta} variant="ghost" />
@@ -303,7 +303,7 @@ function CtaBlock({ b }: { b: BlockOf<"cta"> }) {
           <div className="sb-blob" style={{ width: 300, height: 300, left: -80, bottom: -140, background: "var(--sb-color-accent)" }} />
           <div className="sb-blob" style={{ width: 240, height: 240, right: -60, top: -100, background: "#fff", opacity: 0.18 }} />
           <h2 className="sb-h2 relative">{p.heading}</h2>
-          {p.text && <p className="relative mx-auto mt-4 max-w-2xl text-lg opacity-90">{p.text}</p>}
+          {p.text && <p className="relative mx-auto mt-4 max-w-2xl text-lg">{p.text}</p>}
           <div className="relative mt-8 flex flex-wrap justify-center gap-3">
             <Cta link={p.primary} variant="accent" />
             <Cta link={p.secondary} variant="ghost" />
@@ -326,7 +326,7 @@ function Stats({ b }: { b: BlockOf<"stats"> }) {
               <dt className="sr-only">{it.label}</dt>
               <dd>
                 <span className="font-heading block text-3xl font-extrabold whitespace-nowrap md:text-4xl lg:text-5xl">{it.value}</span>
-                <span className="mt-2 block text-sm font-medium opacity-85">{it.label}</span>
+                <span className="mt-2 block text-sm font-medium">{it.label}</span>
               </dd>
             </div>
           ))}

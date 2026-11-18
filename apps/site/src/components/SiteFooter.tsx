@@ -66,7 +66,7 @@ export function SiteFooter({ site, lang }: { site: PublicSite; lang: string }) {
             {site.footer.map((m) =>
               m.href ? (
                 <li key={m.href}>
-                  <Link href={m.href} className="sb-focus text-white/85 transition hover:text-white hover:underline">
+                  <Link href={m.href} className="sb-focus text-white/95 transition hover:text-white hover:underline">
                     {t(m.label, lang)}
                   </Link>
                 </li>
@@ -77,7 +77,7 @@ export function SiteFooter({ site, lang }: { site: PublicSite; lang: string }) {
 
         <div className="md:col-span-4">
           <p className="text-sm font-bold tracking-widest text-white/90 uppercase">Visit us</p>
-          <ul className="mt-4 space-y-3 text-white/85">
+          <ul className="mt-4 space-y-3 text-white/95">
             {addressLines(site).length > 0 && (
               <li className="flex gap-3">
                 <Pin className="mt-0.5 shrink-0" />

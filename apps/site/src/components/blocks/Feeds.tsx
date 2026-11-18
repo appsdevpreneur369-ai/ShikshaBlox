@@ -189,7 +189,7 @@ export async function AlbumsFeed({ host, heading, limit }: { host: string; headi
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                 <h3 className="text-xl font-bold">{a.title}</h3>
-                <p className="text-sm text-white/80">
+                <p className="text-sm text-white/95">
                   {a.count ?? 0} photos{a.date ? ` · ${formatDate(a.date)}` : ""}
                 </p>
               </div>
