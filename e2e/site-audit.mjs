@@ -33,6 +33,7 @@ const browser = await chromium.launch();
 {
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
+  page.setDefaultNavigationTimeout(120000);
   const links = new Set();
   for (const u of urls) {
     await page.goto(u, { waitUntil: "domcontentloaded" });
@@ -53,6 +54,8 @@ for (const s of sizes) {
   const { name, defaultBrowserType, ...opts } = s;
   const ctx = await browser.newContext({ ...opts, reducedMotion: "reduce" });
   const page = await ctx.newPage();
+  page.setDefaultTimeout(90000);
+  page.setDefaultNavigationTimeout(120000);
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
@@ -60,8 +63,15 @@ for (const s of sizes) {
   const mobile = vw < 1024;
 
   for (const u of urls) {
-    const res = await page.goto(u, { waitUntil: "networkidle" });
     const path = new URL(u).pathname;
+    let res;
+    try {
+      res = await page.goto(u, { waitUntil: "load" });
+      await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
+    } catch (e) {
+      bad(`${name} ${path}: load failed — ${e.message.split(String.fromCharCode(10))[0]}`);
+      continue;
+    }
     if (!res || res.status() !== 200) bad(`${name} ${path}: HTTP ${res?.status()}`);
     const r = await page.evaluate(() => {
       const doc = document.documentElement;
@@ -97,7 +107,7 @@ for (const s of sizes) {
         heroCrop = { fit, ratio: b.height / expected };
       }
       return {
-        overflow: doc.scrollWidth - window.innerWidth,
+        overflow: Math.max(doc.scrollWidth - window.innerWidth, window.innerWidth - Math.round(window.visualViewport.width)),
         wide,
         tall: doc.scrollHeight > window.innerHeight + 50,
         title: document.title,

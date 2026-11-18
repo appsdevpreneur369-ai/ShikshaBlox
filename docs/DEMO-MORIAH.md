@@ -1,44 +1,43 @@
 # Moriah School demo — runbook
 
-## 1. Start everything (about 2 minutes)
+## 1. Open the demo (nothing to install)
 
-Open **Docker Desktop** first and wait until it says it is running. Then, in Git Bash at the repo root:
-
-```bash
-# Infrastructure: Postgres, Redis, MinIO (media), Mailpit (email), Caddy (local domains)
-docker compose -f compose.yaml -f compose.dev.yaml up -d postgres redis minio minio-init mailpit caddy
-
-# API (terminal 1) — seeds Moriah on first run
-bash scripts/dev-backend.sh
-
-# Public website (terminal 2)
-cd apps/site && SITE_REVALIDATE_SECRET=dev-revalidate-secret-0123456789 npx next dev --port 3000
-
-# Studio (terminal 3)
-cd apps/admin && SB_SECURE_COOKIES=false npx next dev --port 3001
-```
-
-Ready when terminal 1 prints `Started ShikshaBloxApplication` and the other two print `Ready`.
-Open each URL below once before the meeting so the first page load is fast (dev mode compiles on first visit).
+Everything runs on the staging servers. Open these in any browser, on a laptop or a phone:
 
 | What | URL |
 | --- | --- |
-| Moriah website | http://moriah.shikshablox.localhost |
-| Studio (admin) | http://admin.shikshablox.localhost |
-| Emails sent by the system | http://mail.shikshablox.localhost |
+| Moriah website | https://moriah-914241661718.asia-south1.run.app |
+| Studio (admin) | https://shikshablox-studio-914241661718.asia-south1.run.app |
 
-**Studio sign-in:** `admin@moriah.test` with the seed password (`SEED_PASSWORD`, default in `scripts/dev-backend.sh`).
-Other roles to show the approval workflow: `editor@moriah.test` (Editor) and `approver@moriah.test` (Approver), same password.
+**Studio sign-in:** `admin@moriah.test` with the staging demo password (shared separately; stored in Secret Manager as `seed-password`).
+Other roles for the approval workflow: `editor@moriah.test` (Editor) and `approver@moriah.test` (Approver), same password.
 
-> Sign-in is rate limited. If you see "Too many attempts", restart terminal 1 (API) to clear it.
+> Sign-in is rate limited: after several wrong passwords it blocks for a while. Type carefully.
+> Staging does not send emails (no mail server is configured); enquiries still appear in Studio → Enquiries.
+
+Open the website and Studio once about 10 minutes before the meeting, to check your internet connection.
+
+<details><summary>Running locally instead (developers)</summary>
+
+Use **Git Bash** (not PowerShell: there `bash` starts WSL). Start Docker Desktop, then:
+
+```bash
+docker compose -f compose.yaml -f compose.dev.yaml up -d postgres redis minio minio-init mailpit caddy
+bash scripts/dev-backend.sh                                                  # terminal 1
+cd apps/site && SITE_REVALIDATE_SECRET=dev-revalidate-secret-0123456789 npx next dev --port 3000   # terminal 2
+cd apps/admin && SB_SECURE_COOKIES=false npx next dev --port 3001            # terminal 3
+```
+Local URLs: http://moriah.shikshablox.localhost, http://admin.shikshablox.localhost, http://mail.shikshablox.localhost.
+Dev mode needs about 4 GB free RAM; the "Jest worker" error means the machine ran out of memory.
+</details>
 
 ## 2. Suggested demo flow (15 minutes)
 
 1. **Website, desktop.** Home: hero photo, key numbers, why families choose Moriah, notice board, gallery,
    upcoming events, news, admissions banner. Then About → Academics → Facilities → Gallery (open an album) → News (open a story).
 2. **Website, phone.** Narrow the browser (or use DevTools device mode): menu button, readable text, tap-friendly buttons.
-3. **Admissions enquiry.** Admissions → fill in the form → "Thank you". Then show the email alert in Mailpit
-   and the enquiry in **Studio → Enquiries** (change the status to Contacted, add a note).
+3. **Admissions enquiry.** Admissions → fill in the form → "Thank you". Then show the enquiry in
+   **Studio → Enquiries** (change the status to Contacted, add a note). Live sites email the school office too.
 4. **Edit a page live.** Studio → Pages → Home → open "Hero banner" → change the heading → **Preview**
    (yellow "preview" bar, visitors can't see it) → **Publish** → refresh the website: changed within seconds.
    Then **History → Restore** to bring the previous version back.
@@ -69,8 +68,8 @@ Please ask the school to confirm or correct the following:
 
 ## 4. If something goes wrong
 
-- **Website shows "We couldn't find that page" for everything:** the API isn't running. Check terminal 1.
-- **Images missing:** Docker / MinIO is stopped. Re-run the `docker compose ... up -d` line.
+- **Pages load slowly:** check the internet connection (the servers respond in well under a second).
 - **A published change doesn't show:** refresh once more. Pages also refresh by themselves every 5 minutes.
-- **Start completely fresh** (wipes local data, then Moriah is re-seeded on the next API start):
-  `docker compose down && docker volume rm shikshablox_pgdata shikshablox_miniodata`.
+- **"Too many attempts" at sign-in:** wait 15 minutes, or ask the developer to restart the API service.
+- **Redeploy** (developers): `gcloud builds submit --config infra/gcp/cloudbuild.yaml --substitutions=_TAG=vN .`
+  then `TAG=vN bash infra/gcp/deploy-staging.sh` (Git Bash).

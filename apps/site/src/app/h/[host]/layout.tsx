@@ -44,7 +44,7 @@ export default async function SiteLayout({
   );
 
   return (
-    <div data-theme={site.theme} style={brandStyle(site.brand)} className="flex min-h-dvh flex-col bg-surface text-ink">
+    <div data-theme={site.theme} style={brandStyle(site.brand)} className="flex min-h-dvh flex-col overflow-x-clip bg-surface text-ink">
       <a
         href="#main"
         className="sr-only z-50 rounded-full bg-primary px-4 py-2 text-on-primary focus:not-sr-only focus:fixed focus:top-3 focus:left-3"

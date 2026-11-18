@@ -34,9 +34,9 @@ export function SiteFooter({ site, lang }: { site: PublicSite; lang: string }) {
       <div className="sb-container relative grid gap-10 py-16 md:grid-cols-12">
         <div className="md:col-span-5">
           <p className="font-heading text-2xl font-bold">{site.name}</p>
-          {p.tagline && <p className="mt-2 text-white/80">{p.tagline}</p>}
+          {p.tagline && <p className="mt-2 text-white/90">{p.tagline}</p>}
           {(p.boardName || p.board || p.established) && (
-            <p className="mt-4 text-sm text-white/70">
+            <p className="mt-4 text-sm text-white/90">
               {[p.boardName || p.board, p.established ? `Established ${p.established}` : null]
                 .filter(Boolean)
                 .join(" · ")}
@@ -61,7 +61,7 @@ export function SiteFooter({ site, lang }: { site: PublicSite; lang: string }) {
         </div>
 
         <nav aria-label="Footer" className="md:col-span-3">
-          <p className="text-sm font-bold tracking-widest text-white/60 uppercase">Quick links</p>
+          <p className="text-sm font-bold tracking-widest text-white/90 uppercase">Quick links</p>
           <ul className="mt-4 space-y-2.5">
             {site.footer.map((m) =>
               m.href ? (
@@ -76,7 +76,7 @@ export function SiteFooter({ site, lang }: { site: PublicSite; lang: string }) {
         </nav>
 
         <div className="md:col-span-4">
-          <p className="text-sm font-bold tracking-widest text-white/60 uppercase">Visit us</p>
+          <p className="text-sm font-bold tracking-widest text-white/90 uppercase">Visit us</p>
           <ul className="mt-4 space-y-3 text-white/85">
             {addressLines(site).length > 0 && (
               <li className="flex gap-3">
@@ -110,7 +110,7 @@ export function SiteFooter({ site, lang }: { site: PublicSite; lang: string }) {
         </div>
       </div>
       <div className="relative border-t border-white/10">
-        <div className="sb-container flex flex-col gap-2 py-5 text-sm text-white/70 sm:flex-row sm:items-center sm:justify-between">
+        <div className="sb-container flex flex-col gap-2 py-5 text-sm text-white/90 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {year} {site.name}. All rights reserved.
           </p>
