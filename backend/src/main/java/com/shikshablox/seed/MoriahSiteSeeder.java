@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.shikshablox.modules.website.ContentService;
+import com.shikshablox.modules.website.NavigationService;
 import com.shikshablox.modules.website.OnboardingService;
 import com.shikshablox.modules.website.PageService;
 import com.shikshablox.modules.website.SiteService;
@@ -16,12 +17,16 @@ import com.shikshablox.platform.tenancy.OrganizationService;
 import com.shikshablox.platform.tenancy.TenantContext;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -55,6 +60,8 @@ class MoriahSiteSeeder implements ApplicationRunner {
   private final ContentService content;
   private final MediaService media;
   private final ConsentService consents;
+  private final NavigationService navigation;
+  private final DataSource dataSource;
   private final ObjectMapper json;
 
   MoriahSiteSeeder(
@@ -65,6 +72,8 @@ class MoriahSiteSeeder implements ApplicationRunner {
       ContentService content,
       MediaService media,
       ConsentService consents,
+      NavigationService navigation,
+      DataSource dataSource,
       ObjectMapper json) {
     this.organizations = organizations;
     this.sites = sites;
@@ -73,11 +82,30 @@ class MoriahSiteSeeder implements ApplicationRunner {
     this.content = content;
     this.media = media;
     this.consents = consents;
+    this.navigation = navigation;
+    this.dataSource = dataSource;
     this.json = json;
   }
 
+  /** Advisory lock key: several instances may start at once (Cloud Run); only one seeds. */
+  private static final long LOCK_KEY = 0x5B_4D_4F_52_49_41_48L;
+
   @Override
   public void run(ApplicationArguments args) {
+    try (Connection c = dataSource.getConnection();
+        Statement st = c.createStatement()) {
+      st.execute("select pg_advisory_lock(" + LOCK_KEY + ")");
+      try {
+        seedOnce();
+      } finally {
+        st.execute("select pg_advisory_unlock(" + LOCK_KEY + ")");
+      }
+    } catch (SQLException e) {
+      log.error("Moriah website seed could not take its lock", e);
+    }
+  }
+
+  private void seedOnce() {
     Organization org = organizations.findBySlug("moriah").orElse(null);
     if (org == null) {
       return;
@@ -153,10 +181,24 @@ class MoriahSiteSeeder implements ApplicationRunner {
         continue;
       }
       PageService.PageDetail d = pages.get(id, "en");
-      ObjectNode doc = json.createObjectNode().put("schemaVersion", 1);
-      doc.set("blocks", resolve(e.getValue().deepCopy(), images));
-      pages.saveDraft(id, "en", d.title(), d.seo(), doc, true);
-      pages.publish(id, "en", "Moriah launch content");
+      String title = spec.path("titles").path(e.getKey()).asText(d.title());
+      publishPage(id, title, d.seo(), e.getValue(), images);
+    }
+
+    // Extra pages (e.g. founders & leadership), keyed by slug.
+    Iterator<Map.Entry<String, JsonNode>> cp = spec.path("customPages").fields();
+    while (cp.hasNext()) {
+      var e = cp.next();
+      JsonNode page = e.getValue();
+      PageService.PageDetail d = pages.createCustom(e.getKey(), page.path("title").asText(), "en");
+      JsonNode seo = page.has("seo") ? page.get("seo") : d.seo();
+      publishPage(d.id(), d.title(), seo, page.path("blocks"), images);
+      pageIds.put(e.getKey(), d.id());
+    }
+
+    // Header menu: items name a standard page key or a custom page slug.
+    if (spec.path("menu").path("header").isArray()) {
+      navigation.saveMenu("header", menuItems(spec.path("menu").path("header"), pageIds));
     }
 
     LocalDate today = LocalDate.now(ZoneId.of("Asia/Kolkata"));
@@ -188,6 +230,31 @@ class MoriahSiteSeeder implements ApplicationRunner {
         content.create(e.getKey(), data, true);
       }
     }
+  }
+
+  private void publishPage(
+      UUID id, String title, JsonNode seo, JsonNode blocks, Map<String, UUID> images) {
+    ObjectNode doc = json.createObjectNode().put("schemaVersion", 1);
+    doc.set("blocks", resolve(blocks.deepCopy(), images));
+    pages.saveDraft(id, "en", title, seo, doc, true);
+    pages.publish(id, "en", "Moriah launch content");
+  }
+
+  private ArrayNode menuItems(JsonNode items, Map<String, UUID> pageIds) {
+    ArrayNode out = json.createArrayNode();
+    for (JsonNode it : items) {
+      ObjectNode o = out.addObject();
+      o.putObject("label").put("en", it.path("label").asText());
+      UUID page = pageIds.get(it.path("page").asText());
+      if (page == null) {
+        throw new IllegalStateException("Unknown menu page " + it.path("page").asText());
+      }
+      o.put("pageId", page.toString());
+      if (it.path("children").isArray()) {
+        o.set("children", menuItems(it.get("children"), pageIds));
+      }
+    }
+    return out;
   }
 
   /** Replaces "@img:<file>" strings anywhere in the tree with the uploaded media id. */

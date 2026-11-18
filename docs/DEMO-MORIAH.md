@@ -33,8 +33,10 @@ Dev mode needs about 4 GB free RAM; the "Jest worker" error means the machine ra
 
 ## 2. Suggested demo flow (15 minutes)
 
-1. **Website, desktop.** Home: hero photo, key numbers, why families choose Moriah, notice board, gallery,
-   upcoming events, news, admissions banner. Then About → Academics → Facilities → Gallery (open an album) → News (open a story).
+1. **Website, desktop.** Home: hero photo, key numbers, why families choose Moriah, "Our story" (the founder),
+   notice board, gallery, upcoming events, news, admissions banner. Then About → **Founders & Leadership**
+   (Mrs. Devakaruna Dasari, Rev. Dasari Bhushana Rao, Bishop Shalem & Mrs. Swarupa, the trustees) →
+   **Moriah Home** → Academics → **Our Teachers** (2025–26 staff photos) → Gallery (open "Classes of 2025–26") → News.
 2. **Website, phone.** Narrow the browser (or use DevTools device mode): menu button, readable text, tap-friendly buttons.
 3. **Admissions enquiry.** Admissions → fill in the form → "Thank you". Then show the enquiry in
    **Studio → Enquiries** (change the status to Contacted, add a note). Live sites email the school office too.
@@ -64,6 +66,13 @@ Please ask the school to confirm or correct the following:
 - **Admissions.** The documents list and the 2027–28 admissions year are typical examples. Confirm them.
 - **Board / recognition line.** "State Board · Recognised by the Government of Andhra Pradesh · English medium" (from the school banner).
 - **Staff directory and careers** are empty on purpose. The school adds staff (with consent) and vacancies in Studio.
+- **Leadership details** come from the BFLMI / old school "About" pages (written about 2018): Head Master **Adam Kondru**,
+  "around 15 teachers", Bishop **G. Shalem Raju** with Mrs. Swarupa and daughters Hepsi, Beulah and Keziah. Confirm these are current.
+- **Teacher names** are taken from the 2025–26 photo file names (Devi, Jyothi, Lakshmi, Premalatha, Rajkumari, Santhi,
+  Seshagiri, Mr. Singh, Smily, Sulochana, Venkatesh). Confirm spellings, and add surnames/qualifications if wanted (Studio → Content → Staff).
+- **Student numbers:** the BFLMI page says "nearly 200 students" (2018); the site shows "250+" (August 2022 newsletter). Confirm today's figure.
+- **Photo rights:** many photos are by Illumination.Photography for BFLMI. Confirm the school may reuse them.
+- **Moriah Home children:** individual children's names and stories were deliberately **not** published (child safeguarding).
 - Donation and sponsorship content from the old site was **not** carried over (the new site is a school website, not a fundraising site).
 
 ## 4. If something goes wrong
