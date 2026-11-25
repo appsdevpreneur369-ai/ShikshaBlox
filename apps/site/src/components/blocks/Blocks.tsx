@@ -316,16 +316,20 @@ function CtaBlock({ b }: { b: BlockOf<"cta"> }) {
 
 function Stats({ b }: { b: BlockOf<"stats"> }) {
   const p = b.props;
+  // Every tile shares one size, scaled so the longest value (e.g. "Pre-KG–10") fits its tile
+  // width on any screen: ~0.68em per extrabold character, capped at the old desktop size.
+  const longest = Math.max(4, ...p.items.map((it) => [...(it.value ?? "")].length));
+  const valueSize = `clamp(1rem, calc(100cqi / ${(longest * 0.68).toFixed(2)}), 3rem)`;
   return (
     <Section block={b} defaultBg="primary">
       <div className="sb-container">
         <SectionHeading heading={p.heading} center />
-        <dl className="grid grid-cols-2 gap-6 md:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
           {p.items.map((it, i) => (
-            <div key={i} className="sb-reveal rounded-[var(--sb-radius)] bg-black/15 p-6 text-center backdrop-blur transition hover:bg-black/20">
+            <div key={i} className="sb-reveal rounded-[var(--sb-radius)] bg-black/15 px-3 py-6 text-center backdrop-blur transition [container-type:inline-size] hover:bg-black/20 md:p-6">
               <dt className="sr-only">{it.label}</dt>
               <dd>
-                <span className="font-heading block text-3xl font-extrabold whitespace-nowrap md:text-4xl lg:text-5xl">{it.value}</span>
+                <span className="font-heading block font-extrabold leading-tight whitespace-nowrap" style={{ fontSize: valueSize }}>{it.value}</span>
                 <span className="mt-2 block text-sm font-medium">{it.label}</span>
               </dd>
             </div>

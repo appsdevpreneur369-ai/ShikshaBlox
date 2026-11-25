@@ -183,10 +183,6 @@
       "alt": "Mrs. Devakaruna Dasari in 1994",
       "students": false
     },
-    "shalem-swarupa.jpg": {
-      "alt": "Bishop G. Shalem Raju and Mrs. Swarupa",
-      "students": false
-    },
     "rev-dasari-memorial.jpg": {
       "alt": "Memorial to Rev. Dasari Bhushana Rao at Moriah",
       "students": false
@@ -1455,22 +1451,8 @@
           }
         },
         {
-          "id": "guntur",
-          "type": "imageText",
-          "props": {
-            "eyebrow": "Leadership in Guntur",
-            "heading": "Bishop G. Shalem Raju & Mrs. Swarupa",
-            "html": "<p>The Rt. Rev. G. Shalem Raju, B.A., B.D., is the Bishop of BFLC India. He directs and oversees the management of both Moriah School and Moriah Home.</p><p>His wife, Mrs. Swarupa, and their three daughters — Hepsi, Beulah and Keziah — work alongside more than 20 staff members to care for the children and support the school.</p>",
-            "imageId": "@img:shalem-swarupa.jpg",
-            "imagePosition": "left"
-          }
-        },
-        {
           "id": "trustees",
           "type": "cards",
-          "settings": {
-            "background": "muted"
-          },
           "props": {
             "heading": "Our trustees",
             "intro": "Rev. and Mrs. Dasari's three children serve as trustees, dedicated to the continuation of the church's ministry, Moriah School and Moriah Home.",
