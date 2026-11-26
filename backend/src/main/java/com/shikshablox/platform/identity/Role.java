@@ -2,6 +2,7 @@ package com.shikshablox.platform.identity;
 
 import static com.shikshablox.platform.identity.Permission.ADMISSIONS_MANAGE;
 import static com.shikshablox.platform.identity.Permission.AUDIT_VIEW;
+import static com.shikshablox.platform.identity.Permission.COMMS_MANAGE;
 import static com.shikshablox.platform.identity.Permission.COMPLIANCE_MANAGE;
 import static com.shikshablox.platform.identity.Permission.CONTENT_EDIT;
 import static com.shikshablox.platform.identity.Permission.CONTENT_PUBLISH;
@@ -33,6 +34,7 @@ public enum Role {
           COMPLIANCE_MANAGE,
           FRONT_OFFICE_MANAGE,
           ENGAGEMENT_MANAGE,
+          COMMS_MANAGE,
           AUDIT_VIEW)),
   SCHOOL_ADMIN(
       false,
@@ -46,6 +48,7 @@ public enum Role {
           COMPLIANCE_MANAGE,
           FRONT_OFFICE_MANAGE,
           ENGAGEMENT_MANAGE,
+          COMMS_MANAGE,
           AUDIT_VIEW)),
   CONTENT_APPROVER(false, EnumSet.of(CONTENT_EDIT, CONTENT_PUBLISH, CONTENT_VIEW)),
   CONTENT_EDITOR(false, EnumSet.of(CONTENT_EDIT, CONTENT_VIEW)),

@@ -38,7 +38,8 @@ if want api; then
 @STORAGE_PROVIDER=gcs@S3_PUBLIC_BUCKET=sb-stg-$N-public@S3_PRIVATE_BUCKET=sb-stg-$N-private\
 @MEDIA_PUBLIC_BASE_URL=https://storage.googleapis.com/sb-stg-$N-public\
 @SITE_REVALIDATE_URL=$SITE_URL/api/revalidate@ADMIN_BASE_URL=$ADMIN_URL\
-@SEED_ENABLED=true@SEED_EXTRA_DOMAINS=moriah=$SITE_HOST,greenfield=$DEMO_HOST@SB_BASE_DOMAIN=shikshablox.app" \
+@SEED_ENABLED=true@SEED_EXTRA_DOMAINS=moriah=$SITE_HOST,greenfield=$DEMO_HOST@SB_BASE_DOMAIN=shikshablox.app\
+@SITE_PUBLIC_URLS=moriah=$SITE_URL,greenfield=$DEMO_URL" \
     --set-secrets "DB_APP_PASSWORD=db-app-password:latest,DB_OWNER_PASSWORD=db-owner-password:latest,JWT_SECRET=jwt-secret:latest,SB_DATA_KEY=sb-data-key:latest,SITE_REVALIDATE_SECRET=site-revalidate-secret:latest,SEED_PASSWORD=seed-password:latest" \
     --timeout 300 \
     --quiet

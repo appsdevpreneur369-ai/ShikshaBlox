@@ -10,6 +10,7 @@ const LIMIT_LABEL: Record<string, string> = {
   storage_bytes: "Storage",
   languages: "Website languages",
   custom_domains: "Custom domains",
+  contacts: "Message contacts",
 };
 
 const FEATURE_LABEL: Record<string, string> = {
@@ -49,6 +50,12 @@ const FEATURE_LABEL: Record<string, string> = {
   surveys: "Feedback surveys",
   sla: "Helpdesk SLA tracking",
   assignment: "Request assignment",
+  broadcasts: "Circulars & alerts",
+  templates: "Message templates",
+  consent_register: "Opt-in register",
+  acknowledgements: "Read receipts & acknowledgements",
+  multilingual: "Multilingual templates",
+  scheduling: "Scheduling & quiet hours",
 };
 
 const MODULE_LABEL: Record<string, string> = {
@@ -59,6 +66,7 @@ const MODULE_LABEL: Record<string, string> = {
   COMPLIANCE: "Compliance calendar",
   FRONT_OFFICE: "Front office",
   ENGAGEMENT: "PTM, helpdesk & surveys",
+  COMMS: "Communication hub",
 };
 
 function formatValue(key: string, value: number) {

@@ -136,6 +136,20 @@ public class NotificationService {
     }
   }
 
+  /**
+   * A one-off plain-text email (e.g. a school circular). Returns false when it could not be handed
+   * to the mail server.
+   */
+  public boolean plain(String to, String subject, String body) {
+    try {
+      email.send(new EmailMessage(to, subject.replaceAll("[\r\n]", " "), body));
+      return true;
+    } catch (RuntimeException e) {
+      log.warn("Email to a recipient could not be sent: {}", e.getMessage());
+      return false;
+    }
+  }
+
   static String render(String text, Map<String, String> vars) {
     Matcher m = VAR.matcher(text);
     StringBuilder sb = new StringBuilder();

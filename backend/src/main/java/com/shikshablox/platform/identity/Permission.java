@@ -25,6 +25,8 @@ public enum Permission {
   FRONT_OFFICE_MANAGE("frontoffice:manage"),
   /** PTM bookings, parent helpdesk and surveys (M26). */
   ENGAGEMENT_MANAGE("engagement:manage"),
+  /** Communication hub: contacts, templates, broadcasts, messaging settings (M13). */
+  COMMS_MANAGE("comms:manage"),
   /** Read the audit log. */
   AUDIT_VIEW("audit:view");
 

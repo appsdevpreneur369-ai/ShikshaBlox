@@ -18,6 +18,7 @@ function navItems(permissions: string[], hasSchool: boolean): NavItem[] {
       items.push({ href: "/admissions", label: "Admissions" });
     if (permissions.includes("frontoffice:manage"))
       items.push({ href: "/front-office", label: "Front office" });
+    if (permissions.includes("comms:manage")) items.push({ href: "/messages", label: "Messages" });
     if (permissions.includes("engagement:manage"))
       items.push({ href: "/parents", label: "Parents" });
     if (permissions.includes("compliance:manage"))

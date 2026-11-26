@@ -94,6 +94,9 @@ shikshablox:
     # Public site's on-demand ISR endpoint, called after publishing
     revalidate-url: ${SITE_REVALIDATE_URL:}
     revalidate-secret: ${SITE_REVALIDATE_SECRET:}
+    # Per-school public site URLs where schools have no platform subdomain yet (staging), e.g.
+    # "moriah=https://moriah.example.run.app,greenfield=https://...". Used for message links.
+    public-urls: ${SITE_PUBLIC_URLS:}
   mail:
     from: ${MAIL_FROM:ShikshaBlox <no-reply@shikshablox.localhost>}
   seed:
