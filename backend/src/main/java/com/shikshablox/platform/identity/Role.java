@@ -7,6 +7,7 @@ import static com.shikshablox.platform.identity.Permission.CONTENT_EDIT;
 import static com.shikshablox.platform.identity.Permission.CONTENT_PUBLISH;
 import static com.shikshablox.platform.identity.Permission.CONTENT_VIEW;
 import static com.shikshablox.platform.identity.Permission.ENQUIRY_MANAGE;
+import static com.shikshablox.platform.identity.Permission.FRONT_OFFICE_MANAGE;
 import static com.shikshablox.platform.identity.Permission.PLATFORM_MANAGE;
 import static com.shikshablox.platform.identity.Permission.SCHOOL_MANAGE;
 
@@ -29,6 +30,7 @@ public enum Role {
           ENQUIRY_MANAGE,
           ADMISSIONS_MANAGE,
           COMPLIANCE_MANAGE,
+          FRONT_OFFICE_MANAGE,
           AUDIT_VIEW)),
   SCHOOL_ADMIN(
       false,
@@ -40,12 +42,15 @@ public enum Role {
           ENQUIRY_MANAGE,
           ADMISSIONS_MANAGE,
           COMPLIANCE_MANAGE,
+          FRONT_OFFICE_MANAGE,
           AUDIT_VIEW)),
   CONTENT_APPROVER(false, EnumSet.of(CONTENT_EDIT, CONTENT_PUBLISH, CONTENT_VIEW)),
   CONTENT_EDITOR(false, EnumSet.of(CONTENT_EDIT, CONTENT_VIEW)),
   VIEWER(false, EnumSet.of(CONTENT_VIEW)),
   /** Works admission leads and the enquiry inbox; read-only elsewhere. */
-  ADMISSIONS_COUNSELLOR(false, EnumSet.of(ADMISSIONS_MANAGE, ENQUIRY_MANAGE, CONTENT_VIEW));
+  ADMISSIONS_COUNSELLOR(false, EnumSet.of(ADMISSIONS_MANAGE, ENQUIRY_MANAGE, CONTENT_VIEW)),
+  /** Reception: front desk registers, appointments, post, lost & found. */
+  FRONT_OFFICE(false, EnumSet.of(FRONT_OFFICE_MANAGE, CONTENT_VIEW));
 
   private final boolean platform;
   private final Set<Permission> permissions;

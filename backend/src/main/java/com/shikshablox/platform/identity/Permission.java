@@ -21,6 +21,8 @@ public enum Permission {
   ADMISSIONS_MANAGE("admissions:manage"),
   /** Compliance calendar, evidence vault and export packs (M02). */
   COMPLIANCE_MANAGE("compliance:manage"),
+  /** Front office: walk-in and call register, appointments, post, lost & found (M43). */
+  FRONT_OFFICE_MANAGE("frontoffice:manage"),
   /** Read the audit log. */
   AUDIT_VIEW("audit:view");
 

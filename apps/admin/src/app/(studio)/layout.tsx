@@ -12,10 +12,16 @@ function navItems(permissions: string[], hasSchool: boolean): NavItem[] {
     items.push({ href: "/pages", label: "Pages" });
     items.push({ href: "/content", label: "Content" });
     items.push({ href: "/media", label: "Media" });
-    if (permissions.includes("enquiry:manage")) items.push({ href: "/enquiries", label: "Enquiries" });
-    if (permissions.includes("admissions:manage")) items.push({ href: "/admissions", label: "Admissions" });
-    if (permissions.includes("compliance:manage")) items.push({ href: "/compliance", label: "Compliance" });
-    if (permissions.includes("school:manage")) items.push({ href: "/design", label: "Design & profile" });
+    if (permissions.includes("enquiry:manage"))
+      items.push({ href: "/enquiries", label: "Enquiries" });
+    if (permissions.includes("admissions:manage"))
+      items.push({ href: "/admissions", label: "Admissions" });
+    if (permissions.includes("frontoffice:manage"))
+      items.push({ href: "/front-office", label: "Front office" });
+    if (permissions.includes("compliance:manage"))
+      items.push({ href: "/compliance", label: "Compliance" });
+    if (permissions.includes("school:manage"))
+      items.push({ href: "/design", label: "Design & profile" });
     items.push({ href: "/plan", label: "Plan & usage" });
     items.push({ href: "/settings", label: "Settings" });
     if (permissions.includes("audit:view")) items.push({ href: "/audit", label: "Audit log" });
@@ -30,6 +36,7 @@ const ROLE_LABEL: Record<string, string> = {
   SCHOOL_ADMIN: "School admin",
   CONTENT_APPROVER: "Approver",
   ADMISSIONS_COUNSELLOR: "Counsellor",
+  FRONT_OFFICE: "Front office",
   CONTENT_EDITOR: "Editor",
   VIEWER: "Viewer",
 };

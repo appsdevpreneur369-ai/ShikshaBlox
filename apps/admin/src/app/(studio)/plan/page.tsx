@@ -40,6 +40,10 @@ const FEATURE_LABEL: Record<string, string> = {
   reminders: "Reminders",
   owners: "Item owners",
   export_pack: "Inspection export pack",
+  register: "Walk-in & call register",
+  appointments: "Appointments",
+  post: "Post & couriers",
+  lost_found: "Lost & found",
 };
 
 const MODULE_LABEL: Record<string, string> = {
@@ -48,6 +52,7 @@ const MODULE_LABEL: Record<string, string> = {
   ADMISSIONS_ENQUIRY: "Admissions enquiries",
   ADMISSIONS_CRM: "Admissions CRM",
   COMPLIANCE: "Compliance calendar",
+  FRONT_OFFICE: "Front office",
 };
 
 function formatValue(key: string, value: number) {

@@ -91,6 +91,7 @@ class DemoSeeder implements ApplicationRunner {
       seedUser(org, "approver", "Content Approver", Role.CONTENT_APPROVER);
       seedUser(org, "viewer", "Viewer", Role.VIEWER);
       seedUser(org, "counsellor", "Admissions Counsellor", Role.ADMISSIONS_COUNSELLOR);
+      seedUser(org, "reception", "Front Office", Role.FRONT_OFFICE);
     }
 
     for (String pair : extraDomains.split(",")) {
