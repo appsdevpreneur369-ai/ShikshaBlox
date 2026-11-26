@@ -1,6 +1,27 @@
 # ShikshaBlox M01 — Progress & resume point
 
-**Updated 2026-11-18 (evening before the Moriah demo on 2026-11-19).**
+**Updated 2026-11-26: product website shikshablox.com (`apps/www`) built and on staging.**
+
+## Product website (apps/www), 2026-11-26
+- Static Next.js site for sales demos: 27 pages (home, features + 12 module pages, 4 solution pages, pricing,
+  schools/Moriah case study, roadmap, why us, security, about, contact, privacy, terms). Architecture: ADR 0008.
+- Honest availability: only M01 is "Live"; every other module shows a target quarter (`src/data/modules.ts`).
+  Prices and roadmap estimates: `docs/PRICING-MATH.md` (founding offer changed to −25% for 25 schools; included
+  WhatsApp credits removed; ERP plans are pre-booked and billed only at go-live).
+- Demo form → `/api/demo-request` → public enquiry API as internal tenant `sb-sales` (seeded) → Studio inbox
+  (sign in as `admin@sb-sales.test`).
+- Images: free Unsplash photos, self-hosted, pre-generated WebP variants (`scripts/gen-images.py`); credits in
+  `apps/www/IMAGE-CREDITS.md`. Product screenshots are of the live Moriah site.
+- Tests: `e2e/tests/www.spec.ts` (7 device profiles: pages/H1/meta/canonical/footer/overflow, images, links,
+  axe WCAG 2.1 AA, desktop + touch navigation, pricing, robots, form) via `playwright.www.config.ts`.
+- Staging: Cloud Run `shikshablox-www` (min 0), built with `SB_WWW_NOINDEX=true`.
+- Domain go-live checklist (shikshablox.com is not purchased yet):
+  1. Buy shikshablox.com; in Cloud Run create domain mappings for `shikshablox.com` and `www.shikshablox.com`
+     (or a global HTTPS load balancer with a serverless NEG), add the DNS records Google shows, wait for TLS.
+  2. Redirect `www` → apex (load balancer URL map, or a tiny redirect service).
+  3. Rebuild www **without** `SB_WWW_NOINDEX` and with `SB_WWW_SITE_URL=https://shikshablox.com`
+     (cloudbuild `_WWW_URL`), plus `SB_WWW_WHATSAPP` / `SB_WWW_PHONE` / `SB_WWW_EMAIL` once sales contacts exist.
+  4. Submit `https://shikshablox.com/sitemap.xml` in Google Search Console; re-run PageSpeed Insights.
 
 ## Done (pushed to GitHub appsdevpreneur369-ai/ShikshaBlox, `main`)
 - M0 scaffold, M1a tenancy/RLS/auth, M1b entitlements/config/audit/media/consent (see git history).
@@ -24,6 +45,7 @@
 - E2E `e2e/tests/cms.spec.ts` (desktop): 4/4 green against the local dev stack.
 
 ## Next
+0. Product website: add sales WhatsApp/phone/email (build args), buy the domain (checklist above).
 1. Backend ITs for ContentService / EnquiryService / PublishingService (RLS, validation, workflow).
 2. Menu builder UI; staff photos consent UX; TipTap if richer editing is needed.
 3. M6 SEO/i18n/a11y (sitemap.xml, robots, structured data, hreflang, Lighthouse), M7 domains/export/hardening.

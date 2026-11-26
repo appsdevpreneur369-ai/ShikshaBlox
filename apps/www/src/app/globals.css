@@ -1,0 +1,234 @@
+@import "tailwindcss";
+
+/* ShikshaBlox brand tokens. Components only use these (via the Tailwind theme below), so dark mode
+   is a token swap. */
+:root {
+  --c-bg: #ffffff;
+  --c-bg-soft: #f7f8fc;
+  --c-bg-tint: #eef0ff;
+  --c-card: #ffffff;
+  --c-line: #e3e6f0;
+  --c-ink: #0b1026;
+  --c-ink-2: #3b4360;
+  --c-ink-3: #5b6480;
+  --c-brand: #4338ca;
+  --c-brand-strong: #3127a8;
+  --c-brand-soft: #e8e9ff;
+  --c-brand-ink: #ffffff;
+  --c-accent: #f59e0b;
+  --c-accent-soft: #fff4dc;
+  --c-accent-ink: #7a4100;
+  --c-live: #047857;
+  --c-live-soft: #dcfce7;
+  --c-night: #0d1030;
+  --c-night-2: #171b46;
+  --shadow-card: 0 1px 2px rgb(16 24 64 / 0.05), 0 8px 24px -12px rgb(16 24 64 / 0.18);
+  --shadow-pop: 0 30px 60px -24px rgb(30 27 90 / 0.35), 0 12px 24px -12px rgb(30 27 90 / 0.18);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c-bg: #0a0d24;
+    --c-bg-soft: #0f1330;
+    --c-bg-tint: #161a44;
+    --c-card: #12163a;
+    --c-line: #262b5a;
+    --c-ink: #f2f3fb;
+    --c-ink-2: #c9cce4;
+    --c-ink-3: #a3a8c9;
+    --c-brand: #8b8cff;
+    --c-brand-strong: #a5a6ff;
+    --c-brand-soft: #23275e;
+    --c-brand-ink: #0a0d24;
+    --c-accent: #fbbf24;
+    --c-accent-soft: #3a2a07;
+    --c-accent-ink: #fde68a;
+    --c-live: #6ee7b7;
+    --c-live-soft: #0b3b2c;
+    --c-night: #060818;
+    --c-night-2: #0f1330;
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+    --shadow-pop: 0 30px 60px -24px rgb(0 0 0 / 0.7);
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--c-bg);
+  --color-bg-soft: var(--c-bg-soft);
+  --color-bg-tint: var(--c-bg-tint);
+  --color-card: var(--c-card);
+  --color-line: var(--c-line);
+  --color-ink: var(--c-ink);
+  --color-ink-2: var(--c-ink-2);
+  --color-ink-3: var(--c-ink-3);
+  --color-brand: var(--c-brand);
+  --color-brand-strong: var(--c-brand-strong);
+  --color-brand-soft: var(--c-brand-soft);
+  --color-brand-ink: var(--c-brand-ink);
+  --color-accent: var(--c-accent);
+  --color-accent-soft: var(--c-accent-soft);
+  --color-accent-ink: var(--c-accent-ink);
+  --color-live: var(--c-live);
+  --color-live-soft: var(--c-live-soft);
+  --color-night: var(--c-night);
+  --color-night-2: var(--c-night-2);
+  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--c-bg);
+  color: var(--c-ink);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+}
+
+:focus-visible {
+  outline: 3px solid var(--c-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@layer components {
+  /* Single-column grids must never grow past the viewport because of a long nowrap child; any
+     grid-cols-* utility (utilities layer) still overrides this. */
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .container-x {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container-x {
+      padding-inline: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-x {
+      padding-inline: 2rem;
+    }
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-brand);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Hero/section background: a soft gradient mesh drawn as an image so contrast tools read the
+     real (solid) background colour behind text. */
+  .bg-mesh {
+    background-color: var(--c-bg);
+    background-image:
+      radial-gradient(40rem 28rem at 85% -10%, color-mix(in oklab, var(--c-brand) 18%, transparent), transparent 70%),
+      radial-gradient(30rem 24rem at -5% 20%, color-mix(in oklab, var(--c-accent) 16%, transparent), transparent 70%);
+  }
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--c-line) 70%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--c-line) 70%, transparent) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  }
+
+  .card {
+    background: var(--c-card);
+    border: 1px solid var(--c-line);
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow-card);
+  }
+  .card-hover {
+    transition:
+      transform 0.35s var(--ease),
+      box-shadow 0.35s var(--ease),
+      border-color 0.35s var(--ease);
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-pop);
+    border-color: color-mix(in oklab, var(--c-brand) 35%, var(--c-line));
+  }
+
+  /* Scroll-reveal with CSS scroll-driven animations (no JS). Browsers without support, and anyone
+     with reduced motion, simply see the content. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal {
+        animation: reveal linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 22%;
+      }
+    }
+  }
+
+  .float-slow {
+    animation: float 7s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .float-slow {
+      animation: none;
+    }
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq[open] .faq-icon {
+    transform: rotate(45deg);
+  }
+
+  .marquee-mask {
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+}
+
+/* Movement only (no fade), so text never sits at reduced contrast mid-animation. */
+@keyframes reveal {
+  from {
+    transform: translateY(28px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

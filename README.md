@@ -11,6 +11,7 @@ backend/            Java 21 + Spring Boot 3.5 modular monolith (Spring Modulith)
   com.shikshablox.modules.*    website (M01), disclosure, admissions (stub), recruitment (stub)
 apps/site           Public school websites (Next.js 16, multi-tenant by host name)
 apps/admin          ShikshaBlox Studio — admin portal / CMS
+apps/www            shikshablox.com — the product website (static Next.js; see docs/adr/0008)
 packages/ui         Design system components + design tokens
 packages/blocks     Page block schemas (zod → JSON Schema, shared with the backend)
 packages/api-client Typed API client generated from docs/api/openapi.json
@@ -58,14 +59,14 @@ All accounts are fictional (`.test` addresses) and use the password from `SEED_P
 | `admin@<school>.test`                                                    | School admin                                                             |
 | `editor@<school>.test`, `approver@<school>.test`, `viewer@<school>.test` | Content roles                                                            |
 
-Schools: `moriah`, `greenfield`, `sunrise`, `horizon` — e.g. http://moriah.shikshablox.localhost. The "Email code" sign-in sends a code to Mailpit (http://mail.shikshablox.localhost).
+Schools: `moriah`, `greenfield`, `sunrise`, `horizon`, plus the internal `sb-sales` tenant whose enquiry inbox receives shikshablox.com demo requests — e.g. http://moriah.shikshablox.localhost. The "Email code" sign-in sends a code to Mailpit (http://mail.shikshablox.localhost).
 
 ## Develop with hot reload
 
 ```powershell
 docker compose -f compose.yaml -f compose.dev.yaml up -d postgres redis minio minio-init mailpit caddy
 pnpm install
-pnpm dev                                   # site :3000, admin :3001
+pnpm dev                                   # site :3000, admin :3001, www :3002
 cd backend; .\mvnw spring-boot:run         # api :8080
 ```
 
@@ -82,6 +83,10 @@ cd backend; .\mvnw spotless:apply          # google-java-format
 ```
 
 End-to-end (against the running stack): `pnpm --filter @shikshablox/e2e install-browsers` once, then `pnpm e2e`.
+
+Product website (`apps/www`, no backend needed for browsing): `pnpm --filter @shikshablox/www build; pnpm --filter @shikshablox/www start`, then
+`cd e2e; $env:WWW_URL="http://localhost:3002"; pnpm exec playwright test -c playwright.www.config.ts` (7 device profiles, axe accessibility,
+links, images, navigation, form). Prices and roadmap targets on the site come from `docs/PRICING-MATH.md`.
 
 The backend integration tests need Docker running (Testcontainers starts PostgreSQL 16).
 

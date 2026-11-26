@@ -1,9 +1,13 @@
-# Builds the three staging images in Cloud Build (no local Docker needed).
+# Builds the four staging images in Cloud Build (no local Docker needed).
 #   gcloud builds submit --project <project> --config infra/gcp/cloudbuild.yaml --substitutions=_TAG=<tag>
 substitutions:
   _REGION: asia-south1
   _REPO: shikshablox
   _TAG: latest
+  # Product website (apps/www) build-time settings for staging.
+  _WWW_URL: https://shikshablox-www-914241661718.asia-south1.run.app
+  _MORIAH_URL: https://moriah-914241661718.asia-south1.run.app
+  _STUDIO_URL: https://shikshablox-studio-914241661718.asia-south1.run.app
 options:
   machineType: E2_HIGHCPU_8
   env: ["DOCKER_BUILDKIT=1"]
@@ -22,8 +26,16 @@ steps:
     args: ["build", "-f", "infra/docker/next.Dockerfile", "--build-arg", "APP=admin",
            "-t", "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/admin:${_TAG}", "."]
     waitFor: ["-"]
+  - id: www
+    name: gcr.io/cloud-builders/docker
+    args: ["build", "-f", "infra/docker/next.Dockerfile", "--build-arg", "APP=www",
+           "--build-arg", "SB_WWW_SITE_URL=${_WWW_URL}", "--build-arg", "SB_WWW_NOINDEX=true",
+           "--build-arg", "SB_WWW_MORIAH_URL=${_MORIAH_URL}", "--build-arg", "SB_WWW_STUDIO_URL=${_STUDIO_URL}",
+           "-t", "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/www:${_TAG}", "."]
+    waitFor: ["-"]
 images:
   - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/api:${_TAG}"
   - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/site:${_TAG}"
   - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/admin:${_TAG}"
+  - "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/www:${_TAG}"
 timeout: 2400s
