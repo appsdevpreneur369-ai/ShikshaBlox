@@ -64,6 +64,10 @@ const FEATURE_LABEL: Record<string, string> = {
   promotion: "Year-end promotion",
   apaar: "APAAR tracking",
   custom_fields: "Custom fields",
+  children: "Children's details",
+  circulars: "Circulars & acknowledgements",
+  requests: "Helpdesk requests",
+  preferences: "Message preferences",
 };
 
 const MODULE_LABEL: Record<string, string> = {
@@ -76,6 +80,7 @@ const MODULE_LABEL: Record<string, string> = {
   ENGAGEMENT: "PTM, helpdesk & surveys",
   COMMS: "Communication hub",
   SIS: "Student information",
+  PORTAL: "Parent portal",
 };
 
 function formatValue(key: string, value: number) {

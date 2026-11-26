@@ -803,7 +803,7 @@ public class BroadcastService {
   }
 
   /** The school's public website address (custom domain, staging override, or subdomain). */
-  String siteUrl() {
+  public String siteUrl() {
     UUID org = TenantContext.requireOrganizationId();
     String slug =
         jdbc.sql("select slug from organization where id = ?")
