@@ -410,7 +410,7 @@ function Register({ hasAdmissions, onChanged }: { hasAdmissions: boolean; onChan
                 <span className="text-ink-muted w-16 shrink-0 pt-0.5 text-sm tabular-nums">
                   {time(r.inAt)}
                 </span>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-[11rem] flex-1">
                   <p className="text-sm font-semibold">
                     {r.name}
                     {r.peopleCount > 1 && (
@@ -694,7 +694,7 @@ function Appointments({ onChanged }: { onChanged: () => void }) {
                     <span className="w-16 shrink-0 text-sm font-semibold tabular-nums">
                       {time(a.startsAt)}
                     </span>
-                    <div className="min-w-0 flex-1">
+                    <div className="min-w-[11rem] flex-1">
                       <p className="text-sm font-semibold">{a.visitorName}</p>
                       <p className="text-ink-muted text-xs">
                         {[
@@ -920,7 +920,7 @@ function PostView({ onChanged }: { onChanged: () => void }) {
                   <Badge tone={p.direction === "INWARD" ? "blue" : "purple"}>
                     {p.direction === "INWARD" ? "In" : "Out"}
                   </Badge>
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-[11rem] flex-1">
                     <p className="text-sm font-semibold">
                       {p.direction === "INWARD" ? `From ${p.counterparty}` : `To ${p.counterparty}`}
                       {p.addressee && (
