@@ -40,7 +40,13 @@ function yearsAround(y: string) {
   return [start - 1, start, start + 1].map((s) => `${s}-${String((s + 1) % 100).padStart(2, "0")}`);
 }
 
-export function AdmissionsPage({ siteUrl }: { siteUrl?: string }) {
+export function AdmissionsPage({
+  siteUrl,
+  isAdmin = false,
+}: {
+  siteUrl?: string;
+  isAdmin?: boolean;
+}) {
   const [meta, setMeta] = useState<Meta | null>(null);
   const [blocked, setBlocked] = useState<string | null>(null);
   const [year, setYear] = useState("");
@@ -273,6 +279,14 @@ export function AdmissionsPage({ siteUrl }: { siteUrl?: string }) {
               counsellors={counsellors}
               onClose={() => setSel(null)}
               onChanged={() => void load()}
+              onDeleted={
+                isAdmin
+                  ? () => {
+                      setSel(null);
+                      void load();
+                    }
+                  : undefined
+              }
               onOpenApplication={(id) => {
                 setAppSel(id);
                 setView("applications");

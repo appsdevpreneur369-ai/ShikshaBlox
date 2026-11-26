@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Mail, MessageCircle, Phone, X } from "lucide-react";
+import { Mail, MessageCircle, Phone, Trash2, X } from "lucide-react";
 import { sb, fmtDate } from "@/lib/studio";
 import { Badge, Btn, Card, Field, inputCls, useAction } from "@/components/kit";
 import { LeadApplications } from "./applications";
@@ -27,12 +27,15 @@ export function LeadPanel({
   onClose,
   onChanged,
   onOpenApplication,
+  onDeleted,
 }: {
   id: string;
   counsellors: Counsellor[];
   onClose: () => void;
   onChanged: () => void;
   onOpenApplication?: (applicationId: string) => void;
+  /** Set for school admins: erasing a lead is an admin action. */
+  onDeleted?: () => void;
 }) {
   const [d, setD] = useState<Detail | null>(null);
   const [kind, setKind] = useState("CALL");
@@ -104,6 +107,21 @@ export function LeadPanel({
       setD(await sb<Detail>(`admissions/leads/${l.id}`));
       onChanged();
     }
+  }
+
+  async function remove() {
+    if (
+      !confirm(
+        `Delete ${l.studentName || l.guardianName} and everything recorded about them: timeline, applications and uploaded documents? This cannot be undone.`,
+      )
+    )
+      return;
+    const ok = await run(
+      "delete",
+      () => sb(`admissions/leads/${l.id}`, { method: "DELETE" }).then(() => true),
+      "Lead deleted",
+    );
+    if (ok) onDeleted?.();
   }
 
   const due = dueState(l.nextFollowUpAt);
@@ -318,6 +336,13 @@ export function LeadPanel({
           ))}
         </ol>
       </div>
+      {onDeleted && (
+        <div className="mt-6 border-t border-black/5 pt-4">
+          <Btn size="sm" variant="ghost" busy={busy === "delete"} onClick={() => void remove()}>
+            <Trash2 className="size-3.5" aria-hidden /> Delete lead and all its data
+          </Btn>
+        </div>
+      )}
     </Card>
   );
 }

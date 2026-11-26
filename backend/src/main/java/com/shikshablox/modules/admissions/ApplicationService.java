@@ -895,6 +895,43 @@ public class ApplicationService {
     media.deletePrivate(keys);
   }
 
+  /**
+   * Erases a lead with its timeline, applications and uploaded files, e.g. when a family asks the
+   * school to delete their data. A linked website enquiry stays in the enquiry inbox.
+   */
+  public void deleteLead(UUID leadId) {
+    entitlements.requireModule(AdmissionsService.MODULE);
+    List<String> keys =
+        tx.execute(s -> {
+          String name =
+              jdbc.sql(
+                      "select coalesce(student_name, guardian_name) from admission_lead where id = ?")
+                  .param(leadId)
+                  .query(String.class)
+                  .optional()
+                  .orElseThrow(() -> ApiException.notFound("Lead"));
+          List<String> k =
+              jdbc.sql(
+                      "select d.storage_key from admission_document d join admission_application a"
+                          + " on a.id = d.application_id where a.lead_id = ?")
+                  .param(leadId)
+                  .query(String.class)
+                  .list();
+          jdbc.sql("delete from admission_lead where id = ?").param(leadId).update();
+          audit.record(
+              "admissions.lead_deleted",
+              "admission_lead",
+              leadId.toString(),
+              Map.of("files", k.size()),
+              null);
+          log.info("Lead {} deleted with {} files", leadId, k.size());
+          return k;
+        });
+    if (!keys.isEmpty()) {
+      media.deletePrivate(keys);
+    }
+  }
+
   // ------------------------------------------------------------------ helpers
 
   private UUID documentApplication(UUID documentId) {

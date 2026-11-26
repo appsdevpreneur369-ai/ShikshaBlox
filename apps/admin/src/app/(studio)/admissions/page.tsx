@@ -9,5 +9,10 @@ export const metadata: Metadata = { title: "Admissions" };
 export default async function Page() {
   const session = await currentUser();
   if (!session?.me.activeOrganization) redirect("/dashboard");
-  return <AdmissionsPage siteUrl={siteUrl(session.me.activeOrganization.slug) ?? undefined} />;
+  return (
+    <AdmissionsPage
+      siteUrl={siteUrl(session.me.activeOrganization.slug) ?? undefined}
+      isAdmin={(session.me.permissions ?? []).includes("school:manage")}
+    />
+  );
 }

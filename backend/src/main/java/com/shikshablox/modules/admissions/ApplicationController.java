@@ -174,6 +174,17 @@ class ApplicationController {
     applications.delete(id);
   }
 
+  @DeleteMapping("/api/admin/v1/admissions/leads/{id}")
+  @PreAuthorize("hasAuthority('school:manage')")
+  @SecurityRequirement(name = "bearer")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @Operation(
+      operationId = "deleteLead",
+      summary = "Erase a lead with its timeline, applications and files (school admins)")
+  void deleteLead(@PathVariable UUID id) {
+    applications.deleteLead(id);
+  }
+
   @PostMapping("/api/admin/v1/admissions/documents/{id}/review")
   @PreAuthorize("hasAuthority('admissions:manage')")
   @SecurityRequirement(name = "bearer")
