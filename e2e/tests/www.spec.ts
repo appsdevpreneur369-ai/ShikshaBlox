@@ -156,9 +156,9 @@ test.describe("demo request form", () => {
     await page.goto("/contact");
     await page.getByLabel(/Your name/).fill("E2E Test (ignore)");
     await page.getByLabel(/School name/).fill("Playwright Test School");
-    await page.getByLabel(/Mobile/).fill("+91 90000 00000");
-    await page.getByLabel("Email").fill("e2e@example.test");
-    await page.getByLabel(/I agree/).check();
+    await page.getByRole("textbox", { name: /Mobile \/ WhatsApp/ }).fill("+91 90000 00000");
+    await page.getByRole("textbox", { name: "Email" }).fill("e2e@example.test");
+    await page.getByRole("checkbox", { name: /I agree/ }).check();
     const [res] = await Promise.all([
       page.waitForResponse((r) => r.url().endsWith("/api/demo-request")),
       page.getByRole("button", { name: "Request my free demo" }).click(),
