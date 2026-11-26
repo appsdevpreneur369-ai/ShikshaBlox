@@ -23,6 +23,8 @@ public enum Permission {
   COMPLIANCE_MANAGE("compliance:manage"),
   /** Front office: walk-in and call register, appointments, post, lost & found (M43). */
   FRONT_OFFICE_MANAGE("frontoffice:manage"),
+  /** PTM bookings, parent helpdesk and surveys (M26). */
+  ENGAGEMENT_MANAGE("engagement:manage"),
   /** Read the audit log. */
   AUDIT_VIEW("audit:view");
 

@@ -44,6 +44,11 @@ const FEATURE_LABEL: Record<string, string> = {
   appointments: "Appointments",
   post: "Post & couriers",
   lost_found: "Lost & found",
+  ptm: "PTM slot booking",
+  helpdesk: "Parent helpdesk",
+  surveys: "Feedback surveys",
+  sla: "Helpdesk SLA tracking",
+  assignment: "Request assignment",
 };
 
 const MODULE_LABEL: Record<string, string> = {
@@ -53,6 +58,7 @@ const MODULE_LABEL: Record<string, string> = {
   ADMISSIONS_CRM: "Admissions CRM",
   COMPLIANCE: "Compliance calendar",
   FRONT_OFFICE: "Front office",
+  ENGAGEMENT: "PTM, helpdesk & surveys",
 };
 
 function formatValue(key: string, value: number) {

@@ -67,6 +67,27 @@ public class NotificationService {
         Review the application and documents in ShikshaBlox Studio:
         {{link}}
         """),
+    HELPDESK_STAFF(
+        "{{what}}: {{ticketNo}} {{subject}}",
+        """
+        {{what}} on the parent helpdesk.
+
+        Request: {{ticketNo}}
+        Subject: {{subject}}
+
+        Open the helpdesk in ShikshaBlox Studio:
+        {{link}}
+        """),
+    HELPDESK_REPLY(
+        "Update on your request {{ticketNo}} ({{school}})",
+        """
+        {{school}} has replied to your request {{ticketNo}} ({{subject}}):
+
+        {{reply}}
+
+        You can follow your request on the school website (Help page) with this number and
+        your phone number.
+        """),
     COMPLIANCE_DUE(
         "Compliance reminders for {{school}}",
         """
