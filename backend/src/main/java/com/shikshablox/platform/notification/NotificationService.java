@@ -46,6 +46,14 @@ public class NotificationService {
         The public disclosure section of your website was last reviewed on {{lastReviewed}}.
         Please check that it is still accurate and mark it as reviewed:
         {{link}}
+        """),
+    FOLLOW_UPS_DUE(
+        "{{count}} admission follow-ups due today at {{school}}",
+        """
+        Good morning! You have {{count}} admission follow-ups due today ({{overdue}} overdue).
+
+        Open your follow-up list in ShikshaBlox Studio:
+        {{link}}
         """);
 
     private final String subject;

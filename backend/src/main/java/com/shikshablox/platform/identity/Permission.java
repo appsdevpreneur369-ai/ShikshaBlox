@@ -17,6 +17,8 @@ public enum Permission {
   CONTENT_VIEW("content:view"),
   /** Read and manage admissions enquiries. */
   ENQUIRY_MANAGE("enquiry:manage"),
+  /** Work the admissions CRM: leads, follow-ups, seats (M03). */
+  ADMISSIONS_MANAGE("admissions:manage"),
   /** Read the audit log. */
   AUDIT_VIEW("audit:view");
 

@@ -1,5 +1,6 @@
 package com.shikshablox.platform.identity;
 
+import static com.shikshablox.platform.identity.Permission.ADMISSIONS_MANAGE;
 import static com.shikshablox.platform.identity.Permission.AUDIT_VIEW;
 import static com.shikshablox.platform.identity.Permission.CONTENT_EDIT;
 import static com.shikshablox.platform.identity.Permission.CONTENT_PUBLISH;
@@ -12,8 +13,8 @@ import java.util.EnumSet;
 import java.util.Set;
 
 /**
- * M01 roles. {@link #PLATFORM_SUPER_ADMIN} is platform-wide (no organization) and requires TOTP
- * MFA; every other role is scoped to one organization.
+ * School and platform roles. {@link #PLATFORM_SUPER_ADMIN} is platform-wide (no organization) and
+ * requires TOTP MFA; every other role is scoped to one organization.
  */
 public enum Role {
   PLATFORM_SUPER_ADMIN(
@@ -25,14 +26,23 @@ public enum Role {
           CONTENT_PUBLISH,
           CONTENT_VIEW,
           ENQUIRY_MANAGE,
+          ADMISSIONS_MANAGE,
           AUDIT_VIEW)),
   SCHOOL_ADMIN(
       false,
       EnumSet.of(
-          SCHOOL_MANAGE, CONTENT_EDIT, CONTENT_PUBLISH, CONTENT_VIEW, ENQUIRY_MANAGE, AUDIT_VIEW)),
+          SCHOOL_MANAGE,
+          CONTENT_EDIT,
+          CONTENT_PUBLISH,
+          CONTENT_VIEW,
+          ENQUIRY_MANAGE,
+          ADMISSIONS_MANAGE,
+          AUDIT_VIEW)),
   CONTENT_APPROVER(false, EnumSet.of(CONTENT_EDIT, CONTENT_PUBLISH, CONTENT_VIEW)),
   CONTENT_EDITOR(false, EnumSet.of(CONTENT_EDIT, CONTENT_VIEW)),
-  VIEWER(false, EnumSet.of(CONTENT_VIEW));
+  VIEWER(false, EnumSet.of(CONTENT_VIEW)),
+  /** Works admission leads and the enquiry inbox; read-only elsewhere. */
+  ADMISSIONS_COUNSELLOR(false, EnumSet.of(ADMISSIONS_MANAGE, ENQUIRY_MANAGE, CONTENT_VIEW));
 
   private final boolean platform;
   private final Set<Permission> permissions;

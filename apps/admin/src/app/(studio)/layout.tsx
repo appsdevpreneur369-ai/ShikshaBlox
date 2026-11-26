@@ -13,6 +13,7 @@ function navItems(permissions: string[], hasSchool: boolean): NavItem[] {
     items.push({ href: "/content", label: "Content" });
     items.push({ href: "/media", label: "Media" });
     if (permissions.includes("enquiry:manage")) items.push({ href: "/enquiries", label: "Enquiries" });
+    if (permissions.includes("admissions:manage")) items.push({ href: "/admissions", label: "Admissions" });
     if (permissions.includes("school:manage")) items.push({ href: "/design", label: "Design & profile" });
     items.push({ href: "/plan", label: "Plan & usage" });
     items.push({ href: "/settings", label: "Settings" });
@@ -27,6 +28,7 @@ const ROLE_LABEL: Record<string, string> = {
   PLATFORM_SUPER_ADMIN: "Platform admin",
   SCHOOL_ADMIN: "School admin",
   CONTENT_APPROVER: "Approver",
+  ADMISSIONS_COUNSELLOR: "Counsellor",
   CONTENT_EDITOR: "Editor",
   VIEWER: "Viewer",
 };

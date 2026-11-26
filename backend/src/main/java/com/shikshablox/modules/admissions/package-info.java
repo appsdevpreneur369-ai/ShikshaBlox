@@ -1,5 +1,5 @@
-/** Admissions data contract: enquiries and the EnquiryReceived event (seam for M03 CRM). */
+/** M03 Admissions CRM: leads from website enquiries and walk-ins, pipeline, follow-ups, seats. */
 @org.springframework.modulith.ApplicationModule(
     id = "admissions",
-    displayName = "Admissions (stub)")
+    displayName = "M03 Admissions CRM")
 package com.shikshablox.modules.admissions;
