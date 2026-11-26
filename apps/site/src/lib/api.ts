@@ -89,3 +89,26 @@ export async function getPreview(host: string, token: string): Promise<PublicPag
   if (!res.ok) return null;
   return (await res.json()) as PublicPage;
 }
+
+export type ApplicationForm = {
+  school: string;
+  academicYear: string;
+  grades: string[];
+  documents: { code: string; label: string; required: boolean }[];
+  feeAmount: number;
+  feeInstructions?: string | null;
+  intro?: string | null;
+  maxFileBytes: number;
+};
+
+/** The school's online application form, or null when applications are not open. */
+export async function getApplicationForm(host: string): Promise<ApplicationForm | null> {
+  try {
+    return await getJson<ApplicationForm>(
+      `${API}/api/public/v1/applications/form?host=${encodeURIComponent(host)}`,
+      host,
+    );
+  } catch {
+    return null;
+  }
+}

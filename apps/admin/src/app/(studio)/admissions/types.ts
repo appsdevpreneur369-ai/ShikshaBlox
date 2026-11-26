@@ -31,7 +31,13 @@ export type Activity = {
 };
 
 export type Counsellor = { id: string; name: string; email: string };
-export type Seat = { grade: string; capacity: number; sortOrder: number; admitted: number; offered: number };
+export type Seat = {
+  grade: string;
+  capacity: number;
+  sortOrder: number;
+  admitted: number;
+  offered: number;
+};
 export type Funnel = {
   academicYear: string;
   byStage: Record<string, number>;
@@ -42,7 +48,16 @@ export type Funnel = {
   conversionPercent: number | null;
 };
 
-export const STAGES = ["NEW", "CONTACTED", "VISIT_SCHEDULED", "VISITED", "APPLIED", "OFFERED", "ADMITTED", "LOST"];
+export const STAGES = [
+  "NEW",
+  "CONTACTED",
+  "VISIT_SCHEDULED",
+  "VISITED",
+  "APPLIED",
+  "OFFERED",
+  "ADMITTED",
+  "LOST",
+];
 export const OPEN_STAGES = STAGES.filter((s) => s !== "ADMITTED" && s !== "LOST");
 
 export const STAGE_LABEL: Record<string, string> = {
@@ -86,6 +101,7 @@ export const KIND_LABEL: Record<string, string> = {
   STAGE: "Stage changed",
   ASSIGNED: "Assigned",
   FOLLOW_UP: "Follow-up set",
+  APPLICATION: "Application",
 };
 
 /** "today" | "overdue" | "later" | null for a follow-up timestamp (IST calendar days). */
@@ -100,11 +116,18 @@ export function dueState(iso?: string | null): "overdue" | "today" | "later" | n
 }
 
 export const fmtDay = (iso?: string | null) =>
-  iso ? new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" }).format(new Date(iso)) : "—";
+  iso
+    ? new Intl.DateTimeFormat("en-IN", {
+        day: "numeric",
+        month: "short",
+        timeZone: "Asia/Kolkata",
+      }).format(new Date(iso))
+    : "—";
 
 /** Value for <input type="date"> from an ISO instant, in IST. */
 export const toDateInput = (iso?: string | null) =>
   iso ? new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date(iso)) : "";
 
 /** 10:00 IST on the chosen day, as an ISO instant. */
-export const fromDateInput = (v: string) => (v ? new Date(`${v}T10:00:00+05:30`).toISOString() : undefined);
+export const fromDateInput = (v: string) =>
+  v ? new Date(`${v}T10:00:00+05:30`).toISOString() : undefined;

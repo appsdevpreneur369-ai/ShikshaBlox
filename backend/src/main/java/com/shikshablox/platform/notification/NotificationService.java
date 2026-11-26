@@ -54,6 +54,28 @@ public class NotificationService {
 
         Open your follow-up list in ShikshaBlox Studio:
         {{link}}
+        """),
+    APPLICATION_RECEIVED(
+        "New admission application {{applicationNo}} for {{school}}",
+        """
+        A new admission application has been submitted on your website.
+
+        Application: {{applicationNo}}
+        Class: {{grade}}
+        Documents uploaded: {{documents}}
+
+        Review the application and documents in ShikshaBlox Studio:
+        {{link}}
+        """),
+    APPLICATION_ACKNOWLEDGED(
+        "Application {{applicationNo}} received by {{school}}",
+        """
+        Thank you for applying to {{school}}.
+
+        Your application number is {{applicationNo}} ({{grade}}).
+        Please quote it when you contact the school.
+        {{fee}}
+        The admissions office will review your documents and get in touch with you.
         """);
 
     private final String subject;

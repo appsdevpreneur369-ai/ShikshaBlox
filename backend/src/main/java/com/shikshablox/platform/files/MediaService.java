@@ -256,6 +256,78 @@ public class MediaService implements UsageMeter {
     }
   }
 
+  // --------------------------------------------------------------------------- private files
+
+  /** A file stored in the private bucket outside the media library. */
+  public record StoredFile(
+      String storageKey, String filename, String contentType, long sizeBytes, String sha256) {}
+
+  /**
+   * Stores a JPG, PNG or PDF in the private bucket under {@code orgs/<current org>/<area>/}, with
+   * the same signature check and malware scan as the media library. Used for records such as
+   * admission documents, which must never be public or appear in the media library.
+   */
+  public StoredFile storePrivate(String area, String filename, byte[] content, long maxBytes) {
+    UUID org = TenantContext.requireOrganizationId();
+    if (!area.matches("[a-z0-9/_-]{1,120}") || area.contains("..")) {
+      throw new IllegalArgumentException("Invalid storage area");
+    }
+    String name = cleanFilename(filename);
+    if (content == null || content.length == 0) {
+      throw ApiException.badRequest("empty_file", name + " is empty.");
+    }
+    if (content.length > maxBytes) {
+      throw ApiException.badRequest(
+          "file_too_large", name + " is larger than " + (maxBytes / (1024 * 1024)) + " MB.");
+    }
+    Detected type;
+    try {
+      type = detect(content, name);
+    } catch (ApiException e) {
+      type = null;
+    }
+    if (type == null
+        || !(type.contentType().equals("application/pdf")
+            || type.contentType().equals("image/jpeg")
+            || type.contentType().equals("image/png"))) {
+      throw ApiException.badRequest("unsupported_type", name + ": upload a PDF, JPG or PNG file.");
+    }
+    if (scanner.scan(name, content) == MalwareScanner.Verdict.INFECTED) {
+      log.warn("Private upload rejected by malware scanner: {}", name);
+      throw ApiException.badRequest("file_rejected", name + " was rejected by the virus scanner.");
+    }
+    String key = "orgs/" + org + "/" + area + "/" + UUID.randomUUID() + "." + type.extension();
+    try {
+      storage.put(Visibility.PRIVATE, key, content, type.contentType());
+    } catch (Exception e) {
+      log.error("Private upload failed", e);
+      throw new ApiException(
+          HttpStatus.BAD_GATEWAY,
+          "storage_unavailable",
+          "The file could not be stored. Please try again.");
+    }
+    return new StoredFile(key, name, type.contentType(), content.length, sha256(content));
+  }
+
+  /** A 10-minute download link for a file stored with {@link #storePrivate}. */
+  public String signedPrivateUrl(String storageKey, String downloadName) {
+    requireOwnKey(storageKey);
+    return storage.signedUrl(storageKey, Duration.ofMinutes(10), downloadName);
+  }
+
+  /** Best-effort removal of files stored with {@link #storePrivate}. */
+  public void deletePrivate(List<String> storageKeys) {
+    storageKeys.forEach(MediaService::requireOwnKey);
+    cleanup(storageKeys.stream().map(k -> new String[] {"PRIVATE", k}).toList());
+  }
+
+  private static void requireOwnKey(String key) {
+    UUID org = TenantContext.requireOrganizationId();
+    if (key == null || !key.startsWith("orgs/" + org + "/") || key.contains("..")) {
+      throw ApiException.notFound("File");
+    }
+  }
+
   private void cleanup(List<String[]> written) {
     for (String[] w : written) {
       try {

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Mail, MessageCircle, Phone, X } from "lucide-react";
 import { sb, fmtDate } from "@/lib/studio";
 import { Badge, Btn, Card, Field, inputCls, useAction } from "@/components/kit";
+import { LeadApplications } from "./applications";
 import {
   KIND_LABEL,
   SOURCE_LABEL,
@@ -25,11 +26,13 @@ export function LeadPanel({
   counsellors,
   onClose,
   onChanged,
+  onOpenApplication,
 }: {
   id: string;
   counsellors: Counsellor[];
   onClose: () => void;
   onChanged: () => void;
+  onOpenApplication?: (applicationId: string) => void;
 }) {
   const [d, setD] = useState<Detail | null>(null);
   const [kind, setKind] = useState("CALL");
@@ -62,7 +65,11 @@ export function LeadPanel({
   const l = d.lead;
 
   async function move(stage: string, reason?: string) {
-    const r = await run("stage", () => sb<Lead>(`admissions/leads/${l.id}/stage`, { body: { stage, reason } }), `Moved to ${STAGE_LABEL[stage]}`);
+    const r = await run(
+      "stage",
+      () => sb<Lead>(`admissions/leads/${l.id}/stage`, { body: { stage, reason } }),
+      `Moved to ${STAGE_LABEL[stage]}`,
+    );
     if (r) {
       const fresh = await sb<Detail>(`admissions/leads/${l.id}`);
       setD(fresh);
@@ -74,7 +81,10 @@ export function LeadPanel({
   async function logActivity() {
     const r = await run(
       "log",
-      () => sb<Detail>(`admissions/leads/${l.id}/activities`, { body: { kind, body, nextFollowUpAt: fromDateInput(next) } }),
+      () =>
+        sb<Detail>(`admissions/leads/${l.id}/activities`, {
+          body: { kind, body, nextFollowUpAt: fromDateInput(next) },
+        }),
       "Logged",
     );
     if (r) {
@@ -85,7 +95,11 @@ export function LeadPanel({
   }
 
   async function patch(p: Record<string, unknown>, ok: string) {
-    const r = await run("patch", () => sb<Lead>(`admissions/leads/${l.id}`, { method: "PATCH", body: p }), ok);
+    const r = await run(
+      "patch",
+      () => sb<Lead>(`admissions/leads/${l.id}`, { method: "PATCH", body: p }),
+      ok,
+    );
     if (r) {
       setD(await sb<Detail>(`admissions/leads/${l.id}`));
       onChanged();
@@ -107,7 +121,12 @@ export function LeadPanel({
             {l.academicYear} · {SOURCE_LABEL[l.source] ?? l.source}
           </p>
         </div>
-        <button type="button" onClick={onClose} className="text-ink-muted hover:text-ink rounded-full p-1.5 hover:bg-black/5" aria-label="Close lead">
+        <button
+          type="button"
+          onClick={onClose}
+          className="text-ink-muted hover:text-ink rounded-full p-1.5 hover:bg-black/5"
+          aria-label="Close lead"
+        >
           <X className="size-4" />
         </button>
       </div>
@@ -120,7 +139,10 @@ export function LeadPanel({
       </div>
 
       <div className="mt-4 flex flex-wrap gap-2">
-        <a href={`tel:${l.phone.replace(/\s/g, "")}`} className="bg-primary text-on-primary inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium">
+        <a
+          href={`tel:${l.phone.replace(/\s/g, "")}`}
+          className="bg-primary text-on-primary inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium"
+        >
           <Phone className="size-4" aria-hidden /> Call
         </a>
         <a
@@ -132,7 +154,10 @@ export function LeadPanel({
           <MessageCircle className="size-4" aria-hidden /> WhatsApp
         </a>
         {l.email && (
-          <a href={`mailto:${l.email}`} className="inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium ring-1 ring-black/10">
+          <a
+            href={`mailto:${l.email}`}
+            className="inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium ring-1 ring-black/10"
+          >
             <Mail className="size-4" aria-hidden /> Email
           </a>
         )}
@@ -146,11 +171,21 @@ export function LeadPanel({
         <p className="mb-2 text-sm font-medium">Move to stage</p>
         <div className="flex flex-wrap gap-1.5">
           {STAGES.filter((s) => s !== "LOST").map((s) => (
-            <Btn key={s} size="sm" variant={l.stage === s ? "primary" : "secondary"} disabled={busy === "stage"} onClick={() => void move(s)}>
+            <Btn
+              key={s}
+              size="sm"
+              variant={l.stage === s ? "primary" : "secondary"}
+              disabled={busy === "stage"}
+              onClick={() => void move(s)}
+            >
               {STAGE_LABEL[s]}
             </Btn>
           ))}
-          <Btn size="sm" variant={l.stage === "LOST" ? "danger" : "ghost"} onClick={() => setAskLost(true)}>
+          <Btn
+            size="sm"
+            variant={l.stage === "LOST" ? "danger" : "ghost"}
+            onClick={() => setAskLost(true)}
+          >
             Lost…
           </Btn>
         </div>
@@ -163,12 +198,19 @@ export function LeadPanel({
               onChange={(e) => setLostReason(e.target.value)}
               aria-label="Reason the lead was lost"
             />
-            <Btn variant="danger" busy={busy === "stage"} disabled={!lostReason.trim()} onClick={() => void move("LOST", lostReason)}>
+            <Btn
+              variant="danger"
+              busy={busy === "stage"}
+              disabled={!lostReason.trim()}
+              onClick={() => void move("LOST", lostReason)}
+            >
               Mark lost
             </Btn>
           </div>
         )}
-        {l.stage === "LOST" && l.lostReason && <p className="text-ink-muted mt-2 text-sm">Reason: {l.lostReason}</p>}
+        {l.stage === "LOST" && l.lostReason && (
+          <p className="text-ink-muted mt-2 text-sm">Reason: {l.lostReason}</p>
+        )}
       </div>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -176,7 +218,9 @@ export function LeadPanel({
           <select
             className={inputCls}
             value={l.assignedTo ?? ""}
-            onChange={(e) => e.target.value && void patch({ assignedTo: e.target.value }, "Assigned")}
+            onChange={(e) =>
+              e.target.value && void patch({ assignedTo: e.target.value }, "Assigned")
+            }
           >
             <option value="">Unassigned</option>
             {counsellors.map((c) => (
@@ -187,7 +231,11 @@ export function LeadPanel({
           </select>
         </Field>
         <Field label="Priority">
-          <select className={inputCls} value={l.priority} onChange={(e) => void patch({ priority: e.target.value }, "Priority updated")}>
+          <select
+            className={inputCls}
+            value={l.priority}
+            onChange={(e) => void patch({ priority: e.target.value }, "Priority updated")}
+          >
             <option value="LOW">Low</option>
             <option value="NORMAL">Normal</option>
             <option value="HIGH">High</option>
@@ -199,7 +247,12 @@ export function LeadPanel({
         <p className="mb-2 text-sm font-medium">Log an interaction</p>
         <div className="flex flex-wrap gap-1.5">
           {["CALL", "VISIT", "MESSAGE", "NOTE"].map((k) => (
-            <Btn key={k} size="sm" variant={kind === k ? "primary" : "secondary"} onClick={() => setKind(k)}>
+            <Btn
+              key={k}
+              size="sm"
+              variant={kind === k ? "primary" : "secondary"}
+              onClick={() => setKind(k)}
+            >
               {KIND_LABEL[k]}
             </Btn>
           ))}
@@ -215,13 +268,25 @@ export function LeadPanel({
         <div className="mt-2 flex flex-wrap items-end gap-2">
           <label className="text-sm">
             <span className="text-ink-muted mb-1 block text-xs">Next follow-up</span>
-            <input type="date" className={inputCls} value={next} onChange={(e) => setNext(e.target.value)} />
+            <input
+              type="date"
+              className={inputCls}
+              value={next}
+              onChange={(e) => setNext(e.target.value)}
+            />
           </label>
-          <Btn variant="primary" busy={busy === "log"} disabled={!body.trim()} onClick={() => void logActivity()}>
+          <Btn
+            variant="primary"
+            busy={busy === "log"}
+            disabled={!body.trim()}
+            onClick={() => void logActivity()}
+          >
             Save
           </Btn>
         </div>
       </div>
+
+      {onOpenApplication && <LeadApplications leadId={l.id} onOpen={onOpenApplication} />}
 
       {l.notes && (
         <div className="mt-4">
@@ -235,9 +300,14 @@ export function LeadPanel({
         <ol className="space-y-3 border-l border-black/10 pl-4">
           {d.activities.map((a) => (
             <li key={a.id} className="relative text-sm">
-              <span className="bg-primary absolute top-1.5 -left-[1.3rem] size-2 rounded-full" aria-hidden />
+              <span
+                className="bg-primary absolute top-1.5 -left-[1.3rem] size-2 rounded-full"
+                aria-hidden
+              />
               <p className="font-medium">
-                {a.kind === "STAGE" ? `${STAGE_LABEL[a.fromStage ?? ""] ?? "—"} → ${STAGE_LABEL[a.toStage ?? ""] ?? a.toStage}` : KIND_LABEL[a.kind] ?? a.kind}
+                {a.kind === "STAGE"
+                  ? `${STAGE_LABEL[a.fromStage ?? ""] ?? "—"} → ${STAGE_LABEL[a.toStage ?? ""] ?? a.toStage}`
+                  : (KIND_LABEL[a.kind] ?? a.kind)}
               </p>
               {a.body && <p className="text-ink-muted whitespace-pre-line">{a.body}</p>}
               <p className="text-ink-muted text-xs">

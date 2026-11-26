@@ -1,5 +1,5 @@
 import { normaliseHost } from "@/lib/host";
-import { getFeed, getPaths, getSite } from "@/lib/api";
+import { getApplicationForm, getFeed, getPaths, getSite } from "@/lib/api";
 import { absoluteUrl } from "@/lib/seo";
 
 const esc = (s: string) =>
@@ -7,20 +7,29 @@ const esc = (s: string) =>
 
 /** Per-school sitemap: published pages plus news, event and album detail pages. */
 export async function GET(request: Request) {
-  const host = normaliseHost(request.headers.get("x-forwarded-host") ?? request.headers.get("host"));
+  const host = normaliseHost(
+    request.headers.get("x-forwarded-host") ?? request.headers.get("host"),
+  );
   const site = host ? await getSite(host).catch(() => null) : null;
   if (!host || !site) return new Response("Not Found", { status: 404 });
 
   const entries: { loc: string; lastmod?: string; priority: string }[] = [];
   for (const p of await getPaths(host)) {
     const path = p.path.replace(/^\/+/, "");
-    entries.push({ loc: absoluteUrl(host, path), lastmod: p.updatedAt, priority: path ? "0.8" : "1.0" });
+    entries.push({
+      loc: absoluteUrl(host, path),
+      lastmod: p.updatedAt,
+      priority: path ? "0.8" : "1.0",
+    });
   }
+  if (await getApplicationForm(host))
+    entries.push({ loc: absoluteUrl(host, "apply"), priority: "0.9" });
   const sections = { news: "news", events: "events", albums: "gallery" } as const;
   for (const type of ["news", "events", "albums"] as const) {
     const feed = await getFeed(host, type, { limit: 200 }).catch(() => null);
     for (const it of feed?.items ?? []) {
-      if (it.slug) entries.push({ loc: absoluteUrl(host, `${sections[type]}/${it.slug}`), priority: "0.6" });
+      if (it.slug)
+        entries.push({ loc: absoluteUrl(host, `${sections[type]}/${it.slug}`), priority: "0.6" });
     }
   }
 
@@ -34,6 +43,9 @@ export async function GET(request: Request) {
       .join("\n") +
     `\n</urlset>\n`;
   return new Response(xml, {
-    headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" },
+    headers: {
+      "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control": "public, max-age=3600",
+    },
   });
 }

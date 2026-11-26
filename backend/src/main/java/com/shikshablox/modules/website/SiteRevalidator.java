@@ -67,6 +67,15 @@ class SiteRevalidator {
     Thread.ofVirtual().start(() -> revalidate(org));
   }
 
+  @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
+  void onSiteChanged(SiteChanged event) {
+    if (url.isBlank() || secret.isBlank()) {
+      return;
+    }
+    UUID org = event.organizationId();
+    Thread.ofVirtual().start(() -> revalidate(org));
+  }
+
   void revalidate(UUID org) {
     try {
       List<String> hosts = new ArrayList<>();
