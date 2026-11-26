@@ -276,7 +276,7 @@ function SurveyEditor({
                 aria-label={`Question ${i + 1}`}
               />
               <select
-                className={`${inputCls} w-auto`}
+                className={`${inputCls} w-auto!`}
                 disabled={locked}
                 value={q.type}
                 onChange={(e) =>

@@ -543,7 +543,7 @@ export function ApplicationPanel({
           </p>
           <div className="flex flex-wrap items-end gap-2">
             <input
-              className={`${inputCls} w-48`}
+              className={`${inputCls} w-48!`}
               placeholder="Receipt / UPI reference"
               value={feeRef}
               onChange={(e) => setFeeRef(e.target.value)}

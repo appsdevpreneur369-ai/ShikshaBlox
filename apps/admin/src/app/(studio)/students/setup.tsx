@@ -259,7 +259,7 @@ export function PromotionView({ onDone }: { onDone: () => void }) {
                 <span className="text-ink-muted text-sm">{s.students.length} students</span>
                 <ArrowRight className="text-ink-muted size-4" aria-hidden />
                 <select
-                  className={`${inputCls} w-auto`}
+                  className={`${inputCls} w-auto!`}
                   value={targets[s.sectionId] ?? ""}
                   onChange={(e) => setTargets({ ...targets, [s.sectionId]: e.target.value })}
                   aria-label={`Next class for ${s.label}`}
@@ -291,7 +291,7 @@ export function PromotionView({ onDone }: { onDone: () => void }) {
                         {p.name} <span className="text-ink-muted text-xs">{p.admissionNo}</span>
                       </span>
                       <select
-                        className={`${inputCls} w-auto`}
+                        className={`${inputCls} w-auto!`}
                         value={choice[p.id] ?? "PROMOTE"}
                         onChange={(e) =>
                           setChoice({
@@ -322,7 +322,7 @@ export function PromotionView({ onDone }: { onDone: () => void }) {
         </p>
         <div className="mt-2 flex flex-wrap gap-2">
           <input
-            className={`${inputCls} w-40`}
+            className={`${inputCls} w-40!`}
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
             aria-label="Type the new year to confirm"

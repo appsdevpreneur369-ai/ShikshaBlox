@@ -62,7 +62,7 @@ export function StudentList({
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <select
-          className={`${inputCls} w-auto`}
+          className={`${inputCls} sm:w-56`}
           value={sectionId}
           onChange={(e) => setSectionId(e.target.value)}
           aria-label="Class and section"
@@ -75,7 +75,7 @@ export function StudentList({
           ))}
         </select>
         <select
-          className={`${inputCls} w-auto`}
+          className={`${inputCls} sm:w-44`}
           value={status}
           onChange={(e) => setStatus(e.target.value)}
           aria-label="Status"
@@ -171,7 +171,9 @@ export function StudentList({
                       <td className="px-3 py-2.5">
                         {r.guardianName ?? "—"}
                         {r.guardianPhone && (
-                          <span className="text-ink-muted block text-xs">{r.guardianPhone}</span>
+                          <span className="text-ink-muted block text-xs whitespace-nowrap">
+                            {r.guardianPhone}
+                          </span>
                         )}
                       </td>
                       <td className="px-3 py-2.5 text-right whitespace-nowrap">

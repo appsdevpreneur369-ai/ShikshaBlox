@@ -376,7 +376,7 @@ public class CommsService implements UsageMeter {
 
   /**
    * Keeps a guardian's contact in step with student records (matched by phone, else email): name,
-   * email, language, children and the class tags (tags starting "Class " are replaced). Opt-ins are
+   * email, language, children and the class tags (any known class label is replaced). Opt-ins are
    * never changed here; consent is recorded separately. Does nothing when the school has no
    * communication hub or the contact limit is reached.
    */
@@ -386,6 +386,7 @@ public class CommsService implements UsageMeter {
       String email,
       String language,
       List<String> classTags,
+      List<String> allClassTags,
       String students) {
     if (!entitlements.hasModule(MODULE) || (phone == null && email == null)) {
       return;
@@ -427,7 +428,10 @@ public class CommsService implements UsageMeter {
     }
     Contact c = loadContact(existing);
     LinkedHashSet<String> tags = new LinkedHashSet<>();
-    c.tags().stream().filter(t -> !t.startsWith("Class ")).forEach(tags::add);
+    // Class tags from student records are replaced; the school's own tags are kept.
+    java.util.Set<String> managed =
+        new java.util.HashSet<>(allClassTags == null ? List.of() : allClassTags);
+    c.tags().stream().filter(t -> !managed.contains(t)).forEach(tags::add);
     tags.addAll(classes);
     jdbc.sql(
             "update comms_contact set name = ?, email = coalesce(?, email), language = ?, tags = ?, student_names = ?,"

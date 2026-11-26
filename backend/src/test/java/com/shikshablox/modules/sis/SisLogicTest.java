@@ -23,8 +23,8 @@ class SisLogicTest {
   @Test
   void sectionLabelsDoubleAsMessageTags() {
     assertThat(SisService.label("Class 3", "A")).isEqualTo("Class 3 A");
-    assertThat(SisService.label("LKG", "B")).isEqualTo("Class LKG B");
-    assertThat(SisService.label("class 10", "C")).isEqualTo("class 10 C");
+    assertThat(SisService.label("LKG", "B")).isEqualTo("LKG B");
+    assertThat(SisService.label(" Nursery ", "A")).isEqualTo("Nursery A");
   }
 
   @Test

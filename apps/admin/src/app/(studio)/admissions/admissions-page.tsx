@@ -156,7 +156,7 @@ export function AdmissionsPage({
         actions={
           <>
             <select
-              className={`${inputCls} w-auto`}
+              className={`${inputCls} w-auto!`}
               value={year}
               onChange={(e) => setYear(e.target.value)}
               aria-label="Academic year"

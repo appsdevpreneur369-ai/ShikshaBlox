@@ -61,7 +61,7 @@ export function EnrolAsStudent({ leadId, onDone }: { leadId: string; onDone: () 
       <p className="mb-2 text-sm font-medium">Enrol as a student</p>
       <div className="flex flex-wrap gap-2">
         <select
-          className={`${inputCls} w-auto`}
+          className={`${inputCls} w-auto!`}
           value={sectionId}
           onChange={(e) => setSectionId(e.target.value)}
           aria-label="Class and section"

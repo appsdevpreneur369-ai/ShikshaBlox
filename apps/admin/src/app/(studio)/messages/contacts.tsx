@@ -57,7 +57,7 @@ export function ContactsView({ tags, onChanged }: { tags: TagCount[]; onChanged:
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <select
-          className={`${inputCls} w-auto`}
+          className={`${inputCls} w-auto!`}
           value={tag}
           onChange={(e) => setTag(e.target.value)}
           aria-label="Filter by tag"

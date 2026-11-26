@@ -408,7 +408,7 @@ function ScheduleView({ id, onBack }: { id: string; onBack: () => void }) {
         </div>
         <div className="mt-3 print:hidden">
           <select
-            className={`${inputCls} w-auto`}
+            className={`${inputCls} w-auto!`}
             value={hostId}
             onChange={(ev) => setHostId(ev.target.value)}
             aria-label="Show teacher"

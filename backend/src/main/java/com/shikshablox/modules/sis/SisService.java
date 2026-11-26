@@ -235,10 +235,7 @@ public class SisService implements UsageMeter {
   }
 
   static String label(String grade, String section) {
-    String g = grade.trim();
-    return (g.toLowerCase(Locale.ROOT).startsWith("class ") ? g : "Class " + g)
-        + " "
-        + section.trim();
+    return grade.trim() + " " + section.trim();
   }
 
   // ------------------------------------------------------------------ settings
@@ -869,15 +866,24 @@ public class SisService implements UsageMeter {
           String.join(
               ", ",
               kids.stream()
-                  .map(k ->
-                      k.name()
-                          + (k.label() == null
-                              ? ""
-                              : " (" + k.label().replaceFirst("^Class ", "") + ")"))
+                  .map(k -> k.name() + (k.label() == null ? "" : " (" + k.label() + ")"))
                   .toList());
       comms.syncGuardian(
-          g.name(), g.phone(), g.email(), g.language(), tags, names.isEmpty() ? null : names);
+          g.name(),
+          g.phone(),
+          g.email(),
+          g.language(),
+          tags,
+          allClassLabels(),
+          names.isEmpty() ? null : names);
     }
+  }
+
+  /** Every class label the school has used (any year), so stale class tags can be replaced. */
+  private List<String> allClassLabels() {
+    return jdbc.sql("select distinct grade, section from class_section")
+        .query((rs, i) -> label(rs.getString(1), rs.getString(2)))
+        .list();
   }
 
   // ------------------------------------------------------------------ documents & fields

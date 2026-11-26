@@ -806,7 +806,7 @@ function Records({
           <p className="mb-2 text-sm font-medium">Class this year</p>
           <div className="flex flex-wrap items-end gap-2">
             <select
-              className={`${inputCls} w-auto`}
+              className={`${inputCls} w-auto!`}
               value={move.sectionId}
               onChange={(e) => setMove({ ...move, sectionId: e.target.value })}
               aria-label="Section"
@@ -818,7 +818,7 @@ function Records({
               ))}
             </select>
             <input
-              className={`${inputCls} w-24`}
+              className={`${inputCls} w-24!`}
               type="number"
               min={1}
               max={999}
@@ -853,7 +853,7 @@ function Records({
           {s.leavingReason ? `: ${s.leavingReason}` : ""}
           <div className="mt-2 flex flex-wrap items-end gap-2">
             <select
-              className={`${inputCls} w-auto`}
+              className={`${inputCls} w-auto!`}
               value={move.sectionId}
               onChange={(e) => setMove({ ...move, sectionId: e.target.value })}
               aria-label="Section to re-admit into"

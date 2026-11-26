@@ -391,7 +391,7 @@ function Register({ hasAdmissions, onChanged }: { hasAdmissions: boolean; onChan
         </label>
         <input
           id="reg-day"
-          className={`${inputCls} w-auto`}
+          className={`${inputCls} w-auto!`}
           type="date"
           max={todayKey()}
           value={day}
