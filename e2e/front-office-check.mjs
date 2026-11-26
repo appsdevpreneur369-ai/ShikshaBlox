@@ -67,10 +67,13 @@ await page
   .first()
   .waitFor({ timeout: 10000 })
   .catch(() => problems.push("Logging a walk-in did not confirm"));
-await page.getByRole("button", { name: "To admissions" }).first().click();
-await page.getByLabel("Student name").fill(`${RUN} Child`);
-await page.getByLabel("Class sought").fill("Class 4");
-await page.getByRole("button", { name: "Create lead" }).click();
+// Wait for this run's row (the list reloads after logging) and use its own button.
+const row = page.locator("li", { hasText: `${RUN} Parent` });
+await row.waitFor({ timeout: 10000 });
+await row.getByRole("button", { name: "To admissions" }).click();
+await row.getByLabel("Student name").fill(`${RUN} Child`);
+await row.getByLabel("Class sought").fill("Class 4");
+await row.getByRole("button", { name: "Create lead" }).click();
 await page
   .getByText("Added to admissions")
   .waitFor({ timeout: 10000 })
@@ -113,7 +116,9 @@ await page
   .waitFor({ timeout: 10000 })
   .catch(() => problems.push("Logging post did not confirm"));
 await page.waitForTimeout(800);
-await page.getByRole("button", { name: "Hand over…" }).first().click();
+const postRow = page.locator("li", { hasText: `${RUN} Sender` });
+await postRow.waitFor({ timeout: 10000 });
+await postRow.getByRole("button", { name: "Hand over…" }).click();
 await page.getByLabel("Handed to *").fill("Principal's office");
 await page.getByRole("button", { name: "Save", exact: true }).click();
 await page
