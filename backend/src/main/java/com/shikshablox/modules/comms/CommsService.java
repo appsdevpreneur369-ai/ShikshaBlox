@@ -374,6 +374,73 @@ public class CommsService implements UsageMeter {
     return new ImportResult(added, updated, skipped, errors);
   }
 
+  /**
+   * Keeps a guardian's contact in step with student records (matched by phone, else email): name,
+   * email, language, children and the class tags (tags starting "Class " are replaced). Opt-ins are
+   * never changed here; consent is recorded separately. Does nothing when the school has no
+   * communication hub or the contact limit is reached.
+   */
+  public void syncGuardian(
+      String name,
+      String phone,
+      String email,
+      String language,
+      List<String> classTags,
+      String students) {
+    if (!entitlements.hasModule(MODULE) || (phone == null && email == null)) {
+      return;
+    }
+    UUID existing =
+        phone != null
+            ? jdbc.sql(
+                    "select id from comms_contact where right(regexp_replace(phone, '\\D', '', 'g'), 10) = ?")
+                .param(key(phone))
+                .query(UUID.class)
+                .optional()
+                .orElse(null)
+            : jdbc.sql("select id from comms_contact where lower(email) = lower(?) limit 1")
+                .param(email)
+                .query(UUID.class)
+                .optional()
+                .orElse(null);
+    List<String> classes = cleanTags(classTags == null ? List.of() : classTags);
+    String lang = language != null && LANG.matcher(language).matches() ? language : "en";
+    String kids =
+        students == null ? null : (students.length() > 300 ? students.substring(0, 300) : students);
+    if (existing == null) {
+      if (usage(TenantContext.requireOrganizationId()) >= limitOrUnlimited()) {
+        return;
+      }
+      jdbc.sql(
+              "insert into comms_contact (organization_id, name, phone, email, language, tags, student_names)"
+                  + " values (?, ?, ?, ?, ?, ?, ?) on conflict do nothing")
+          .params(
+              TenantContext.requireOrganizationId(),
+              name,
+              phone,
+              email,
+              lang,
+              classes.toArray(String[]::new),
+              kids)
+          .update();
+      return;
+    }
+    Contact c = loadContact(existing);
+    LinkedHashSet<String> tags = new LinkedHashSet<>();
+    c.tags().stream().filter(t -> !t.startsWith("Class ")).forEach(tags::add);
+    tags.addAll(classes);
+    jdbc.sql(
+            "update comms_contact set name = ?, email = coalesce(?, email), language = ?, tags = ?, student_names = ?,"
+                + " updated_at = now() where id = ?")
+        .params(name, email, lang, tags.toArray(String[]::new), kids, existing)
+        .update();
+  }
+
+  private long limitOrUnlimited() {
+    long limit = entitlements.limit(MODULE, "contacts");
+    return limit < 0 ? Long.MAX_VALUE : limit;
+  }
+
   /** The contact withdraws consent on every channel (link on a circular, or a reply). */
   void withdrawAll(UUID contactId, String source) {
     Contact c = loadContact(contactId);

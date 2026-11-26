@@ -5,6 +5,7 @@ import { Mail, MessageCircle, Phone, Trash2, X } from "lucide-react";
 import { sb, fmtDate } from "@/lib/studio";
 import { Badge, Btn, Card, Field, inputCls, useAction } from "@/components/kit";
 import { LeadApplications } from "./applications";
+import { EnrolAsStudent } from "./enrol";
 import {
   KIND_LABEL,
   SOURCE_LABEL,
@@ -304,6 +305,15 @@ export function LeadPanel({
         </div>
       </div>
 
+      {onDeleted && (l.stage === "OFFERED" || l.stage === "ADMITTED") && (
+        <EnrolAsStudent
+          leadId={l.id}
+          onDone={() => {
+            void sb<Detail>(`admissions/leads/${l.id}`).then(setD);
+            onChanged();
+          }}
+        />
+      )}
       {onOpenApplication && <LeadApplications leadId={l.id} onOpen={onOpenApplication} />}
 
       {l.notes && (

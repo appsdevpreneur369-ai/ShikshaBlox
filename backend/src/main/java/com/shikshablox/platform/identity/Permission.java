@@ -27,6 +27,8 @@ public enum Permission {
   ENGAGEMENT_MANAGE("engagement:manage"),
   /** Communication hub: contacts, templates, broadcasts, messaging settings (M13). */
   COMMS_MANAGE("comms:manage"),
+  /** Students, guardians, classes, enrolments and promotion (M04). */
+  STUDENTS_MANAGE("students:manage"),
   /** Read the audit log. */
   AUDIT_VIEW("audit:view");
 

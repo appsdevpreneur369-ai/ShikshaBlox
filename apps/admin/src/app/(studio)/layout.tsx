@@ -14,6 +14,8 @@ function navItems(permissions: string[], hasSchool: boolean): NavItem[] {
     items.push({ href: "/media", label: "Media" });
     if (permissions.includes("enquiry:manage"))
       items.push({ href: "/enquiries", label: "Enquiries" });
+    if (permissions.includes("students:manage"))
+      items.push({ href: "/students", label: "Students" });
     if (permissions.includes("admissions:manage"))
       items.push({ href: "/admissions", label: "Admissions" });
     if (permissions.includes("frontoffice:manage"))

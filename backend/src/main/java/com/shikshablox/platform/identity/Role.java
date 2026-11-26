@@ -12,6 +12,7 @@ import static com.shikshablox.platform.identity.Permission.ENQUIRY_MANAGE;
 import static com.shikshablox.platform.identity.Permission.FRONT_OFFICE_MANAGE;
 import static com.shikshablox.platform.identity.Permission.PLATFORM_MANAGE;
 import static com.shikshablox.platform.identity.Permission.SCHOOL_MANAGE;
+import static com.shikshablox.platform.identity.Permission.STUDENTS_MANAGE;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -35,6 +36,7 @@ public enum Role {
           FRONT_OFFICE_MANAGE,
           ENGAGEMENT_MANAGE,
           COMMS_MANAGE,
+          STUDENTS_MANAGE,
           AUDIT_VIEW)),
   SCHOOL_ADMIN(
       false,
@@ -49,6 +51,7 @@ public enum Role {
           FRONT_OFFICE_MANAGE,
           ENGAGEMENT_MANAGE,
           COMMS_MANAGE,
+          STUDENTS_MANAGE,
           AUDIT_VIEW)),
   CONTENT_APPROVER(false, EnumSet.of(CONTENT_EDIT, CONTENT_PUBLISH, CONTENT_VIEW)),
   CONTENT_EDITOR(false, EnumSet.of(CONTENT_EDIT, CONTENT_VIEW)),

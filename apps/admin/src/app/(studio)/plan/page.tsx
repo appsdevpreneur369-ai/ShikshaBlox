@@ -11,6 +11,7 @@ const LIMIT_LABEL: Record<string, string> = {
   languages: "Website languages",
   custom_domains: "Custom domains",
   contacts: "Message contacts",
+  custom_fields: "Custom student fields",
 };
 
 const FEATURE_LABEL: Record<string, string> = {
@@ -56,6 +57,13 @@ const FEATURE_LABEL: Record<string, string> = {
   acknowledgements: "Read receipts & acknowledgements",
   multilingual: "Multilingual templates",
   scheduling: "Scheduling & quiet hours",
+  profiles: "Student 360 profiles",
+  guardians: "Guardians & pickup rules",
+  documents: "Student documents",
+  import: "CSV import",
+  promotion: "Year-end promotion",
+  apaar: "APAAR tracking",
+  custom_fields: "Custom fields",
 };
 
 const MODULE_LABEL: Record<string, string> = {
@@ -67,6 +75,7 @@ const MODULE_LABEL: Record<string, string> = {
   FRONT_OFFICE: "Front office",
   ENGAGEMENT: "PTM, helpdesk & surveys",
   COMMS: "Communication hub",
+  SIS: "Student information",
 };
 
 function formatValue(key: string, value: number) {
