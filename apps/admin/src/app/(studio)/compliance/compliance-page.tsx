@@ -411,8 +411,8 @@ function Calendar({
                     className={`flex w-full flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-left hover:bg-black/[0.02] ${selected === i.id ? "bg-primary/5" : ""}`}
                   >
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-semibold">{i.title}</span>
-                      <span className="text-ink-muted block truncate text-xs">
+                      <span className="block text-sm font-semibold sm:truncate">{i.title}</span>
+                      <span className="text-ink-muted block text-xs sm:truncate">
                         {[CATEGORY[i.category], FREQ[i.recurrence], i.authority, i.ownerName]
                           .filter(Boolean)
                           .join(" · ")}
