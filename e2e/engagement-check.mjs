@@ -34,6 +34,19 @@ const api = async (p, o = {}) => {
   return { status: r.status(), body: r.status() === 204 ? null : await r.json().catch(() => null) };
 };
 
+// Remove leftovers of earlier runs that stopped before their cleanup.
+for (const e of (await api("engagement/ptm")).body ?? []) {
+  if (/^qa\d{6} PTM$/.test(e.title)) await api(`engagement/ptm/${e.id}`, { method: "DELETE" });
+}
+for (const x of (await api("engagement/surveys")).body ?? []) {
+  if (/^qa\d{6}-feedback$/.test(x.slug))
+    await api(`engagement/surveys/${x.id}`, { method: "DELETE" });
+}
+for (const t of (await api("engagement/helpdesk?view=all&q=qa")).body ?? []) {
+  if (/^qa\d{6} bus timing$/.test(t.subject))
+    await api(`engagement/helpdesk/${t.id}`, { method: "DELETE" });
+}
+
 const tomorrow = new Date(Date.now() + 86400000 + 5.5 * 3600000).toISOString().slice(0, 10);
 const ev = await api("engagement/ptm", {
   method: "POST",
@@ -77,7 +90,7 @@ await pp.goto(`${site}/help`, { waitUntil: "networkidle" });
 await overflow("/help");
 await pp.getByLabel("Your name *").fill(`${RUN} Parent`);
 await pp.getByLabel("Mobile number *").fill(PHONE);
-await pp.getByLabel("About").selectOption("TRANSPORT");
+await pp.locator('select[name="category"]').selectOption("TRANSPORT");
 await pp.getByLabel("Subject *").fill(`${RUN} bus timing`);
 await pp.getByLabel("Details *").fill("The bus came late today.");
 await pp.getByRole("checkbox").check();
