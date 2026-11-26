@@ -50,9 +50,15 @@ class DemoFrontOfficeSeeder implements ApplicationRunner {
       TenantContext.callInTenant(
           org.id(),
           () -> {
-            if (jdbc.sql("select count(*) from front_desk_entry").query(Long.class).single() > 0) {
+            // Lost items are seeded last, so they mark a complete run; a partial earlier run
+            // (sample rows only) is cleared and redone.
+            if (jdbc.sql("select count(*) from front_desk_lost_item").query(Long.class).single()
+                > 0) {
               return null;
             }
+            jdbc.sql("delete from front_desk_entry where notes like '%(sample)%'").update();
+            jdbc.sql("delete from front_desk_appointment where purpose like '%(sample)%'").update();
+            jdbc.sql("delete from front_desk_post where description like '%(sample)%'").update();
             office.addEntry(
                 new FrontOfficeService.EntryInput(
                     "WALK_IN",
