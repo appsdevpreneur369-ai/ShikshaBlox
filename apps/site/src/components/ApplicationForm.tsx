@@ -112,7 +112,11 @@ export function ApplicationForm({ form }: { form: Form }) {
           feeAmount: out.feeAmount ?? 0,
           feeInstructions: out.feeInstructions,
         });
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        requestAnimationFrame(() =>
+          document
+            .getElementById("application-done")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" }),
+        );
       } else {
         const msg =
           res.status === 429
@@ -132,7 +136,11 @@ export function ApplicationForm({ form }: { form: Form }) {
 
   if (state.status === "sent") {
     return (
-      <div role="status" className="sb-card mx-auto max-w-xl p-8 text-center">
+      <div
+        id="application-done"
+        role="status"
+        className="sb-card mx-auto max-w-xl scroll-mt-28 p-8 text-center"
+      >
         <div className="bg-primary-soft text-primary mx-auto flex h-16 w-16 items-center justify-center rounded-full text-3xl">
           ✓
         </div>

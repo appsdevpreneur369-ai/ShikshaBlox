@@ -51,7 +51,7 @@ export default async function ApplyPage({ params }: { params: Promise<Params> })
         <div className="sb-container relative py-14 md:py-20">
           <p className="sb-eyebrow mb-3">{site.name}</p>
           <h1 className="text-4xl font-extrabold sm:text-5xl">
-            Apply online · {form.academicYear}
+            Apply online <span className="whitespace-nowrap">for {form.academicYear}</span>
           </h1>
           <p className="sb-muted mt-4 max-w-2xl text-lg">
             {form.intro ||
