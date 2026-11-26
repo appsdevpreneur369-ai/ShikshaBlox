@@ -225,7 +225,8 @@ public class FrontOfficeService {
       UUID id =
           jdbc.sql(
                   "insert into front_desk_entry (organization_id, kind, name, phone, purpose, meet_with,"
-                      + " people_count, notes, out_at, created_by) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                      + " people_count, notes, out_at, created_by)"
+                      + " values (?, ?, ?, ?, ?, ?, ?, ?, case when ? then now() end, ?)"
                       + " returning id")
               .params(
                   TenantContext.requireOrganizationId(),
@@ -236,8 +237,8 @@ public class FrontOfficeService {
                   optional(in.meetWith(), 120, "Meeting"),
                   people,
                   optional(in.notes(), 1000, "Notes"),
-                  // Calls have no "inside" time.
-                  "WALK_IN".equals(kind) ? null : Timestamp.from(Instant.now()),
+                  // Calls have no "inside" time; same clock as in_at (database now()).
+                  !"WALK_IN".equals(kind),
                   TenantContext.userId().orElse(null))
               .query(UUID.class)
               .single();
