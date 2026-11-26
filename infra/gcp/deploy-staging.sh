@@ -60,12 +60,13 @@ if want demo; then
   gcloud run deploy greenfield --project "$P" --region "$R" --image "$IMG/site:$TAG"     --service-account "$WEB_SA" --allow-unauthenticated --port 3000     --cpu 1 --memory 1Gi --min-instances 0 --max-instances 2     --set-env-vars "API_INTERNAL_URL=$API_URL,SB_BASE_DOMAIN=shikshablox.app,SB_SITE_PROTOCOL=https"     --set-secrets "SITE_REVALIDATE_SECRET=site-revalidate-secret:latest"     --quiet
 fi
 
+# SB_SITE_URLS contains commas, so this env list uses "@" as its delimiter (gcloud ^@^ syntax).
 if want studio; then
   echo "== Studio"
   gcloud run deploy shikshablox-studio --project "$P" --region "$R" --image "$IMG/admin:$TAG" \
     --service-account "$WEB_SA" --allow-unauthenticated --port 3000 \
     --cpu 1 --memory 1Gi --min-instances 1 --max-instances 3 \
-    --set-env-vars "API_INTERNAL_URL=$API_URL,SB_BASE_DOMAIN=shikshablox.app,SB_SITE_URLS=moriah=$SITE_URL,greenfield=$DEMO_URL" \
+    --set-env-vars "^@^API_INTERNAL_URL=$API_URL@SB_BASE_DOMAIN=shikshablox.app@SB_SITE_URLS=moriah=$SITE_URL,greenfield=$DEMO_URL" \
     --quiet
 fi
 

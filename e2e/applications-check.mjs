@@ -32,8 +32,8 @@ for (const [i, p] of (process.env.STUDIO_ONLY ? [] : profiles).entries()) {
   const errors = [];
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
   await page.goto(`${site}/`, { waitUntil: "networkidle" });
-  const cta = page.getByRole("link", { name: "Apply now" }).first();
-  if (!(await cta.count())) problems.push(`${name}: no "Apply now" link on the home page`);
+  // On phones the header CTA lives in the menu, so check the link target rather than visibility.
+  if (!(await page.locator('header a[href="/apply"]').count())) problems.push(`${name}: header "Apply now" does not link to /apply`);
   await page.goto(`${site}/apply`, { waitUntil: "networkidle" });
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - window.innerWidth,
@@ -51,7 +51,7 @@ for (const [i, p] of (process.env.STUDIO_ONLY ? [] : profiles).entries()) {
   // Try submitting without the required documents first: the form must say what is missing.
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "Submit application" }).click();
-  const alert = page.getByRole("alert");
+  const alert = page.locator("form [role=alert]").first(); // Next adds its own role=alert announcer
   if (!(await alert.textContent({ timeout: 5000 }).catch(() => ""))?.includes("Please upload")) {
     problems.push(`${name}: no "Please upload" message when required documents are missing`);
   }
