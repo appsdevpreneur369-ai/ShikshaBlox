@@ -560,8 +560,12 @@ public class ApplicationService {
         .param("admission_application:" + org + ":" + year)
         .query((rs, i) -> 1)
         .list();
+    // Highest number so far + 1, not a count: deleting an older application must not make the
+    // next number clash with an existing one.
     long n =
-        jdbc.sql("select count(*) from admission_application where academic_year = ?")
+        jdbc.sql(
+                    "select coalesce(max(substring(application_no from '[0-9]+$')::int), 0)"
+                        + " from admission_application where academic_year = ?")
                 .param(year)
                 .query(Long.class)
                 .single()
