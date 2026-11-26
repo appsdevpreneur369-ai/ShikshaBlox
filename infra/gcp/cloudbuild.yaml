@@ -6,7 +6,7 @@ substitutions:
   _TAG: latest
   # Product website (apps/www) build-time settings for staging.
   _WWW_URL: https://shikshablox-www-914241661718.asia-south1.run.app
-  _MORIAH_URL: https://moriah-914241661718.asia-south1.run.app
+  _DEMO_URL: https://greenfield-914241661718.asia-south1.run.app
   _STUDIO_URL: https://shikshablox-studio-914241661718.asia-south1.run.app
 options:
   machineType: E2_HIGHCPU_8
@@ -30,7 +30,7 @@ steps:
     name: gcr.io/cloud-builders/docker
     args: ["build", "-f", "infra/docker/next.Dockerfile", "--build-arg", "APP=www",
            "--build-arg", "SB_WWW_SITE_URL=${_WWW_URL}", "--build-arg", "SB_WWW_NOINDEX=true",
-           "--build-arg", "SB_WWW_MORIAH_URL=${_MORIAH_URL}", "--build-arg", "SB_WWW_STUDIO_URL=${_STUDIO_URL}",
+           "--build-arg", "SB_WWW_DEMO_URL=${_DEMO_URL}", "--build-arg", "SB_WWW_STUDIO_URL=${_STUDIO_URL}",
            "-t", "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/www:${_TAG}", "."]
     waitFor: ["-"]
 images:

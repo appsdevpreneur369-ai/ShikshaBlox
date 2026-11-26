@@ -4,8 +4,8 @@ export const homeFaqs = [
     a: "ShikshaBlox is a modular School ERP and school website platform by Aurora Blossom. Schools start with a website and switch on modules (admissions, student records, attendance, fees, exams, parent app, transport, HR and 40+ more) as they grow, on one platform and one login.",
   },
   {
-    q: "Which modules can we use today?",
-    a: "The School Website & CMS is live today: 14 ready pages, notices, news, events, gallery, admissions enquiries with an inbox, mandatory disclosures and an approval workflow. ERP modules roll out in releases from Q2 2027; see our roadmap for target dates.",
+    q: "How quickly can we get started?",
+    a: "Your school website can go live within a day: 14 ready pages, notices, news, events, gallery, admissions enquiries with an inbox, mandatory disclosures and an approval workflow. In your demo we agree which ERP modules to switch on, and set them up with your data and staff training.",
   },
   {
     q: "Is ShikshaBlox suitable for CBSE, ICSE and State Board schools?",

@@ -26,9 +26,10 @@ We credit them here anyway. The files are self-hosted (WebP, resized by `scripts
 | students-lunch.webp | (spare) | https://images.unsplash.com/photo-1623863568368-69e4cbe6cc0b |
 
 Other images:
-- `public/product/moriah-*.webp`: screenshots of Moriah School's live website (built on ShikshaBlox), captured with
-  `e2e/url-shots.mjs`.
-- `public/schools/moriah-logo.webp`: Moriah School's logo, shown with the school's permission as a ShikshaBlox customer.
+- `public/product/demo-*.webp`: screenshots of Greenfield Demo School, a fictional school website running on ShikshaBlox
+  staging, captured with `e2e/url-shots.mjs`. Its photos are Unsplash stock, listed in
+  `backend/src/main/resources/seed/greenfield/CREDITS.md`.
+- `public/schools/greenfield-logo.webp`: logo of the fictional demo school, drawn for ShikshaBlox.
 - `public/brand/*` and `src/app/icon.svg`: the ShikshaBlox mark, © Aurora Blossom.
 
 To add an image: put a ≤1600px-wide `.webp` in `public/images/`, run `python scripts/gen-images.py`, add its size to

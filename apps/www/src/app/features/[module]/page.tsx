@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/Icon";
-import { ButtonLink, CtaBand, JsonLd, PageHero, Photo, SectionHeading, StatusBadge } from "@/components/ui";
-import { findModulePage, modulePages, releases } from "@/data/modules";
+import { ButtonLink, CtaBand, JsonLd, PageHero, Photo, SectionHeading } from "@/components/ui";
+import { findModulePage, modulePages } from "@/data/modules";
 import { breadcrumbLd, pageMetadata } from "@/lib/seo";
 
 export const dynamicParams = false;
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ module: s
 export default async function ModulePage({ params }: { params: Promise<{ module: string }> }) {
   const m = findModulePage((await params).module);
   if (!m) notFound();
-  const live = releases[m.release].live;
+  const plan = { R1: "web-pro", R2: "lite", R5: "global" }[m.release as string] ?? "standard";
   const crumbs = [
     { name: "Home", path: "/" },
     { name: "Features", path: "/features" },
@@ -32,29 +32,19 @@ export default async function ModulePage({ params }: { params: Promise<{ module:
       <JsonLd data={breadcrumbLd(crumbs)} />
       <PageHero
         crumbs={crumbs}
-        eyebrow={
-          <div className="flex flex-wrap items-center gap-3">
-            <p className="eyebrow">{m.name}</p>
-            <StatusBadge release={m.release} />
-          </div>
-        }
+        eyebrow={<p className="eyebrow">{m.name}</p>}
         title={m.h1}
         lead={m.intro}
         aside={
-          <div className="relative pb-6">
+          <div className="relative">
             <div className="overflow-hidden rounded-3xl border border-line shadow-pop">
               <Photo src={m.image.src} alt={m.image.alt} sizes="(min-width: 1024px) 560px, 92vw" priority className="aspect-[4/3] h-full w-full" />
             </div>
-            {m.liveNote && (
-              <p className="absolute right-4 bottom-0 left-4 rounded-2xl border border-line bg-card px-4 py-3 text-sm font-medium text-ink shadow-card sm:right-auto sm:left-6 sm:max-w-sm">
-                {m.liveNote}
-              </p>
-            )}
           </div>
         }
       >
-        <ButtonLink href={`/contact?plan=${live ? "web-pro" : "lite"}`} arrow>
-          {live ? "Book a demo" : "Pre-book as a founding school"}
+        <ButtonLink href={`/contact?plan=${plan}`} arrow>
+          Book a free demo
         </ButtonLink>
         <ButtonLink href="/pricing" variant="secondary">
           Pricing
@@ -123,7 +113,7 @@ export default async function ModulePage({ params }: { params: Promise<{ module:
               <Link prefetch={false} href={`/features/${o.slug}`} className="card card-hover flex items-center justify-between gap-4 p-5">
                 <span>
                   <span className="block font-semibold text-ink">{o.name}</span>
-                  <StatusBadge release={o.release} className="mt-2" />
+                  <span className="mt-1 block text-sm text-ink-3">{o.description.split(". ")[0]}</span>
                 </span>
                 <Icon name="arrow" className="size-5 shrink-0 text-brand" />
               </Link>

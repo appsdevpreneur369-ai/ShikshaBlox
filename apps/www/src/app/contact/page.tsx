@@ -7,7 +7,7 @@ import { breadcrumbLd, pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   title: "Book a Free Demo of ShikshaBlox School ERP",
   description:
-    "Book a free 30-minute demo of ShikshaBlox. See a live school website, walk through the modules your school needs and get founding-school pricing.",
+    "Book a free 30-minute demo of ShikshaBlox. See a sample school website, walk through the modules your school needs and get founding-school pricing.",
   path: "/contact",
 });
 
@@ -33,7 +33,7 @@ export default function ContactPage() {
             <h2 className="font-display text-lg font-bold text-ink">In your demo</h2>
             <ul className="mt-4 space-y-3 text-ink-2">
               {[
-                "A live school website and Studio walkthrough",
+                "A sample school website and Studio walkthrough",
                 "The modules your school actually needs",
                 "Data migration plan from your current system",
                 "Founding-school pricing for your student count",
@@ -68,7 +68,7 @@ export default function ContactPage() {
           <div className="rounded-2xl bg-bg-tint p-6">
             <p className="font-semibold text-ink">Founding-school offer</p>
             <p className="mt-1 text-sm leading-relaxed text-ink-2">
-              First 25 schools: 25% off year 1, 3-year price lock and free migration. No payment for modules until they&apos;re live.
+              First 25 schools: 25% off year 1, 3-year price lock and free migration. Billing for each module starts only when it goes live for your school.
             </p>
           </div>
         </aside>

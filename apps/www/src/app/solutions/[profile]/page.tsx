@@ -54,7 +54,7 @@ export default async function SolutionPage({ params }: Props) {
         {[
           ["users", "Who it's for", p.who],
           ["zap", "Go-live", p.goLive],
-          ["wallet", "Plan", plan ? `${plan.name}: ${plan.price} ${plan.period}${plan.status === "prebook" ? " (pre-book)" : ""}` : `${p.plan}: see pricing`],
+          ["wallet", "Plan", plan ? `${plan.name}: ${plan.price} ${plan.period}` : `${p.plan}: see pricing`],
         ].map(([i, t, d]) => (
           <div key={t} className="card p-6">
             <Icon name={i as "users"} className="size-6 text-brand" />

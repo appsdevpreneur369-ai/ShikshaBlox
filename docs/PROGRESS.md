@@ -1,17 +1,45 @@
-# ShikshaBlox M01 — Progress & resume point
+# ShikshaBlox — Progress & resume point
 
-**Updated 2026-11-26: product website shikshablox.com (`apps/www`) built and on staging.**
+**Updated 2026-11-26: website messaging changed (no release dates, no real schools), Greenfield Demo School,
+and M03 Admissions CRM (small + medium depth) on staging.**
+
+## M03 Admissions CRM, 2026-11-26
+- Backend module `admissions`:
+  - migration `V2026_11_26_0006`: `admission_lead`, `admission_activity`, `admission_seat`, all with RLS;
+  - role `ADMISSIONS_COUNSELLOR` and permission `admissions:manage`;
+  - catalogue module `ADMISSIONS_CRM`, plans `LITE` / `STANDARD` / `GLOBAL`.
+- Website enquiries become leads automatically when the plan includes the CRM. Studio can also import existing enquiries.
+- Leads can be walk-in, phone, WhatsApp, referral or campaign. Pipeline: New → Contacted → Visit booked → Visited →
+  Applied → Offered → Admitted, or Lost (with a reason).
+- Activities: call, visit, message, note. Next follow-up per lead, with an 8 am IST email digest to each counsellor.
+- Also: CSV export (formula-safe), counsellor assignment, priority.
+- Standard plan adds seats per class (blocks Admitted once a class is full) and the funnel (by stage and source,
+  conversion %).
+- Studio → Admissions has these tabs: Pipeline board, Follow-ups, Funnel and Seats. The lead panel offers
+  call/WhatsApp/email links, stage moves, a log form and a timeline.
+- Demo: Greenfield is on STANDARD, with 10 sample leads and seats. Sign in as `admin@greenfield.test` or
+  `counsellor@greenfield.test` (seed password).
+- Next in Front door & engagement: M03b online application form + documents, then M02 compliance calendar, M43 front office,
+  M26 PTM/helpdesk, M13 communication hub, M12 parent portal.
+
+## Website changes, 2026-11-26 (product owner decisions)
+- No release quarters, roadmap page or "pre-book" labels anywhere on shikshablox.com. The e2e test fails if any
+  appear. Internal build order stays in `modules.ts` (`release`) and PRICING-MATH.md.
+- Moriah School is no longer shown. The showcase is **Greenfield Demo School** (fictional): tenant `greenfield`,
+  seed `backend/src/main/resources/seed/greenfield` (Unsplash photos, credits in that folder), Cloud Run service
+  `greenfield` (min 0). Screenshots are in `apps/www/public/product/demo-*`.
+- Sales contacts are on the site: WhatsApp/phone +91 81216 06633, info@aurora-blossom.com.
 
 ## Product website (apps/www), 2026-11-26
 - Static Next.js site for sales demos: 27 pages (home, features + 12 module pages, 4 solution pages, pricing,
-  schools/Moriah case study, roadmap, why us, security, about, contact, privacy, terms). Architecture: ADR 0008.
-- Honest availability: only M01 is "Live"; every other module shows a target quarter (`src/data/modules.ts`).
+  demo school, why us, security, about, contact, privacy, terms). Architecture: ADR 0008.
+- (Superseded 2026-11-26: no availability labels or dates are published; see "Website changes" above.)
   Prices and roadmap estimates: `docs/PRICING-MATH.md` (founding offer changed to −25% for 25 schools; included
   WhatsApp credits removed; ERP plans are pre-booked and billed only at go-live).
 - Demo form → `/api/demo-request` → public enquiry API as internal tenant `sb-sales` (seeded) → Studio inbox
   (sign in as `admin@sb-sales.test`).
 - Images: free Unsplash photos, self-hosted, pre-generated WebP variants (`scripts/gen-images.py`); credits in
-  `apps/www/IMAGE-CREDITS.md`. Product screenshots are of the live Moriah site.
+  `apps/www/IMAGE-CREDITS.md`. Product screenshots are of the Greenfield demo site.
 - Tests: `e2e/tests/www.spec.ts` (7 device profiles: pages/H1/meta/canonical/footer/overflow, images, links,
   axe WCAG 2.1 AA, desktop + touch navigation, pricing, robots, form) via `playwright.www.config.ts`.
 - Staging: Cloud Run `shikshablox-www` (min 0), built with `SB_WWW_NOINDEX=true`.
@@ -20,7 +48,7 @@
      (or a global HTTPS load balancer with a serverless NEG), add the DNS records Google shows, wait for TLS.
   2. Redirect `www` → apex (load balancer URL map, or a tiny redirect service).
   3. Rebuild www **without** `SB_WWW_NOINDEX` and with `SB_WWW_SITE_URL=https://shikshablox.com`
-     (cloudbuild `_WWW_URL`), plus `SB_WWW_WHATSAPP` / `SB_WWW_PHONE` / `SB_WWW_EMAIL` once sales contacts exist.
+     (cloudbuild `_WWW_URL`).
   4. Submit `https://shikshablox.com/sitemap.xml` in Google Search Console; re-run PageSpeed Insights.
 
 ## Done (pushed to GitHub appsdevpreneur369-ai/ShikshaBlox, `main`)
@@ -45,7 +73,7 @@
 - E2E `e2e/tests/cms.spec.ts` (desktop): 4/4 green against the local dev stack.
 
 ## Next
-0. Product website: add sales WhatsApp/phone/email (build args), buy the domain (checklist above).
+0. Product website: buy the domain (checklist above).
 1. Backend ITs for ContentService / EnquiryService / PublishingService (RLS, validation, workflow).
 2. Menu builder UI; staff photos consent UX; TipTap if richer editing is needed.
 3. M6 SEO/i18n/a11y (sitemap.xml, robots, structured data, hreflang, Lighthouse), M7 domains/export/hardening.

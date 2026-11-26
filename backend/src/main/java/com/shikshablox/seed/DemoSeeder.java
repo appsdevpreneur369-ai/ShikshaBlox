@@ -18,10 +18,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
- * Idempotent seed: a platform administrator, Moriah School (first customer), three demo schools and
- * the internal {@code sb-sales} tenant that receives shikshablox.com demo requests, each with one
- * user per school role ({@code <role>@<slug>.test}). The {@code .test} domain is reserved, so no
- * seeded address can reach a real person.
+ * Idempotent seed: a platform administrator, Moriah School (first customer), three demo schools
+ * (Greenfield Demo School is the fictional school showcased on shikshablox.com) and the internal
+ * {@code sb-sales} tenant that receives shikshablox.com demo requests, each with one user per
+ * school role ({@code <role>@<slug>.test}). The {@code .test} domain is reserved, so no seeded
+ * address can reach a real person.
  */
 @Component
 @Order(10)
@@ -35,7 +36,7 @@ class DemoSeeder implements ApplicationRunner {
   static final List<School> SCHOOLS =
       List.of(
           new School("moriah", "Moriah School", "WEB_PRO"),
-          new School("greenfield", "Greenfield Public School", "WEB_FREE"),
+          new School("greenfield", "Greenfield Demo School", "STANDARD"),
           new School("sunrise", "Sunrise High School", "WEB_FREE"),
           new School("horizon", "Horizon International School", "WEB_PRO"),
           // Internal tenant: demo requests from shikshablox.com land in this Studio inbox.
@@ -77,6 +78,9 @@ class DemoSeeder implements ApplicationRunner {
           organizations
               .findBySlug(s.slug())
               .orElseGet(() -> organizations.create(s.slug(), s.name()));
+      if (!s.name().equals(org.name())) {
+        organizations.rename(org.id(), s.name());
+      }
       String plan =
           TenantContext.callInTenant(org.id(), () -> entitlements.currentPlan().orElse(null));
       if (!s.plan().equals(plan)) {
@@ -86,6 +90,7 @@ class DemoSeeder implements ApplicationRunner {
       seedUser(org, "editor", "Content Editor", Role.CONTENT_EDITOR);
       seedUser(org, "approver", "Content Approver", Role.CONTENT_APPROVER);
       seedUser(org, "viewer", "Viewer", Role.VIEWER);
+      seedUser(org, "counsellor", "Admissions Counsellor", Role.ADMISSIONS_COUNSELLOR);
     }
 
     for (String pair : extraDomains.split(",")) {

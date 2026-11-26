@@ -6,7 +6,6 @@ export const staticPaths = [
   "/features",
   "/pricing",
   "/schools",
-  "/roadmap",
   "/why-shikshablox",
   "/security",
   "/about",

@@ -1,13 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
-import { ErpPreview, RoadmapTimeline } from "@/components/visuals";
-import { BrowserFrame, ButtonLink, CtaBand, FaqList, JsonLd, PhoneFrame, Photo, SectionHeading, StatusBadge } from "@/components/ui";
+import { ErpPreview } from "@/components/visuals";
+import { BrowserFrame, ButtonLink, CtaBand, FaqList, JsonLd, PhoneFrame, Photo, SectionHeading } from "@/components/ui";
 import { homeFaqs } from "@/data/faqs";
-import { allModules, catalogueGroups, releases } from "@/data/modules";
+import { allModules, catalogueGroups, type IconName } from "@/data/modules";
 import { plans } from "@/data/plans";
 import { profiles } from "@/data/profiles";
-import { featuredSchool } from "@/data/schools";
+import { demoSchool } from "@/data/schools";
 import { faqLd, pageMetadata, softwareLd } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -53,9 +53,15 @@ const comparison = [
   ["Pricing", "Opaque quotes and hidden add-ons", "Published prices, pay only for active modules"],
 ];
 
+const onboarding: [IconName, string, string][] = [
+  ["video", "Free demo", "A 30-minute walkthrough of the modules your school needs, online or at your school."],
+  ["layers", "Setup & data import", "We configure classes, fees and roles, and import students and balances from Excel or your old ERP."],
+  ["users", "Staff training", "Short, role-wise training: teachers see three buttons, not three hundred."],
+  ["zap", "Go live", "Switch on module by module. Billing for each starts only when it goes live for your school."],
+];
+
 export default function Home() {
-  const moriah = featuredSchool;
-  const liveCount = allModules.filter((m) => releases[m.release].live || m.partial).length;
+  const demo = demoSchool;
   return (
     <>
       <JsonLd
@@ -77,11 +83,11 @@ export default function Home() {
         <div className="container-x relative grid items-center gap-12 pt-12 pb-16 sm:pt-16 lg:grid-cols-[1fr_1.05fr] lg:gap-10 lg:pt-20 lg:pb-24">
           <div>
             <Link prefetch={false}
-              href="/roadmap"
+              href="/features"
               className="inline-flex max-w-full items-center gap-2 rounded-full border border-line bg-card py-1.5 pr-3 pl-1.5 text-sm text-ink-2 shadow-card transition-colors hover:border-brand"
             >
-              <span className="rounded-full bg-live-soft px-2.5 py-0.5 text-xs font-semibold text-live">Live</span>
-              <span className="truncate">School Website &amp; CMS · ERP modules from 2027</span>
+              <span className="rounded-full bg-live-soft px-2.5 py-0.5 text-xs font-semibold text-live">New</span>
+              <span className="truncate">Website, admissions, fees &amp; parent app on one platform</span>
               <Icon name="arrow" className="size-4 shrink-0" />
             </Link>
             <h1 className="mt-6 font-display text-[2.6rem] leading-[1.05] font-extrabold tracking-tight text-balance text-ink sm:text-6xl lg:text-[4.1rem]">
@@ -98,8 +104,8 @@ export default function Home() {
               <ButtonLink href="/contact" arrow>
                 Book a free demo
               </ButtonLink>
-              <ButtonLink href={moriah.siteUrl} variant="secondary" external>
-                See a live school website <Icon name="external" className="size-4" />
+              <ButtonLink href={demo.siteUrl} variant="secondary" external>
+                See a sample school website <Icon name="external" className="size-4" />
               </ButtonLink>
             </div>
             <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-3">
@@ -114,15 +120,15 @@ export default function Home() {
 
           <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
             <BrowserFrame
-              src="/product/moriah-desktop.webp"
-              alt="Moriah School's website, built and managed on ShikshaBlox"
-              url="moriah school website · powered by ShikshaBlox"
+              src="/product/demo-desktop.webp"
+              alt="Greenfield Demo School's website, a sample school website built on ShikshaBlox"
+              url="greenfield.shikshablox.com · sample school"
               sizes="(min-width: 1024px) 600px, (min-width: 640px) 576px, 92vw"
               priority
             />
             <PhoneFrame
-              src="/product/moriah-mobile.webp"
-              alt="Moriah School's website on a mobile phone"
+              src="/product/demo-mobile.webp"
+              alt="The sample school website on a mobile phone"
               className="absolute -bottom-10 -left-3 w-[30%] max-w-[180px] sm:-left-8"
             />
             <div className="float-slow absolute -top-5 -right-2 hidden w-60 rounded-2xl border border-line bg-card p-3.5 shadow-pop sm:block lg:-right-6">
@@ -185,7 +191,7 @@ export default function Home() {
                     </span>
                     <span className="min-w-0">
                       <span className="block text-sm leading-snug font-semibold text-ink">{m.name}</span>
-                      <StatusBadge release={m.release} partial={m.partial} className="mt-1" />
+                      <span className="mt-0.5 block text-xs leading-snug text-ink-3">{m.summary.split(",")[0]}</span>
                     </span>
                   </li>
                 ))}
@@ -197,7 +203,7 @@ export default function Home() {
           <ButtonLink href="/features" variant="secondary" arrow>
             Explore all {allModules.length} modules
           </ButtonLink>
-          <p className="text-sm text-ink-3">{liveCount} live or partly live today · the rest on a published roadmap</p>
+          <p className="text-sm text-ink-3">Switch modules on as you grow · pay only for what&apos;s active</p>
         </div>
       </section>
 
@@ -236,9 +242,9 @@ export default function Home() {
       <section className="container-x py-20 sm:py-28">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div>
-            <StatusBadge release="R1" />
             <SectionHeading
-              title="A school website your office can run, live today"
+              eyebrow="Website & CMS"
+              title="A school website your office can run"
               lead="Pick a theme, add your photos, publish. Notices, events, gallery, admissions enquiries and mandatory disclosures, all edited in ShikshaBlox Studio with approvals and one-click rollback."
             />
             <ul className="mt-8 grid gap-3 sm:grid-cols-2">
@@ -258,9 +264,9 @@ export default function Home() {
             </div>
           </div>
           <BrowserFrame
-            src="/product/moriah-gallery-desktop.webp"
-            alt="Moriah School gallery page on ShikshaBlox"
-            url="Gallery · Moriah School"
+            src="/product/demo-gallery-desktop.webp"
+            alt="Gallery page of the sample school website on ShikshaBlox"
+            url="Gallery · Greenfield Demo School"
             sizes="(min-width: 1024px) 560px, 92vw"
             className="reveal"
           />
@@ -271,17 +277,17 @@ export default function Home() {
             <ErpPreview />
           </div>
           <div className="order-1 lg:order-2">
-            <StatusBadge release="R2" />
             <SectionHeading
+              eyebrow="School ERP"
               title="The ERP that runs the rest of the day"
-              lead="Students, attendance, fees, report cards, WhatsApp and a parent app arrive with ShikshaBlox Lite. Founding schools can pre-book today and shape what we build."
+              lead="Student records, attendance, fees, report cards, WhatsApp and a parent app, on the same platform as your website. Built for small and medium schools first."
             />
             <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="/roadmap" variant="secondary" arrow>
-                See the roadmap
+              <ButtonLink href="/features" variant="secondary" arrow>
+                Explore the modules
               </ButtonLink>
               <ButtonLink href="/contact?plan=lite" variant="ghost">
-                Become a pilot school
+                Book a demo
               </ButtonLink>
             </div>
           </div>
@@ -329,46 +335,49 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Schools */}
+      {/* Demo school */}
       <section className="container-x py-20 sm:py-28">
-        <SectionHeading eyebrow="Schools on ShikshaBlox" title="Trusted by schools that put children first" center />
+        <SectionHeading
+          eyebrow="See it in action"
+          title="Explore a complete school website built on ShikshaBlox"
+          lead="Greenfield Demo School is a sample school we set up to show exactly what your school gets: every page, notice, event and enquiry form runs on ShikshaBlox."
+          center
+        />
         <article className="card reveal mt-12 grid overflow-hidden lg:grid-cols-[1fr_1.1fr]">
           <div className="flex flex-col justify-center p-7 sm:p-10">
-            <Image src={moriah.logo.src} alt={`${moriah.name} logo`} width={moriah.logo.w} height={moriah.logo.h} className="h-14 w-auto self-start" />
-            <h3 className="mt-6 font-display text-2xl font-extrabold text-ink">{moriah.name}</h3>
-            <p className="mt-1 inline-flex items-center gap-1.5 text-ink-3">
-              <Icon name="pin" className="size-4" /> {moriah.location} · on ShikshaBlox since {moriah.since}
-            </p>
-            <p className="mt-4 leading-relaxed text-ink-2">{moriah.summary}</p>
+            <Image src={demo.logo.src} alt={`${demo.name} logo`} width={demo.logo.w} height={demo.logo.h} className="h-14 w-auto self-start" />
+            <h3 className="mt-6 font-display text-2xl font-extrabold text-ink">{demo.name}</h3>
+            <p className="mt-1 text-ink-3">{demo.tagline}</p>
+            <p className="mt-4 leading-relaxed text-ink-2">{demo.summary}</p>
             <div className="mt-5 flex flex-wrap gap-2">
-              {moriah.liveModules.map((m) => (
+              {demo.highlights.map((m) => (
                 <span key={m} className="rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
                   {m}
                 </span>
               ))}
             </div>
             <div className="mt-7 flex flex-wrap gap-3">
-              <ButtonLink href={moriah.siteUrl} external>
-                Visit the live website <Icon name="external" className="size-4" />
+              <ButtonLink href={demo.siteUrl} external>
+                Open the demo website <Icon name="external" className="size-4" />
               </ButtonLink>
               <ButtonLink href="/schools" variant="ghost" arrow>
-                Read the story
+                Take the tour
               </ButtonLink>
             </div>
           </div>
           <div className="relative bg-bg-tint p-6 sm:p-10">
             <BrowserFrame
-              src="/product/moriah-about-desktop.webp"
-              alt="Moriah School about page"
-              url="About · Moriah School"
+              src="/product/demo-facilities-desktop.webp"
+              alt="Facilities page of the sample school website"
+              url="Facilities · Greenfield Demo School"
               sizes="(min-width: 1024px) 560px, 92vw"
             />
           </div>
         </article>
         <p className="mt-6 text-center text-sm text-ink-3">
-          Your school could be next.{" "}
+          Want to see your own school like this?{" "}
           <Link prefetch={false} href="/contact" className="font-semibold text-brand underline-offset-4 hover:underline">
-            Join as a founding school
+            Book a free demo
           </Link>
           .
         </p>
@@ -410,19 +419,14 @@ export default function Home() {
       <section className="container-x py-20 sm:py-28">
         <SectionHeading
           eyebrow="Transparent pricing"
-          title="Published prices. Pay only for what's live."
-          lead="Prices in INR, excluding GST. ERP plans are pre-booked: you pay only when your modules go live."
+          title="Published prices. Pay only for what you use."
+          lead="Prices in INR, excluding GST. Each module is billed from the day it goes live for your school."
           center
         />
         <div className="mt-12 grid gap-5 md:grid-cols-3">
           {plans.slice(0, 3).map((p) => (
             <div key={p.id} className={`card card-hover reveal flex flex-col p-7 ${p.highlight ? "ring-2 ring-brand" : ""}`}>
-              <div className="flex items-center justify-between gap-2">
-                <h3 className="font-display text-xl font-bold text-ink">{p.name}</h3>
-                <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${p.status === "live" ? "bg-live-soft text-live" : "bg-accent-soft text-accent-ink"}`}>
-                  {p.statusNote}
-                </span>
-              </div>
+              <h3 className="font-display text-xl font-bold text-ink">{p.name}</h3>
               <p className="mt-1 text-sm text-ink-3">{p.for}</p>
               <p className="mt-5">
                 <span className="font-display text-4xl font-extrabold text-ink">{p.price}</span>{" "}
@@ -450,20 +454,31 @@ export default function Home() {
         </p>
       </section>
 
-      {/* Roadmap */}
+      {/* Onboarding */}
       <section className="bg-bg-soft py-20 sm:py-28">
         <div className="container-x">
           <SectionHeading
-            eyebrow="Published roadmap"
-            title="Know exactly what ships, and when"
-            lead="Target dates, refined with our pilot schools. Every release passes security, isolation and backup checks before it reaches a school."
+            eyebrow="Getting started"
+            title="From demo to go-live, with our team beside you"
+            lead="No big-bang migration. We set up your school, import your data, train your staff and stay with you through the first term."
           />
-          <div className="mt-12">
-            <RoadmapTimeline compact />
-          </div>
+          <ol className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {onboarding.map(([icon, title, text], i) => (
+              <li key={title} className="card reveal p-6">
+                <div className="flex items-center gap-3">
+                  <span className="grid size-11 place-items-center rounded-xl bg-brand-soft text-brand">
+                    <Icon name={icon} />
+                  </span>
+                  <span className="font-display text-sm font-bold text-ink-3">Step {i + 1}</span>
+                </div>
+                <h3 className="mt-4 font-display text-lg font-bold text-ink">{title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-2">{text}</p>
+              </li>
+            ))}
+          </ol>
           <div className="mt-8">
-            <ButtonLink href="/roadmap" variant="secondary" arrow>
-              Full roadmap
+            <ButtonLink href="/contact" arrow>
+              Book a free demo
             </ButtonLink>
           </div>
         </div>

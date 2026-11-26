@@ -18,11 +18,10 @@ export const imageSizes: Record<string, { w: number; h: number }> = {
   "/images/students-writing.webp": { w: 1600, h: 900 },
   "/images/teacher-blackboard.webp": { w: 1600, h: 1067 },
   "/images/yoga-assembly.webp": { w: 1600, h: 1064 },
-  "/product/moriah-desktop.webp": { w: 1440, h: 900 },
-  "/product/moriah-gallery-desktop.webp": { w: 1440, h: 900 },
-  "/product/moriah-about-desktop.webp": { w: 1440, h: 900 },
-  "/product/moriah-mobile.webp": { w: 780, h: 1688 },
-  "/product/moriah-gallery-mobile.webp": { w: 780, h: 1688 },
+  "/product/demo-desktop.webp": { w: 1440, h: 900 },
+  "/product/demo-gallery-desktop.webp": { w: 1440, h: 900 },
+  "/product/demo-facilities-desktop.webp": { w: 1440, h: 900 },
+  "/product/demo-mobile.webp": { w: 780, h: 1688 },
 };
 
 export function sizeOf(src: string) {

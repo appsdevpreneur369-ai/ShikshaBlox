@@ -13,11 +13,11 @@ export const site = {
     name: "Aurora Blossom",
     url: "https://aurora-blossom.com",
   },
-  /** Optional sales contacts; a CTA is shown only when its value is configured. */
+  /** Sales contacts (Aurora Blossom). Build-time env can override them. */
   contact: {
-    whatsapp: process.env.SB_WWW_WHATSAPP || "", // digits only, with country code, e.g. 919876543210
-    phone: process.env.SB_WWW_PHONE || "",
-    email: process.env.SB_WWW_EMAIL || "",
+    whatsapp: process.env.SB_WWW_WHATSAPP || "918121606633", // digits only, with country code
+    phone: process.env.SB_WWW_PHONE || "+91 81216 06633",
+    email: process.env.SB_WWW_EMAIL || "info@aurora-blossom.com",
   },
   studioUrl: process.env.SB_WWW_STUDIO_URL || "https://studio.shikshablox.com",
 } as const;
@@ -30,11 +30,11 @@ export const nav: NavItem[] = [
     href: "/features",
     children: [
       { label: "All modules", href: "/features", note: "40+ blocks, one platform" },
-      { label: "School Website & CMS", href: "/features/website-cms", note: "Live today" },
+      { label: "School Website & CMS", href: "/features/website-cms", note: "Online in a day" },
       { label: "Admissions CRM", href: "/features/admissions-crm" },
       { label: "Fees & Finance", href: "/features/fees-finance" },
       { label: "Parent App & WhatsApp", href: "/features/parent-app-communication" },
-      { label: "Roadmap", href: "/roadmap", note: "What ships when" },
+      { label: "Attendance", href: "/features/attendance" },
     ],
   },
   {
@@ -48,7 +48,7 @@ export const nav: NavItem[] = [
     ],
   },
   { label: "Pricing", href: "/pricing" },
-  { label: "Schools", href: "/schools" },
+  { label: "Demo school", href: "/schools" },
   { label: "Why us", href: "/why-shikshablox" },
 ];
 
@@ -59,7 +59,7 @@ export const footerNav: { title: string; links: { label: string; href: string }[
       { label: "All modules", href: "/features" },
       { label: "School Website & CMS", href: "/features/website-cms" },
       { label: "Pricing", href: "/pricing" },
-      { label: "Roadmap", href: "/roadmap" },
+      { label: "Demo school website", href: "/schools" },
       { label: "Security & privacy", href: "/security" },
     ],
   },
@@ -76,7 +76,6 @@ export const footerNav: { title: string; links: { label: string; href: string }[
     title: "Company",
     links: [
       { label: "About", href: "/about" },
-      { label: "Schools on ShikshaBlox", href: "/schools" },
       { label: "Why ShikshaBlox", href: "/why-shikshablox" },
       { label: "Book a demo", href: "/contact" },
     ],

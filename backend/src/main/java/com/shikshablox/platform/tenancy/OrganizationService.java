@@ -149,6 +149,16 @@ public class OrganizationService {
                 .optional());
   }
 
+  /** Renames a school (seeding / platform operations). */
+  public void rename(UUID organizationId, String name) {
+    TenantContext.runAsSystem(
+        "rename organization",
+        () ->
+            jdbc.sql("update organization set name = ? where id = ?")
+                .params(name, organizationId)
+                .update());
+  }
+
   /**
    * Registers an already-verified host for a school's public site (seeding / platform operations).
    * Custom-domain self-service with DNS verification arrives in M7.

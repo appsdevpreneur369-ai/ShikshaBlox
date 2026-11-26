@@ -83,11 +83,11 @@ export function DemoForm() {
         </div>
         <h2 className="mt-5 font-display text-2xl font-extrabold text-ink">Thank you! We&apos;ll be in touch.</h2>
         <p className="mt-3 text-ink-2">
-          Our team will call you within one working day to schedule your demo. Meanwhile, take a look at a live school website
+          Our team will call you within one working day to schedule your demo. Meanwhile, take a look at a sample school website
           built on ShikshaBlox.
         </p>
         <a href="/schools" className="mt-6 inline-flex min-h-12 items-center gap-2 rounded-full bg-brand px-6 font-semibold text-brand-ink">
-          See Moriah School&apos;s website <Icon name="arrow" className="size-4" />
+          See the demo school website <Icon name="arrow" className="size-4" />
         </a>
       </div>
     );

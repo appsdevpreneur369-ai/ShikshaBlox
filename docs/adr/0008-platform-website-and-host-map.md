@@ -28,9 +28,14 @@ renderer. This mirrors ClinicFlow247, where the core product site is separate fr
    forwards to the existing public enquiry API with `host=<sb-sales tenant host>`. Leads land in the Studio enquiry
    inbox of the internal tenant **`sb-sales`** (seeded by `DemoSeeder`). The browser never calls the API directly and
    never names a tenant, so no CORS change is needed.
-4. **Content is data**: modules, availability and targets (`src/data/modules.ts`), plans (`src/data/plans.ts`,
-   backed by `docs/PRICING-MATH.md`), and showcased schools (`src/data/schools.ts`). Only M01 is shown as live;
-   everything else carries a target quarter.
+4. **Content is data**: modules (`src/data/modules.ts`), plans (`src/data/plans.ts`, backed by
+   `docs/PRICING-MATH.md`) and the demo school (`src/data/schools.ts`).
+   *Amended 2026-11-26 (product owner):* the site does not publish release dates, a roadmap or "pre-book" labels,
+   because school staff read them as "not ready". The internal build order stays in `modules.ts` (`release`) and
+   PRICING-MATH.md. Honesty is kept by (a) never naming a customer or showing fake stats or testimonials, and
+   (b) billing each module only from the day it goes live for that school, with scope confirmed in the order form.
+   No real school is shown. The showcase is **Greenfield Demo School**, a fictional tenant (`greenfield`) seeded
+   with stock photos by `SchoolSiteSeeder` and served by the Cloud Run service `greenfield` (min 0).
 5. **Images** are pre-generated WebP variants (`scripts/gen-images.py`) served as static files through a custom
    `next/image` loader. There's no request-time resizing, so a cold Cloud Run instance is as fast as a warm one.
 6. **Indexing**: `SB_WWW_NOINDEX=true` is baked into staging images (robots `Disallow: /`, `X-Robots-Tag: noindex`,
@@ -39,5 +44,5 @@ renderer. This mirrors ClinicFlow247, where the core product site is separate fr
 
 ## Consequences
 - Marketing changes deploy without touching school sites, Studio or the API.
-- Adding a showcased school is one entry in `schools.ts` (with the school's permission).
-- When a module ships, update its `release` in `modules.ts` and the plan's status in `plans.ts`.
+- Showing a real school needs that school's written permission.
+- When a module ships, nothing changes on the public site; sales confirms availability during the demo.

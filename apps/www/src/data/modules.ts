@@ -1,16 +1,19 @@
 /**
- * Module catalogue (from docs/ShikshaBlox-Schools-ERP-v2.md §5) with honest availability.
- * Targets come from docs/PRICING-MATH.md §5; update both together.
+ * Module catalogue (from docs/ShikshaBlox-Schools-ERP-v2.md §5).
+ * `release` is the internal build sequence (docs/PRICING-MATH.md §5). It is NOT shown on the public
+ * website: the product owner decided (2026-11-26) not to publish release dates or "coming soon" labels.
+ * Sales confirms module availability during the demo; billing for a module starts only when it is
+ * switched on for the school.
  */
 export type Release = "R1" | "R2" | "R3" | "R4" | "R5" | "R6";
 
-export const releases: Record<Release, { name: string; target: string; live: boolean }> = {
-  R1: { name: "Website & CMS", target: "Live now", live: true },
-  R2: { name: "Small-school ERP (Lite)", target: "Target Q2 2027", live: false },
-  R3: { name: "Medium-school operations (Standard)", target: "Target Q4 2027", live: false },
-  R4: { name: "Academic depth", target: "Target Q1 2028", live: false },
-  R5: { name: "International (Global)", target: "Target Q3 2028", live: false },
-  R6: { name: "Enterprise & AI", target: "Target Q4 2028", live: false },
+export const releases: Record<Release, { name: string; live: boolean }> = {
+  R1: { name: "Website & CMS", live: true },
+  R2: { name: "Small-school ERP (Lite)", live: false },
+  R3: { name: "Medium-school operations (Standard)", live: false },
+  R4: { name: "Academic depth", live: false },
+  R5: { name: "International (Global)", live: false },
+  R6: { name: "Enterprise & AI", live: false },
 };
 
 export type IconName =
@@ -26,8 +29,6 @@ export type CatalogueModule = {
   summary: string;
   icon: IconName;
   release: Release;
-  /** Partly live today (e.g. disclosures pages are live, the compliance calendar is not). */
-  partial?: string;
   page?: string;
 };
 
@@ -37,8 +38,8 @@ export const catalogueGroups: { title: string; blurb: string; modules: Catalogue
     blurb: "Everything parents see before and after admission.",
     modules: [
       { id: "M01", name: "School Website & CMS", summary: "Themes, 14 ready pages, notices, events, gallery, enquiries, SEO, approvals.", icon: "globe", release: "R1", page: "website-cms" },
-      { id: "M02", name: "Mandatory Disclosure & Compliance", summary: "Board disclosure pages with evidence documents, review reminders, export packs.", icon: "shield", release: "R3", partial: "Disclosure pages are live" },
-      { id: "M03", name: "Enquiry & Admissions CRM", summary: "Leads, follow-ups, applications, documents, entrance tests, offers.", icon: "funnel", release: "R3", partial: "Enquiry inbox is live", page: "admissions-crm" },
+      { id: "M02", name: "Mandatory Disclosure & Compliance", summary: "Board disclosure pages with evidence documents, review reminders, export packs.", icon: "shield", release: "R3" },
+      { id: "M03", name: "Enquiry & Admissions CRM", summary: "Leads, follow-ups, applications, documents, entrance tests, offers.", icon: "funnel", release: "R3", page: "admissions-crm" },
       { id: "M12", name: "Parent & Student App", summary: "Attendance, homework, marks, fee ledger, leave and consent in one PWA.", icon: "smartphone", release: "R2", page: "parent-app-communication" },
       { id: "M13", name: "WhatsApp & Communication Hub", summary: "Templates, opt-in, two-way inbox, SMS/email fallback, acknowledgements.", icon: "chat", release: "R2", page: "parent-app-communication" },
       { id: "M26", name: "Surveys, PTM & Helpdesk", summary: "PTM slots, feedback, complaints and service requests with SLAs.", icon: "users", release: "R3" },
@@ -113,7 +114,7 @@ export const catalogueGroups: { title: string; blurb: string; modules: Catalogue
     blurb: "Insight for leaders, and the platform to scale to many campuses.",
     modules: [
       { id: "M27", name: "Analytics & Command Centre", summary: "Admissions funnel, attendance, fees and academics at a glance.", icon: "chart", release: "R3", page: "analytics" },
-      { id: "M28", name: "AI Co-Pilots", summary: "Draft notices, summarise, search and spot risks, with human approval.", icon: "sparkles", release: "R6", partial: "Drafting assistant ships with R2", page: "ai-copilots" },
+      { id: "M28", name: "AI Co-Pilots", summary: "Draft notices, summarise, search and spot risks, with human approval.", icon: "sparkles", release: "R6", page: "ai-copilots" },
       { id: "M23", name: "LMS & Virtual Classroom", summary: "Course spaces, live classes, quizzes and resources.", icon: "video", release: "R5" },
       { id: "M37", name: "University & Career Counselling", summary: "Shortlists, applications, transcripts and recommendations.", icon: "compass", release: "R5" },
       { id: "M29", name: "Integrations & APIs", summary: "APIs, webhooks, SSO, payments, biometric and accounting connectors.", icon: "plug", release: "R6" },
@@ -136,7 +137,6 @@ export type ModulePage = {
   intro: string;
   image: { src: string; alt: string };
   release: Release;
-  liveNote?: string;
   features: Feature[];
   outcomes: string[];
   depth: { small: string; medium: string; international: string };
@@ -150,12 +150,11 @@ export const modulePages: ModulePage[] = [
     title: "School Website Builder & CMS for Schools in India",
     h1: "A beautiful school website your office can update in minutes",
     description:
-      "Launch a fast, SEO-ready school website with 14 ready pages, notices, events, gallery, admissions enquiries and mandatory disclosures. No developer needed. Live today on ShikshaBlox.",
+      "Launch a fast, SEO-ready school website with 14 ready pages, notices, events, gallery, admissions enquiries and mandatory disclosures. No developer needed.",
     intro:
       "Every ShikshaBlox school starts here. Pick a theme, add your logo and photos, and publish a mobile-first website with all the pages parents look for. Your office team edits it in ShikshaBlox Studio, with approvals and one-click rollback.",
-    image: { src: "/product/moriah-desktop.webp", alt: "Moriah School homepage built on ShikshaBlox" },
+    image: { src: "/product/demo-desktop.webp", alt: "Homepage of Greenfield Demo School, a sample school website built on ShikshaBlox" },
     release: "R1",
-    liveNote: "Live today, powering Moriah School, Guntur.",
     features: [
       { icon: "layers", title: "14 ready-made pages", text: "Home, About, Principal's message, Academics, Admissions, Facilities, Faculty, Events, Gallery, News, Contact, Careers, FAQs and Disclosures, created for you." },
       { icon: "pencil", title: "Block editor anyone can use", text: "24 content blocks (hero, stats, gallery, timeline, FAQs, forms) with live preview. No code, no agency." },
@@ -165,7 +164,7 @@ export const modulePages: ModulePage[] = [
       { icon: "check", title: "Approvals & scheduling", text: "Draft → review → publish, scheduled go-live, private preview links and full revision history." },
       { icon: "zap", title: "Fast & SEO-ready", text: "Server-rendered pages, optimised images, sitemaps and structured data, so you rank for \"best school in your city\"." },
       { icon: "lock", title: "Photo consent built in", text: "Identifiable student photos need a consent declaration before they go public. That's DPDP-aware by design." },
-      { icon: "globe", title: "Your own domain", text: "Free yourschool.shikshablox.com address today; self-serve custom domains with SSL arrive in January 2027 (Web Pro)." },
+      { icon: "globe", title: "Your own domain", text: "A free yourschool.shikshablox.com address, or your own domain with SSL on Web Pro, set up by our team." },
     ],
     outcomes: [
       "Live in a day with your existing content and photos",
@@ -174,7 +173,7 @@ export const modulePages: ModulePage[] = [
     ],
     depth: {
       small: "All 14 pages, notices, gallery, enquiries, disclosures",
-      medium: "Plus approvals, scheduling, preview links (2nd language: 2027)",
+      medium: "Plus approvals, scheduling, preview links and a second language",
       international: "Plus programme microsites and multi-campus sites",
     },
   },
@@ -190,7 +189,6 @@ export const modulePages: ModulePage[] = [
       "Admissions season shouldn't live in a register and five WhatsApp groups. ShikshaBlox tracks every lead from first enquiry to fee payment, with reminders so no family is forgotten.",
     image: { src: "/images/principal-tablet.webp", alt: "School admissions head reviewing applications on a tablet" },
     release: "R3",
-    liveNote: "The website enquiry inbox is live today. Full CRM targets Q4 2027.",
     features: [
       { icon: "funnel", title: "Lead pipeline", text: "Website, walk-in, phone and campaign leads in one board, by class and stage." },
       { icon: "bell", title: "Follow-up reminders", text: "Counsellors get daily follow-up lists; parents get WhatsApp updates." },
@@ -421,7 +419,6 @@ export const modulePages: ModulePage[] = [
       "ShikshaBlox AI is useful, not gimmicky. It drafts the circular, summarises the week and points out patterns, but nothing reaches a parent without a person approving it.",
     image: { src: "/images/auditorium.webp", alt: "Staff meeting in a school auditorium" },
     release: "R6",
-    liveNote: "A drafting assistant for notices and messages ships with R2 (target Q2 2027).",
     features: [
       { icon: "pencil", title: "Drafting assistant", text: "Notices, circulars and messages drafted in seconds, in your tone and language." },
       { icon: "sparkles", title: "Report-card comments", text: "Suggested remarks teachers edit and approve." },

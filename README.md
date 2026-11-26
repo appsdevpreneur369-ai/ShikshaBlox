@@ -86,7 +86,7 @@ End-to-end (against the running stack): `pnpm --filter @shikshablox/e2e install-
 
 Product website (`apps/www`, no backend needed for browsing): `pnpm --filter @shikshablox/www build; pnpm --filter @shikshablox/www start`, then
 `cd e2e; $env:WWW_URL="http://localhost:3002"; pnpm exec playwright test -c playwright.www.config.ts` (7 device profiles, axe accessibility,
-links, images, navigation, form). Prices and roadmap targets on the site come from `docs/PRICING-MATH.md`.
+links, images, navigation, form). Prices on the site come from `docs/PRICING-MATH.md`; no release dates are published (ADR 0008).
 
 The backend integration tests need Docker running (Testcontainers starts PostgreSQL 16).
 

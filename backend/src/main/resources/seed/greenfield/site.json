@@ -1,0 +1,209 @@
+{
+  "_note": "Greenfield Demo School: a fictional school used to demonstrate ShikshaBlox on shikshablox.com. Photos are Unsplash-licensed stock (see CREDITS.md in this folder). No real people, phone numbers or addresses.",
+  "theme": "modern",
+  "brand": {
+    "primary": "#15803d",
+    "accent": "#ca8a04",
+    "fontHeading": "Poppins",
+    "fontBody": "Inter",
+    "radius": "round"
+  },
+  "logo": "logo.png",
+  "profile": {
+    "tagline": "Rooted in values, growing into the future",
+    "board": "CBSE",
+    "boardName": "Demo school · CBSE curriculum · English medium",
+    "established": "2005",
+    "mapQuery": "Hyderabad, Telangana",
+    "admissionsText": "This is a demo school website built on ShikshaBlox. Admission enquiries sent here reach the demo inbox, not a real school.",
+    "admissionsOpen": true,
+    "officeHours": "Monday – Saturday, 8:30 am – 4:30 pm",
+    "address": {
+      "line1": "Demo campus (fictional school)",
+      "city": "Hyderabad",
+      "pincode": "500001",
+      "state": "Telangana",
+      "country": "India"
+    },
+    "social": {}
+  },
+  "images": {
+    "logo.png": { "alt": "Greenfield Demo School logo", "students": false },
+    "campus-front.jpg": { "alt": "The main school building with a tree-lined driveway", "students": false },
+    "campus-lawn.jpg": { "alt": "School buildings beyond a wide green lawn", "students": false },
+    "admin-block.jpg": { "alt": "The administration block with the flag pole in front", "students": false },
+    "senior-block.jpg": { "alt": "The senior school block seen from the courtyard", "students": false },
+    "brick-block.jpg": { "alt": "Brick academic block beside the basketball court", "students": false },
+    "classroom-empty.jpg": { "alt": "A bright classroom with wooden desks and a whiteboard", "students": false },
+    "classroom-bright.jpg": { "alt": "Students working in a well-lit classroom", "students": true },
+    "classroom-class.jpg": { "alt": "A teacher with a class of students in uniform", "students": true },
+    "classroom-yellow.jpg": { "alt": "A primary classroom with benches and a green board", "students": false },
+    "computer-lab.jpg": { "alt": "The computer lab with a laptop for every student", "students": true },
+    "library.jpg": { "alt": "The school library with reading chairs and book stacks", "students": false },
+    "library-glass.jpg": { "alt": "The glass-walled reading room", "students": false },
+    "science-lab.jpg": { "alt": "The science laboratory with lab benches", "students": false },
+    "sports-track.jpg": { "alt": "Students racing on the athletics track", "students": true },
+    "sports-ground.jpg": { "alt": "Students gathered on the sports ground", "students": true },
+    "playground.jpg": { "alt": "The junior playground with swings and a slide", "students": false },
+    "students-cheer.jpg": { "alt": "A group of cheerful students waving at the camera", "students": true },
+    "students-reading.jpg": { "alt": "Students reading their textbooks in class", "students": true },
+    "students-class.jpg": { "alt": "Students in blue uniforms at their desks", "students": true },
+    "students-desk.jpg": { "alt": "Two students working together at a desk", "students": true },
+    "juniors-play.jpg": { "alt": "Junior students jumping for joy outdoors", "students": true },
+    "readers.jpg": { "alt": "Children holding up their storybooks", "students": true },
+    "annual-parade.jpg": { "alt": "Students marching in the annual sports day parade", "students": true },
+    "girls-class.jpg": { "alt": "Young students lined up in the corridor", "students": true }
+  },
+  "titles": { "faculty": "Our Teachers" },
+  "pages": {
+    "home": [
+      { "id": "hero", "type": "hero", "props": { "variant": "fullBleed", "eyebrow": "Demo school · built on ShikshaBlox", "heading": "Rooted in values, growing into the future", "subheading": "Greenfield Demo School is a fictional CBSE school from Nursery to Class 12, created to show what a school website on ShikshaBlox looks like.", "imageId": "@img:campus-front.jpg", "primaryCta": { "label": "Admissions 2027–28", "href": "/admissions" }, "secondaryCta": { "label": "Explore the campus", "href": "/facilities" } } },
+      { "id": "stats", "type": "stats", "props": { "items": [ { "value": "2005", "label": "Established" }, { "value": "Nursery–12", "label": "Classes offered" }, { "value": "1,200+", "label": "Students (sample)" }, { "value": "4 acres", "label": "Green campus" } ] } },
+      { "id": "welcome", "type": "imageText", "props": { "eyebrow": "Welcome to Greenfield", "heading": "A school where every child is seen", "html": "<p>At Greenfield, learning goes beyond the textbook. Small sections, caring teachers and a balanced timetable help every child build <strong>strong academics, good character and the confidence to lead</strong>.</p><p>From our Nursery wing to the senior school, children learn through enquiry, projects, sport and the arts.</p>", "imageId": "@img:students-reading.jpg", "imagePosition": "right", "cta": { "label": "About us", "href": "/about" } } },
+      { "id": "why", "type": "cards", "props": { "heading": "Why families choose Greenfield", "intro": "Everything a growing child needs, on one safe and green campus.", "columns": 3, "items": [
+        { "title": "Small sections", "text": "No more than 32 children per section, so teachers know every student well.", "icon": "heart" },
+        { "title": "CBSE with NEP 2020", "text": "Competency-based learning, holistic report cards and plenty of hands-on projects.", "icon": "book" },
+        { "title": "Science & coding", "text": "Modern science labs and a computer lab with coding from Class 3.", "icon": "flask" },
+        { "title": "Sport every day", "text": "Athletics track, sports ground and coaches for cricket, football and athletics.", "icon": "trophy" },
+        { "title": "Arts & music", "text": "Music, dance, theatre and art studios to discover every talent.", "icon": "music" },
+        { "title": "Safe transport", "text": "GPS-tracked buses with a staff member on every route.", "icon": "shield" } ] } },
+      { "id": "campus", "type": "imageText", "settings": { "background": "muted" }, "props": { "eyebrow": "Our campus", "heading": "Four green acres built for learning", "html": "<p>Bright classrooms, a glass-walled library, science and computer labs, a junior playground and a full sports ground — designed so children love coming to school.</p>", "imageId": "@img:campus-lawn.jpg", "imagePosition": "left", "cta": { "label": "See our facilities", "href": "/facilities" } } },
+      { "id": "notices", "type": "noticesFeed", "settings": { "background": "muted" }, "props": { "heading": "Notice board", "limit": 4 } },
+      { "id": "life", "type": "galleryStrip", "props": { "heading": "Life at Greenfield", "intro": "Classrooms, labs, sports and celebrations.", "layout": "grid", "imageIds": [ "@img:students-cheer.jpg", "@img:sports-track.jpg", "@img:computer-lab.jpg", "@img:juniors-play.jpg", "@img:readers.jpg", "@img:annual-parade.jpg" ], "cta": { "label": "View the gallery", "href": "/gallery" } } },
+      { "id": "events", "type": "eventsFeed", "props": { "heading": "Upcoming events", "limit": 4, "show": "upcoming" } },
+      { "id": "news", "type": "newsFeed", "settings": { "background": "muted" }, "props": { "heading": "News & stories", "limit": 3 } },
+      { "id": "cta", "type": "cta", "props": { "heading": "Admissions are open for 2027–28", "text": "This is a demo. On your school's website, this button sends parents straight to your admissions enquiry form.", "primary": { "label": "Enquire now", "href": "/admissions#enquire" }, "secondary": { "label": "Contact us", "href": "/contact" } } }
+    ],
+    "about": [
+      { "id": "intro", "type": "hero", "props": { "variant": "split", "eyebrow": "About us", "heading": "Twenty years of joyful learning", "subheading": "Greenfield Demo School is a fictional school created to demonstrate ShikshaBlox. Everything here shows what your school's own story could look like.", "imageId": "@img:admin-block.jpg", "primaryCta": { "label": "Admissions", "href": "/admissions" } } },
+      { "id": "school", "type": "imageText", "props": { "eyebrow": "Our school", "heading": "Nursery to Class 12, on one campus", "html": "<p>Greenfield follows the CBSE curriculum in English medium, with Hindi and Telugu as languages. Children move from a play-based early years wing to a primary school focused on foundations, and on to a senior school offering Science, Commerce and Humanities.</p><p>Our teachers are trained every year in modern pedagogy, and our parents are partners in everything we do.</p>", "imageId": "@img:senior-block.jpg", "imagePosition": "left" } },
+      { "id": "values", "type": "cards", "settings": { "background": "muted" }, "props": { "heading": "What we stand for", "columns": 4, "items": [
+        { "title": "Care", "text": "Every child is known, valued and safe.", "icon": "shield" },
+        { "title": "Curiosity", "text": "We ask questions and learn by doing.", "icon": "sun" },
+        { "title": "Integrity", "text": "We are honest and fair in all we do.", "icon": "star" },
+        { "title": "Service", "text": "We use our gifts to help others.", "icon": "heart" } ] } }
+    ],
+    "principal": [
+      { "id": "msg", "type": "imageText", "props": { "eyebrow": "From the Principal", "heading": "Welcome to Greenfield", "html": "<p>Dear parents,</p><p>Thank you for your interest in Greenfield. Our aim is simple: that every child leaves us confident, kind and ready for the world.</p><p>We combine strong academics with sport, the arts and service, and we keep you informed every step of the way — through the parent app, WhatsApp updates and regular meetings.</p><p>Please visit us and see our classrooms for yourself.</p><p><strong>The Principal</strong><br>Greenfield Demo School</p><p><em>This message is sample content for the ShikshaBlox demo.</em></p>", "imageId": "@img:classroom-class.jpg", "imagePosition": "right" } }
+    ],
+    "vision": [
+      { "id": "vm", "type": "cards", "props": { "heading": "Our vision & mission", "columns": 2, "items": [
+        { "title": "Vision", "text": "To nurture confident, compassionate learners who think for themselves and serve their communities.", "icon": "star" },
+        { "title": "Mission", "text": "To offer a balanced, child-centred education that builds strong foundations, character and curiosity in a safe and joyful school.", "icon": "heart" } ] } }
+    ],
+    "academics": [
+      { "id": "intro", "type": "imageText", "props": { "eyebrow": "Academics", "heading": "Strong foundations, real-world learning", "html": "<p>Greenfield follows the CBSE curriculum aligned with the National Education Policy 2020. Lessons are activity-based in the early years and become increasingly project- and enquiry-led as children grow.</p>", "imageId": "@img:students-class.jpg", "imagePosition": "left" } },
+      { "id": "stages", "type": "cards", "settings": { "background": "muted" }, "props": { "heading": "Stages of learning", "columns": 3, "items": [
+        { "title": "Early years (Nursery – UKG)", "text": "Play-based learning, early literacy and numeracy, music and movement.", "imageId": "@img:juniors-play.jpg" },
+        { "title": "Primary (Classes 1 – 5)", "text": "Reading, writing and number sense, EVS, languages, art and plenty of activities.", "imageId": "@img:readers.jpg" },
+        { "title": "Middle & senior (Classes 6 – 12)", "text": "Sciences, mathematics, social sciences and languages; Science, Commerce and Humanities streams in Classes 11–12.", "imageId": "@img:students-desk.jpg" } ] } },
+      { "id": "beyond", "type": "cards", "props": { "heading": "Beyond the textbook", "columns": 4, "items": [
+        { "title": "Coding & robotics", "text": "Computational thinking from Class 3.", "icon": "flask" },
+        { "title": "Languages", "text": "English, Hindi and Telugu.", "icon": "globe" },
+        { "title": "Performing arts", "text": "Music, dance and theatre.", "icon": "music" },
+        { "title": "Sport", "text": "Daily games and inter-house competitions.", "icon": "trophy" } ] } },
+      { "id": "g", "type": "galleryStrip", "props": { "layout": "grid", "imageIds": [ "@img:science-lab.jpg", "@img:computer-lab.jpg", "@img:classroom-bright.jpg", "@img:library.jpg" ] } }
+    ],
+    "admissions": [
+      { "id": "hero", "type": "hero", "props": { "variant": "split", "eyebrow": "Admissions 2027–28", "heading": "Join the Greenfield family", "subheading": "Admissions are open from Nursery to Class 9 and Class 11 (demo). Enquiries from this page arrive in the school's ShikshaBlox Studio inbox.", "imageId": "@img:girls-class.jpg", "primaryCta": { "label": "Send an enquiry", "href": "#enquire" }, "secondaryCta": { "label": "Admissions FAQs", "href": "/faqs" } } },
+      { "id": "steps", "type": "steps", "props": { "heading": "How to apply", "intro": "A simple, transparent process.", "items": [
+        { "title": "Enquire", "text": "Fill in the enquiry form below; our admissions team calls you back." },
+        { "title": "Visit", "text": "Tour the campus with your child and meet our teachers." },
+        { "title": "Interaction", "text": "A friendly interaction to understand your child's needs." },
+        { "title": "Enrol", "text": "Submit documents, choose a fee plan and welcome to Greenfield!" } ] } },
+      { "id": "docs", "type": "richText", "settings": { "background": "muted" }, "props": { "width": "narrow", "html": "<h2>Documents required</h2><ul><li>Birth certificate of the child</li><li>Aadhaar of the child and a parent (if available)</li><li>Transfer certificate and previous report card (Class 1 and above)</li><li>Two passport-size photographs</li></ul>" } },
+      { "id": "enquire", "type": "enquiryForm", "settings": { "anchor": "enquire" }, "props": { "heading": "Admissions enquiry", "intro": "Demo form: tell us about your child and see how the enquiry reaches the school's Studio inbox." } }
+    ],
+    "facilities": [
+      { "id": "intro", "type": "richText", "props": { "width": "narrow", "html": "<p>Greenfield's four-acre campus brings together academic blocks, labs, a library, sports facilities and green open spaces.</p>" } },
+      { "id": "fac", "type": "cards", "props": { "columns": 3, "items": [
+        { "title": "Smart classrooms", "text": "Airy classrooms with interactive boards and comfortable desks.", "imageId": "@img:classroom-empty.jpg" },
+        { "title": "Library & reading room", "text": "Over 10,000 books and a quiet glass-walled reading room.", "imageId": "@img:library-glass.jpg" },
+        { "title": "Science laboratories", "text": "Physics, chemistry and biology labs for hands-on experiments.", "imageId": "@img:science-lab.jpg" },
+        { "title": "Computer lab", "text": "A device for every student and coding from Class 3.", "imageId": "@img:computer-lab.jpg" },
+        { "title": "Sports ground & track", "text": "Athletics track, cricket and football grounds.", "imageId": "@img:sports-track.jpg" },
+        { "title": "Junior playground", "text": "A safe, shaded play area for our youngest learners.", "imageId": "@img:playground.jpg" } ] } }
+    ],
+    "faculty": [
+      { "id": "intro", "type": "imageText", "props": { "eyebrow": "Our teachers", "heading": "Caring, qualified and always learning", "html": "<p>Our teachers are trained every year in modern, child-centred teaching. Class teachers know every child and stay in close touch with families.</p><p><em>Names below are sample data for the demo.</em></p>", "imageId": "@img:classroom-bright.jpg", "imagePosition": "right" } },
+      { "id": "staff", "type": "staffGrid", "settings": { "background": "muted" }, "props": { "heading": "Leadership team", "intro": "Sample staff for the ShikshaBlox demo." } }
+    ],
+    "events": [
+      { "id": "up", "type": "eventsFeed", "props": { "heading": "Upcoming events", "limit": 20, "show": "upcoming" } },
+      { "id": "past", "type": "eventsFeed", "settings": { "background": "muted" }, "props": { "heading": "Past events", "limit": 12, "show": "past" } }
+    ],
+    "gallery": [
+      { "id": "albums", "type": "albumsFeed", "props": { "heading": "Photo albums", "limit": 24 } },
+      { "id": "best", "type": "galleryStrip", "settings": { "background": "muted" }, "props": { "heading": "Moments at Greenfield", "layout": "masonry", "imageIds": [ "@img:students-cheer.jpg", "@img:annual-parade.jpg", "@img:library.jpg", "@img:sports-ground.jpg", "@img:juniors-play.jpg", "@img:computer-lab.jpg", "@img:readers.jpg", "@img:brick-block.jpg", "@img:students-desk.jpg", "@img:playground.jpg" ] } }
+    ],
+    "news": [
+      { "id": "notices", "type": "noticesFeed", "props": { "heading": "Circulars & notices", "limit": 20 } },
+      { "id": "news", "type": "newsFeed", "settings": { "background": "muted" }, "props": { "heading": "News & stories", "limit": 12 } }
+    ],
+    "contact": [
+      { "id": "c", "type": "contactDetails", "props": { "heading": "Get in touch", "showMap": true } },
+      { "id": "f", "type": "enquiryForm", "props": { "heading": "Send us a message", "intro": "Demo form: messages arrive in the school's ShikshaBlox Studio inbox." } }
+    ],
+    "careers": [
+      { "id": "intro", "type": "richText", "props": { "width": "narrow", "html": "<p>On a real ShikshaBlox website, open teaching positions published in Studio appear here automatically.</p>" } },
+      { "id": "jobs", "type": "careersFeed", "props": { "heading": "Open positions" } }
+    ],
+    "faqs": [
+      { "id": "faq", "type": "faq", "props": { "heading": "Frequently asked questions", "source": "faqs", "items": [] } },
+      { "id": "cta", "type": "cta", "props": { "heading": "Still have a question?", "text": "Our office is happy to help.", "primary": { "label": "Contact us", "href": "/contact" } } }
+    ]
+  },
+  "menu": {
+    "header": [
+      { "label": "Home", "page": "home" },
+      { "label": "About", "page": "about", "children": [
+        { "label": "About Us", "page": "about" },
+        { "label": "Principal's Message", "page": "principal" },
+        { "label": "Vision & Mission", "page": "vision" },
+        { "label": "Our Teachers", "page": "faculty" } ] },
+      { "label": "Academics", "page": "academics" },
+      { "label": "Admissions", "page": "admissions" },
+      { "label": "Facilities", "page": "facilities" },
+      { "label": "School Life", "page": "events", "children": [
+        { "label": "Events", "page": "events" },
+        { "label": "Gallery", "page": "gallery" },
+        { "label": "News & Circulars", "page": "news" } ] },
+      { "label": "Contact", "page": "contact" }
+    ]
+  },
+  "content": {
+    "notices": [
+      { "title": "This is a demo school website", "summary": "Greenfield Demo School is fictional. It shows what a school website built on ShikshaBlox looks like.", "category": "General", "pinned": true, "date": "+0" },
+      { "title": "Admissions open for 2027–28", "summary": "Admissions are open from Nursery to Class 9 and Class 11. Send an enquiry from the Admissions page.", "category": "Admissions", "date": "-2" },
+      { "title": "Parent–teacher meeting for Classes 1–8", "summary": "Meet your child's class teacher to review term progress. Slots are shared on the parent app.", "category": "Academics", "date": "-5" }
+    ],
+    "events": [
+      { "title": "Annual Sports Day", "summary": "Track events, house relays and the march past.", "date": "+10", "location": "Sports ground", "image": "annual-parade.jpg", "bodyHtml": "<p>Parents are warmly invited to cheer for their children.</p>" },
+      { "title": "Science & Coding Fair", "summary": "Students from Classes 6–12 present their projects and robots.", "date": "+24", "location": "Science block", "image": "science-lab.jpg" },
+      { "title": "Book Week", "summary": "Author talks, storytelling and a book swap in the library.", "date": "+38", "location": "Library", "image": "library.jpg" },
+      { "title": "Inter-house athletics", "summary": "Heats for the 100 m, 200 m and relays.", "date": "-9", "location": "Athletics track", "image": "sports-track.jpg" }
+    ],
+    "news": [
+      { "title": "New glass-walled reading room opens", "date": "-20", "image": "library-glass.jpg", "summary": "A quiet, light-filled space for reading and research.", "bodyHtml": "<p>The new reading room adds 60 seats and a dedicated junior corner. (Sample news story.)</p>" },
+      { "title": "Computer lab upgraded for coding classes", "date": "-45", "image": "computer-lab.jpg", "summary": "Every student now has a device during computer lessons.", "bodyHtml": "<p>Coding begins in Class 3 with block-based programming. (Sample news story.)</p>" },
+      { "title": "Students shine at the district athletics meet", "date": "-70", "image": "sports-track.jpg", "summary": "Our athletes brought home medals in sprints and relays.", "bodyHtml": "<p>Congratulations to all our athletes and coaches. (Sample news story.)</p>" }
+    ],
+    "albums": [
+      { "title": "Our campus", "date": "-30", "summary": "Buildings, labs and green spaces.", "images": [ "campus-front.jpg", "campus-lawn.jpg", "admin-block.jpg", "senior-block.jpg", "brick-block.jpg", "playground.jpg" ] },
+      { "title": "Classrooms & labs", "date": "-40", "summary": "Where learning happens.", "images": [ "classroom-empty.jpg", "classroom-yellow.jpg", "classroom-bright.jpg", "science-lab.jpg", "computer-lab.jpg", "library.jpg" ] },
+      { "title": "Sports & celebrations", "date": "-60", "summary": "Sports day, athletics and assemblies.", "images": [ "annual-parade.jpg", "sports-track.jpg", "sports-ground.jpg", "students-cheer.jpg", "juniors-play.jpg" ] }
+    ],
+    "faqs": [
+      { "title": "Is Greenfield a real school?", "summary": "No. Greenfield Demo School is a fictional school that shows what a website built on ShikshaBlox looks like.", "category": "General" },
+      { "title": "Which board does the school follow?", "summary": "The demo school follows the CBSE curriculum. ShikshaBlox supports CBSE, ICSE, State Boards and international curricula.", "category": "Academics" },
+      { "title": "How do I apply for admission?", "summary": "Send an enquiry from the Admissions page. On a real ShikshaBlox site, it arrives instantly in the school's Studio inbox.", "category": "Admissions" },
+      { "title": "Is school transport available?", "summary": "Yes, the demo school runs GPS-tracked buses across the city.", "category": "Transport" }
+    ],
+    "staff": [
+      { "title": "Ms. A. Sharma", "role": "Principal (sample)" },
+      { "title": "Mr. R. Rao", "role": "Vice Principal (sample)" },
+      { "title": "Ms. K. Reddy", "role": "Head of Primary (sample)" },
+      { "title": "Mr. S. Kumar", "role": "Head of Sports (sample)" }
+    ]
+  }
+}

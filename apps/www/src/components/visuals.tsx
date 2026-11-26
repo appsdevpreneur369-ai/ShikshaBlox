@@ -1,4 +1,3 @@
-import { releases, type Release } from "@/data/modules";
 import { Icon } from "./Icon";
 
 /** Illustrative preview of the upcoming ERP workspace (Lite). Clearly labelled; sample data only. */
@@ -73,7 +72,7 @@ export function ArchitectureDiagram() {
       {/* Phones and small tablets: the same story as stacked cards (SVG text would be too small). */}
       <div className="space-y-3 md:hidden">
         <div className="grid grid-cols-3 gap-2 text-center text-xs font-semibold text-ink">
-          {["Moriah School", "Your school", "Next campus"].map((s) => (
+          {["Greenfield (demo)", "Your school", "Next campus"].map((s) => (
             <div key={s} className="rounded-xl border border-line px-2 py-3">
               {s}
             </div>
@@ -114,7 +113,7 @@ export function ArchitectureDiagram() {
         </defs>
         {/* Schools */}
         {[
-          ["Moriah School", "moriah.shikshablox.com", 80],
+          ["Greenfield (demo)", "greenfield.shikshablox.com", 80],
           ["Your school", "yourschool.in", 380],
           ["Next campus", "campus2.yourschool.in", 680],
         ].map(([n, d, x]) => (
@@ -178,55 +177,16 @@ export function ArchitectureDiagram() {
       </svg>
       <figcaption className="mt-4 flex flex-wrap items-center gap-4 text-sm text-ink-3">
         <span className="inline-flex items-center gap-2">
-          <span className="size-3 rounded bg-[#047857]" aria-hidden="true" /> Live now
+          <span className="size-3 rounded bg-[#047857]" aria-hidden="true" /> Website & CMS
         </span>
         <span className="inline-flex items-center gap-2">
-          <span className="size-3 rounded bg-[#4f46e5]" aria-hidden="true" /> Lite / Standard (2027)
+          <span className="size-3 rounded bg-[#4f46e5]" aria-hidden="true" /> Core ERP (Lite / Standard)
         </span>
         <span className="inline-flex items-center gap-2">
-          <span className="size-3 rounded bg-[#c7d2fe]" aria-hidden="true" /> Standard / Global
+          <span className="size-3 rounded bg-[#c7d2fe]" aria-hidden="true" /> Advanced (Standard / Global)
         </span>
       </figcaption>
     </figure>
   );
 }
 
-export const roadmapDetail: Record<Release, string[]> = {
-  R1: ["Website & CMS, 14 standard pages", "Notices, news, events, gallery", "Enquiry inbox, disclosures", "Approvals, scheduling, rollback"],
-  R2: ["Setup wizard & data import", "Students, guardians, certificates", "Attendance (offline) & parent alerts", "Fees Lite, report cards, WhatsApp, parent app"],
-  R3: ["Admissions CRM", "Fees Standard, timetable, HR & payroll", "Transport + GPS, library, gate", "Dashboards & helpdesk"],
-  R4: ["Curriculum packs (CBSE HPC, ICSE, State)", "Exams Standard, lesson plans", "Homework submissions", "Behaviour & safeguarding"],
-  R5: ["IB / Cambridge / AP assessment", "Transcripts & counselling", "Multi-currency billing", "LMS, SSO, ECA, trips"],
-  R6: ["Multi-campus control", "APIs & webhooks", "AI co-pilots", "Hostel, facilities, IT assets"],
-};
-
-export function RoadmapTimeline({ compact = false }: { compact?: boolean }) {
-  const list = Object.entries(releases) as [Release, (typeof releases)[Release]][];
-  return (
-    <ol className={`relative grid gap-4 ${compact ? "sm:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-2 lg:grid-cols-3"}`}>
-      {list.map(([id, r]) => (
-        <li key={id} className={`card card-hover reveal relative p-6 ${r.live ? "ring-2 ring-[color-mix(in_oklab,var(--c-live)_45%,transparent)]" : ""}`}>
-          <div className="flex items-center justify-between gap-3">
-            <span className="font-display text-sm font-bold text-ink-3">{id}</span>
-            <span
-              className={`rounded-full px-2.5 py-1 text-xs font-semibold ${r.live ? "bg-live-soft text-live" : "bg-accent-soft text-accent-ink"}`}
-            >
-              {r.target}
-            </span>
-          </div>
-          <h3 className="mt-3 font-display text-lg font-bold text-ink">{r.name}</h3>
-          {!compact && (
-            <ul className="mt-3 space-y-1.5 text-sm text-ink-2">
-              {roadmapDetail[id].map((d) => (
-                <li key={d} className="flex gap-2">
-                  <Icon name="check" className="mt-0.5 size-4 shrink-0 text-brand" />
-                  {d}
-                </li>
-              ))}
-            </ul>
-          )}
-        </li>
-      ))}
-    </ol>
-  );
-}

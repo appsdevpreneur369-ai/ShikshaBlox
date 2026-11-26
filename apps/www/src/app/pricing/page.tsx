@@ -48,7 +48,7 @@ export default function PricingPage() {
         crumbs={crumbs}
         eyebrow={<p className="eyebrow">Transparent pricing</p>}
         title="Simple, published prices. No surprises."
-        lead={`Start free with a school website. Pre-book the ERP at founding-school prices: ${FOUNDING_DISCOUNT}% off year 1 and a 3-year price lock for the first ${FOUNDING_SEATS} schools. All prices in INR, excluding GST.`}
+        lead={`Start free with a school website and add ERP modules as you grow. Founding schools get ${FOUNDING_DISCOUNT}% off year 1 and a 3-year price lock (first ${FOUNDING_SEATS} schools). All prices in INR, excluding GST.`}
       />
 
       <section className="container-x py-16 sm:py-20">
@@ -69,11 +69,6 @@ export default function PricingPage() {
                 <span className="text-sm text-ink-3">{p.period}</span>
               </p>
               <p className="mt-1.5 min-h-10 text-xs text-ink-3">{p.priceNote}</p>
-              <span
-                className={`mt-3 inline-flex self-start rounded-full px-2.5 py-1 text-xs font-semibold ${p.status === "live" ? "bg-live-soft text-live" : "bg-accent-soft text-accent-ink"}`}
-              >
-                {p.statusNote}
-              </span>
               {p.founding && <p className="mt-2 text-sm font-semibold text-brand">{p.founding}</p>}
               <ButtonLink href={p.cta.href} variant={p.highlight ? "primary" : "secondary"} className="mt-5 w-full">
                 {p.cta.label}

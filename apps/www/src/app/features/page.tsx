@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
-import { ButtonLink, CtaBand, JsonLd, PageHero, SectionHeading, StatusBadge } from "@/components/ui";
-import { allModules, catalogueGroups, releases } from "@/data/modules";
+import { ButtonLink, CtaBand, JsonLd, PageHero, SectionHeading } from "@/components/ui";
+import { allModules, catalogueGroups } from "@/data/modules";
 import { breadcrumbLd, pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: "School ERP Modules: Website, Admissions, Fees, Attendance, Exams & More",
-  description: `All ${allModules.length} ShikshaBlox modules in one place, with what's live today and the target date for each: school website & CMS, admissions CRM, SIS, attendance, fees, exams, parent app, WhatsApp, transport, HR and more.`,
+  description: `All ${allModules.length} ShikshaBlox modules in one place, covering school website & CMS, admissions CRM, SIS, attendance, fees, exams, parent app, WhatsApp, transport, HR and more.`,
   path: "/features",
 });
 
@@ -23,14 +23,12 @@ const foundations: [string, string, string][] = [
   ["check", "Consent ledger", "DPDP-aware consent for photos and messages."],
   ["cloud", "Backups & export", "Daily backups; export your data any time."],
   ["smartphone", "Mobile-first", "Works on any phone, even on slow networks."],
-  ["globe", "Multi-language ready", "English first; Indian languages on the roadmap."],
+  ["globe", "Multi-language ready", "English first, with Indian languages built in."],
   ["layers", "Entitlements", "Switch modules on or off without migration."],
   ["building", "Multi-tenant core", "Every school's data isolated in the database."],
 ];
 
 export default function FeaturesPage() {
-  const live = allModules.filter((m) => releases[m.release].live).length;
-  const partial = allModules.filter((m) => m.partial).length;
   return (
     <>
       <JsonLd data={breadcrumbLd(crumbs)} />
@@ -38,13 +36,13 @@ export default function FeaturesPage() {
         crumbs={crumbs}
         eyebrow={<p className="eyebrow">{allModules.length} modules · one platform</p>}
         title="Every module a school needs, as blocks you switch on"
-        lead={`Start with what you need today and add more without migrating. ${live} module is fully live, ${partial} more are partly live, and the rest follow a published roadmap.`}
+        lead="Start with what you need today and switch on more as you grow: same data, same login, no migrations."
       >
         <ButtonLink href="/contact" arrow>
           Book a free demo
         </ButtonLink>
-        <ButtonLink href="/roadmap" variant="secondary">
-          See the roadmap
+        <ButtonLink href="/pricing" variant="secondary">
+          See pricing
         </ButtonLink>
       </PageHero>
 
@@ -82,8 +80,7 @@ export default function FeaturesPage() {
                     </div>
                     <h3 className="mt-4 font-display text-lg font-bold text-ink">{m.name}</h3>
                     <p className="mt-1.5 flex-1 text-sm leading-relaxed text-ink-2">{m.summary}</p>
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-                      <StatusBadge release={m.release} partial={m.partial} />
+                    <div className="mt-4 flex flex-wrap items-center justify-end gap-2">
                       {m.page && (
                         <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand">
                           Details <Icon name="arrow" className="size-4" />

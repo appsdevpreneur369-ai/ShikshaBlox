@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { releases, type Release } from "@/data/modules";
 import { sizeOf } from "@/lib/images";
 import { Icon } from "./Icon";
 
@@ -46,31 +45,6 @@ export function ButtonLink({
     <Link prefetch={false} href={href} className={cls}>
       {inner}
     </Link>
-  );
-}
-
-export function StatusBadge({ release, partial, className = "" }: { release: Release; partial?: string; className?: string }) {
-  const r = releases[release];
-  if (r.live) {
-    return (
-      <span className={`inline-flex items-center gap-1.5 rounded-full bg-live-soft px-2.5 py-1 text-xs font-semibold text-live ${className}`}>
-        <span className="size-1.5 rounded-full bg-current" aria-hidden="true" />
-        Live now
-      </span>
-    );
-  }
-  return (
-    <span className={`inline-flex flex-wrap items-center gap-1.5 ${className}`}>
-      {partial && (
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-live-soft px-2.5 py-1 text-xs font-semibold text-live">
-          <span className="size-1.5 rounded-full bg-current" aria-hidden="true" />
-          {partial}
-        </span>
-      )}
-      <span className="inline-flex items-center rounded-full bg-accent-soft px-2.5 py-1 text-xs font-semibold text-accent-ink">
-        {r.target}
-      </span>
-    </span>
   );
 }
 
@@ -253,7 +227,7 @@ export function JsonLd({ data }: { data: object | object[] }) {
 
 export function CtaBand({
   title = "See ShikshaBlox running for a real school",
-  text = "Book a free 30-minute demo. We'll show you a live school website, walk through the modules your school needs, and share founding-school pricing.",
+  text = "Book a free 30-minute demo. We'll show you a sample school website, walk through the modules your school needs, and share founding-school pricing.",
 }: {
   title?: string;
   text?: string;

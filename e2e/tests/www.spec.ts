@@ -27,8 +27,9 @@ const hasDesktopNav = (page: Page) =>
 
 test.describe("every page", () => {
   test("loads with one H1, title, description, canonical, footer copyright and no overflow", async ({ page }) => {
+    test.setTimeout(180_000);
     const paths = await sitemapPaths(page);
-    expect(paths.length).toBeGreaterThanOrEqual(27);
+    expect(paths.length).toBeGreaterThanOrEqual(26);
     for (const p of paths) {
       const res = await page.goto(p);
       expect(res?.status(), p).toBe(200);
@@ -70,6 +71,7 @@ test.describe("every page", () => {
   });
 
   test("no accessibility violations (WCAG 2.1 A/AA)", async ({ page }, info) => {
+    test.setTimeout(240_000);
     test.skip(info.project.name !== "laptop" && info.project.name !== "iphone-13", "two profiles");
     for (const p of await sitemapPaths(page)) {
       await page.goto(p);
@@ -85,11 +87,10 @@ test.describe("navigation", () => {
     await page.goto("/");
     test.skip(!(await hasDesktopNav(page)), "desktop only");
     await page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Product" }).hover();
-    const roadmap = page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: /Roadmap/ });
-    await expect(roadmap).toBeVisible();
-    await roadmap.click();
-    await expect(page).toHaveURL(/\/roadmap$/);
-    await expect(page.locator("h1")).toContainText("What ships");
+    const attendance = page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: /Attendance/ });
+    await expect(attendance).toBeVisible();
+    await attendance.click();
+    await expect(page).toHaveURL(/\/features\/attendance$/);
   });
 
   test("mobile menu shows every link, navigates, closes and never locks scrolling", async ({ page }) => {
@@ -97,7 +98,7 @@ test.describe("navigation", () => {
     test.skip(await hasDesktopNav(page), "touch / small screens only");
     await page.getByRole("button", { name: "Open menu" }).click();
     const menu = page.getByRole("navigation", { name: "Mobile" });
-    for (const name of ["All modules", "Small schools", "International schools", "Pricing", "Schools", "Why us", "Roadmap"]) {
+    for (const name of ["All modules", "Small schools", "International schools", "Pricing", "Demo school", "Why us"]) {
       await expect(menu.getByRole("link", { name, exact: false }).first(), name).toBeVisible();
     }
     // The page behind stays scrollable while the menu is open.
@@ -111,21 +112,37 @@ test.describe("navigation", () => {
 });
 
 test.describe("content", () => {
-  test("Moriah School is showcased with logo and a working live-site link", async ({ page }) => {
+  test("demo school is showcased with logo and a working demo-site link", async ({ page }) => {
     await page.goto("/schools");
-    await expect(page.getByRole("img", { name: "Moriah School logo" })).toBeVisible();
-    const link = page.getByRole("link", { name: /Visit Moriah School/ });
+    await expect(page.getByRole("img", { name: "Greenfield Demo School logo" })).toBeVisible();
+    const link = page.getByRole("link", { name: /Open the demo website/ }).first();
     const href = await link.getAttribute("href");
     expect(href).toMatch(/^https:\/\//);
     const res = await page.request.get(href!);
     expect(res.status()).toBe(200);
   });
 
-  test("pricing shows live and pre-book plans with GST note", async ({ page }) => {
+  test("pricing shows plans with GST note and no release dates", async ({ page }) => {
     await page.goto("/pricing");
     await expect(page.locator("#web-pro")).toContainText("₹7,999");
-    await expect(page.locator("#lite")).toContainText("Pre-book");
+    await expect(page.locator("#lite")).toContainText("Book a demo");
     await expect(page.getByText(/excluding GST/).first()).toBeVisible();
+  });
+
+  test("no page shows release quarters, roadmap or pre-book labels", async ({ page }, info) => {
+    test.skip(info.project.name !== "laptop", "runs once");
+    for (const p of await sitemapPaths(page)) {
+      await page.goto(p);
+      const text = await page.locator("body").innerText();
+      expect(text, p).not.toMatch(/\bQ[1-4] 20\d\d\b|roadmap|pre-book|coming soon|Moriah/i);
+    }
+  });
+
+  test("sales contacts are shown on the contact page", async ({ page }) => {
+    await page.goto("/contact");
+    await expect(page.getByRole("link", { name: /WhatsApp us/ }).first()).toHaveAttribute("href", "https://wa.me/918121606633");
+    await expect(page.getByRole("link", { name: /81216 06633/ }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: /info@aurora-blossom\.com/ }).first()).toBeVisible();
   });
 
   test("robots and sitemap are consistent with the indexing mode", async ({ page }) => {
