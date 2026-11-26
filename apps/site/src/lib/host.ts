@@ -24,5 +24,5 @@ export function platformSubdomain(host: string, baseDomain: string): string | nu
 
 /** Hosts that belong to the platform itself and never render a school site. */
 export function isReservedSubdomain(sub: string): boolean {
-  return ["www", "admin", "api", "media", "mail", "app", "static", "cdn"].includes(sub);
+  return ["www", "admin", "studio", "api", "media", "mail", "app", "static", "cdn"].includes(sub);
 }

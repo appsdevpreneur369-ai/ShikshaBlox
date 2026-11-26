@@ -40,6 +40,7 @@ public class OrganizationService {
           "blog",
           "staging",
           "platform",
+          "studio",
           "shikshablox");
 
   private final JdbcClient jdbc;

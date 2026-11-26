@@ -29,6 +29,8 @@ describe("platformSubdomain", () => {
   });
   it("flags reserved platform subdomains", () => {
     expect(isReservedSubdomain("admin")).toBe(true);
+    expect(isReservedSubdomain("www")).toBe(true);
+    expect(isReservedSubdomain("studio")).toBe(true);
     expect(isReservedSubdomain("moriah")).toBe(false);
   });
 });

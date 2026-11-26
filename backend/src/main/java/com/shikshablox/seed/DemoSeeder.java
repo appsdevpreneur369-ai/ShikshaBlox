@@ -18,9 +18,10 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
- * Idempotent seed: a platform administrator, Moriah School (first customer) and three demo schools,
- * each with one user per school role ({@code <role>@<slug>.test}). The {@code .test} domain is
- * reserved, so no seeded address can reach a real person.
+ * Idempotent seed: a platform administrator, Moriah School (first customer), three demo schools and
+ * the internal {@code sb-sales} tenant that receives shikshablox.com demo requests, each with one
+ * user per school role ({@code <role>@<slug>.test}). The {@code .test} domain is reserved, so no
+ * seeded address can reach a real person.
  */
 @Component
 @Order(10)
@@ -36,7 +37,9 @@ class DemoSeeder implements ApplicationRunner {
           new School("moriah", "Moriah School", "WEB_PRO"),
           new School("greenfield", "Greenfield Public School", "WEB_FREE"),
           new School("sunrise", "Sunrise High School", "WEB_FREE"),
-          new School("horizon", "Horizon International School", "WEB_PRO"));
+          new School("horizon", "Horizon International School", "WEB_PRO"),
+          // Internal tenant: demo requests from shikshablox.com land in this Studio inbox.
+          new School("sb-sales", "ShikshaBlox Sales", "WEB_FREE"));
 
   private final OrganizationService organizations;
   private final UserService users;
