@@ -19,6 +19,8 @@ public enum Permission {
   ENQUIRY_MANAGE("enquiry:manage"),
   /** Work the admissions CRM: leads, follow-ups, seats (M03). */
   ADMISSIONS_MANAGE("admissions:manage"),
+  /** Compliance calendar, evidence vault and export packs (M02). */
+  COMPLIANCE_MANAGE("compliance:manage"),
   /** Read the audit log. */
   AUDIT_VIEW("audit:view");
 

@@ -33,7 +33,8 @@ for (const [i, p] of (process.env.STUDIO_ONLY ? [] : profiles).entries()) {
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
   await page.goto(`${site}/`, { waitUntil: "networkidle" });
   // On phones the header CTA lives in the menu, so check the link target rather than visibility.
-  if (!(await page.locator('header a[href="/apply"]').count())) problems.push(`${name}: header "Apply now" does not link to /apply`);
+  if (!(await page.locator('header a[href="/apply"]').count()))
+    problems.push(`${name}: header "Apply now" does not link to /apply`);
   await page.goto(`${site}/apply`, { waitUntil: "networkidle" });
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - window.innerWidth,
@@ -132,6 +133,22 @@ if (newest) {
 await page.goto(`${studio}/admissions?view=form`, { waitUntil: "networkidle" });
 await page.waitForTimeout(1200);
 await page.screenshot({ path: `${out}/studio-form-settings.png`, fullPage: true });
+// Remove this run's test families (lead + applications + files) unless KEEP=1.
+if (!process.env.KEEP) {
+  const api = (p, o = {}) =>
+    ctx.request.fetch(`${studio}/api/backend/${p}`, { headers: { "X-Studio": "1" }, ...o });
+  const leads = await (await api("admissions/leads?q=QA%20Test")).json();
+  for (const l of leads.filter(
+    (x) =>
+      x.guardianName === "QA Tester" &&
+      /^QA Test Child \d$/.test(x.studentName ?? "") &&
+      /^\+91 90000 2000\d$/.test(x.phone),
+  )) {
+    const r = await api(`admissions/leads/${l.id}`, { method: "DELETE" });
+    if (r.status() !== 204)
+      problems.push(`Cleanup: could not delete test lead ${l.id} (${r.status()})`);
+  }
+}
 await browser.close();
 
 console.log("Submitted:", numbers.join(", ") || "none");

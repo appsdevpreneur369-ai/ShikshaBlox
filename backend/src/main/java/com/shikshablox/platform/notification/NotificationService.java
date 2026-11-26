@@ -67,6 +67,16 @@ public class NotificationService {
         Review the application and documents in ShikshaBlox Studio:
         {{link}}
         """),
+    COMPLIANCE_DUE(
+        "Compliance reminders for {{school}}",
+        """
+        Good morning! These compliance items need attention:
+
+        {{items}}
+
+        Open the compliance calendar in ShikshaBlox Studio:
+        {{link}}
+        """),
     APPLICATION_ACKNOWLEDGED(
         "Application {{applicationNo}} received by {{school}}",
         """

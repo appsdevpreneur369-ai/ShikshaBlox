@@ -28,12 +28,26 @@ const FEATURE_LABEL: Record<string, string> = {
   review_reminders: "Review reminders",
   csv_export: "CSV export",
   email_alerts: "Email alerts",
+  pipeline: "Lead pipeline",
+  follow_ups: "Follow-up reminders",
+  walk_ins: "Walk-in & phone leads",
+  counsellors: "Counsellor assignment",
+  seat_matrix: "Seats per class",
+  funnel_analytics: "Funnel analytics",
+  online_application: "Online application form",
+  calendar: "Compliance calendar",
+  evidence_vault: "Evidence vault",
+  reminders: "Reminders",
+  owners: "Item owners",
+  export_pack: "Inspection export pack",
 };
 
 const MODULE_LABEL: Record<string, string> = {
   WEBSITE: "School website",
   DISCLOSURE: "Mandatory public disclosure",
   ADMISSIONS_ENQUIRY: "Admissions enquiries",
+  ADMISSIONS_CRM: "Admissions CRM",
+  COMPLIANCE: "Compliance calendar",
 };
 
 function formatValue(key: string, value: number) {

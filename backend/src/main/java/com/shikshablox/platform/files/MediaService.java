@@ -315,6 +315,12 @@ public class MediaService implements UsageMeter {
     return storage.signedUrl(storageKey, Duration.ofMinutes(10), downloadName);
   }
 
+  /** The bytes of a file stored with {@link #storePrivate} (e.g. for an export pack). */
+  public byte[] readPrivate(String storageKey) {
+    requireOwnKey(storageKey);
+    return storage.get(Visibility.PRIVATE, storageKey);
+  }
+
   /** Best-effort removal of files stored with {@link #storePrivate}. */
   public void deletePrivate(List<String> storageKeys) {
     storageKeys.forEach(MediaService::requireOwnKey);
