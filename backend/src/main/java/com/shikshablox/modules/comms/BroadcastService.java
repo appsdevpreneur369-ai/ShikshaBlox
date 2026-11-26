@@ -796,26 +796,20 @@ public class BroadcastService {
 
   private String schoolName() {
     UUID org = TenantContext.requireOrganizationId();
-    return TenantContext.callAsSystem(
-        "school name",
-        () ->
-            jdbc.sql("select name from organization where id = ?")
-                .param(org)
-                .query(String.class)
-                .single());
+    return jdbc.sql("select name from organization where id = ?")
+        .param(org)
+        .query(String.class)
+        .single();
   }
 
   /** The school's public website address (custom domain, staging override, or subdomain). */
   String siteUrl() {
     UUID org = TenantContext.requireOrganizationId();
     String slug =
-        TenantContext.callAsSystem(
-            "school slug",
-            () ->
-                jdbc.sql("select slug from organization where id = ?")
-                    .param(org)
-                    .query(String.class)
-                    .single());
+        jdbc.sql("select slug from organization where id = ?")
+            .param(org)
+            .query(String.class)
+            .single();
     if (siteUrls.containsKey(slug)) {
       return siteUrls.get(slug);
     }

@@ -531,18 +531,15 @@ public class AdmissionsService {
   /** Staff who can be assigned leads: school admins and counsellors. */
   public List<Counsellor> counsellors() {
     UUID org = TenantContext.requireOrganizationId();
-    return TenantContext.callAsSystem(
-        "admissions counsellors",
-        () ->
-            jdbc.sql(
-                    "select distinct u.id, u.display_name, u.email from role_assignment r"
-                        + " join app_user u on u.id = r.user_id where r.organization_id = ?"
-                        + " and r.role in ('SCHOOL_ADMIN', 'ADMISSIONS_COUNSELLOR') and u.status = 'ACTIVE'"
-                        + " order by u.display_name")
-                .param(org)
-                .query((rs, i) ->
-                    new Counsellor(rs.getObject(1, UUID.class), rs.getString(2), rs.getString(3)))
-                .list());
+    return jdbc.sql(
+            "select distinct u.id, u.display_name, u.email from role_assignment r"
+                + " join app_user u on u.id = r.user_id where r.organization_id = ?"
+                + " and r.role in ('SCHOOL_ADMIN', 'ADMISSIONS_COUNSELLOR') and u.status = 'ACTIVE'"
+                + " order by u.display_name")
+        .param(org)
+        .query((rs, i) ->
+            new Counsellor(rs.getObject(1, UUID.class), rs.getString(2), rs.getString(3)))
+        .list();
   }
 
   public String csv(Filter f) {
@@ -578,26 +575,23 @@ public class AdmissionsService {
   record DueSummary(UUID organizationId, UUID assignedTo, long due, long overdue) {}
 
   List<DueSummary> dueToday() {
-    return TenantContext.callAsSystem(
-        "admissions follow-up digest",
-        () ->
-            jdbc
-                .sql(
-                    "select organization_id, assigned_to,"
-                        + " count(*) filter (where next_follow_up_at < (date_trunc('day', now() at time zone 'Asia/Kolkata') + interval '1 day') at time zone 'Asia/Kolkata'),"
-                        + " count(*) filter (where next_follow_up_at < date_trunc('day', now() at time zone 'Asia/Kolkata') at time zone 'Asia/Kolkata')"
-                        + " from admission_lead where stage not in ('ADMITTED', 'LOST') and next_follow_up_at is not null"
-                        + " group by organization_id, assigned_to")
-                .query((rs, i) ->
-                    new DueSummary(
-                        rs.getObject(1, UUID.class),
-                        rs.getObject(2, UUID.class),
-                        rs.getLong(3),
-                        rs.getLong(4)))
-                .list()
-                .stream()
-                .filter(d -> d.due() > 0)
-                .toList());
+    return jdbc
+        .sql(
+            "select organization_id, assigned_to,"
+                + " count(*) filter (where next_follow_up_at < (date_trunc('day', now() at time zone 'Asia/Kolkata') + interval '1 day') at time zone 'Asia/Kolkata'),"
+                + " count(*) filter (where next_follow_up_at < date_trunc('day', now() at time zone 'Asia/Kolkata') at time zone 'Asia/Kolkata')"
+                + " from admission_lead where stage not in ('ADMITTED', 'LOST') and next_follow_up_at is not null"
+                + " group by organization_id, assigned_to")
+        .query((rs, i) ->
+            new DueSummary(
+                rs.getObject(1, UUID.class),
+                rs.getObject(2, UUID.class),
+                rs.getLong(3),
+                rs.getLong(4)))
+        .list()
+        .stream()
+        .filter(d -> d.due() > 0)
+        .toList();
   }
 
   // ------------------------------------------------------------------ helpers
@@ -659,14 +653,11 @@ public class AdmissionsService {
   }
 
   private String userName(UUID id) {
-    return TenantContext.callAsSystem(
-        "user name",
-        () ->
-            jdbc.sql("select display_name from app_user where id = ?")
-                .param(id)
-                .query(String.class)
-                .optional()
-                .orElse("a colleague"));
+    return jdbc.sql("select display_name from app_user where id = ?")
+        .param(id)
+        .query(String.class)
+        .optional()
+        .orElse("a colleague");
   }
 
   private static String label(String source) {

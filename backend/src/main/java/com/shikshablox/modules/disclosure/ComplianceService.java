@@ -532,15 +532,12 @@ public class ComplianceService {
   /** Staff who can own items (school users with any role). */
   public List<Person> people() {
     UUID org = TenantContext.requireOrganizationId();
-    return TenantContext.callAsSystem(
-        "compliance owners",
-        () ->
-            jdbc.sql(
-                    "select distinct u.id, u.display_name from role_assignment r join app_user u on u.id = r.user_id"
-                        + " where r.organization_id = ? and u.status = 'ACTIVE' order by u.display_name")
-                .param(org)
-                .query((rs, i) -> new Person(rs.getObject(1, UUID.class), rs.getString(2)))
-                .list());
+    return jdbc.sql(
+            "select distinct u.id, u.display_name from role_assignment r join app_user u on u.id = r.user_id"
+                + " where r.organization_id = ? and u.status = 'ACTIVE' order by u.display_name")
+        .param(org)
+        .query((rs, i) -> new Person(rs.getObject(1, UUID.class), rs.getString(2)))
+        .list();
   }
 
   // ------------------------------------------------------------------ evidence vault

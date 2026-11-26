@@ -78,10 +78,14 @@ class DemoCommsSeeder implements ApplicationRunner {
       TenantContext.callInTenant(
           org.id(),
           () -> {
-            // The broadcast is created last, so it marks a complete run.
-            if (jdbc.sql("select count(*) from comms_broadcast").query(Long.class).single() > 0) {
+            // A sent circular marks a complete run; anything from a partial run is cleared first.
+            if (jdbc.sql("select count(*) from comms_broadcast where status = 'SENT'")
+                    .query(Long.class)
+                    .single()
+                > 0) {
               return null;
             }
+            jdbc.sql("delete from comms_broadcast").update();
             jdbc.sql("delete from comms_contact where phone like '+91 90000 5%'").update();
             jdbc.sql("delete from comms_template").update();
             int i = 0;
