@@ -38,13 +38,13 @@ const page = await signIn(ctx, "reception");
 const api = (p, o = {}) =>
   ctx.request.fetch(`${studio}/api/backend/${p}`, { headers: { "X-Studio": "1" }, ...o });
 
-// The receptionist sees Front office but not Admissions, Compliance or Pages.
+// The receptionist sees Front office (and the website read-only) but not Admissions, Compliance or Design.
 const nav = page.getByRole("navigation").first();
 for (const [label, want] of [
   ["Front office", true],
   ["Admissions", false],
   ["Compliance", false],
-  ["Pages", false],
+  ["Design & profile", false],
 ]) {
   const has = (await nav.getByRole("link", { name: label, exact: true }).count()) > 0;
   if (has !== want)

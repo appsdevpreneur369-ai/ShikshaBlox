@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Sample front-office records for the fictional Greenfield Demo School: walk-ins and calls,
- * upcoming appointments, post and lost & found. Runs once (skipped when the register has entries).
+ * upcoming appointments, post and lost & found. Runs once (skipped once lost & found has items).
  * Phone numbers use the 90000 3xxxx sample range.
  */
 @Component
