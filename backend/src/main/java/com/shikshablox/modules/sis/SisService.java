@@ -314,11 +314,11 @@ public class SisService implements UsageMeter {
         String grade = required(g.grade(), 40, "Class");
         Integer existingOrder =
             jdbc.sql(
-                    "select min(grade_order) from class_section where academic_year = ? and grade = ?")
+                    "select coalesce(min(grade_order), -1) from class_section where academic_year = ? and grade = ?")
                 .params(y, grade)
                 .query(Integer.class)
                 .single();
-        int go = existingOrder != null ? existingOrder : order++;
+        int go = existingOrder >= 0 ? existingOrder : order++;
         List<String> secs =
             g.sections() == null || g.sections().isEmpty() ? List.of("A") : g.sections();
         if (secs.size() > 15) {

@@ -494,12 +494,12 @@ public class SisOperations {
     }
     Integer order =
         jdbc.sql(
-                "select min(grade_order) from class_section where academic_year = ? and lower(grade) = lower(?)")
+                "select coalesce(min(grade_order), -1) from class_section where academic_year = ? and lower(grade) = lower(?)")
             .params(year, grade)
             .query(Integer.class)
             .single();
     int go =
-        order != null
+        order >= 0
             ? order
             : jdbc.sql(
                     "select coalesce(max(grade_order), -1) + 1 from class_section where academic_year = ?")
