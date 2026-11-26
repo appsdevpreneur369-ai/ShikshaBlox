@@ -96,17 +96,18 @@ const kb = (n: number) =>
     ? `${(n / 1024 / 1024).toFixed(1)} MB`
     : `${Math.max(1, Math.round(n / 1024))} KB`;
 
-/** Opens a signed link in a new tab (the tab is opened first so pop-up blockers allow it). */
-async function openDoc(id: string) {
-  const w = window.open("about:blank", "_blank");
-  try {
-    const r = await sb<{ url: string }>(`admissions/documents/${id}/download`);
-    if (w) w.location.href = r.url;
-    else window.location.href = r.url;
-  } catch (e) {
-    w?.close();
-    alert((e as Error).message);
-  }
+/**
+ * Downloads a document through its 10-minute signed link. The link is served as an attachment, so
+ * following it from a hidden anchor saves the file without leaving Studio or opening a blank tab.
+ */
+async function downloadDoc(id: string) {
+  const r = await sb<{ url: string }>(`admissions/documents/${id}/download`);
+  const a = document.createElement("a");
+  a.href = r.url;
+  a.rel = "noopener noreferrer";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 }
 
 // ------------------------------------------------------------------ list
@@ -449,8 +450,13 @@ export function ApplicationPanel({
                 </p>
               )}
               <div className="mt-2 flex flex-wrap gap-1.5">
-                <Btn size="sm" onClick={() => void openDoc(d.id)}>
-                  <Download className="size-3.5" aria-hidden /> View
+                <Btn
+                  size="sm"
+                  busy={busy === "dl" + d.id}
+                  onClick={() => void run("dl" + d.id, () => downloadDoc(d.id))}
+                  aria-label={`Download ${d.label}`}
+                >
+                  <Download className="size-3.5" aria-hidden /> Download
                 </Btn>
                 {d.status !== "VERIFIED" && (
                   <Btn
