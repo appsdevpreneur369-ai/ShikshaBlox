@@ -678,7 +678,7 @@ public class BroadcastService {
             "select id, name, phone, email, language, whatsapp_opt_in, sms_opt_in, email_opt_in from comms_contact");
     List<Object> p = new ArrayList<>();
     if (!b.audienceTags().isEmpty()) {
-      sql.append(" where tags && ?");
+      sql.append(" where tags && ?::text[]");
       p.add(b.audienceTags().toArray(String[]::new));
     }
     sql.append(" order by name");
