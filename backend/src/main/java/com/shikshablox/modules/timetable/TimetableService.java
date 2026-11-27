@@ -775,8 +775,8 @@ public class TimetableService {
     requireModule();
     LocalDate d = date == null ? LocalDate.now(IST) : date;
     return jdbc.sql(
-            "select x.id, x.class_section_id, c.grade, c.section, ? day, x.period, t.subject_id, coalesce(s.name, t.label) subject_label,"
-                + " x.substitute_id teacher_id, u.display_name teacher_name, t.room, null label"
+            "select x.id, x.class_section_id, c.grade, c.section, ? as day, x.period, t.subject_id, coalesce(s.name, t.label) subject_label,"
+                + " x.substitute_id teacher_id, u.display_name teacher_name, t.room, null as label"
                 + " from substitution x join class_section c on c.id = x.class_section_id"
                 + " left join timetable_slot t on t.class_section_id = x.class_section_id and t.day = ? and t.period = x.period"
                 + " left join subject s on s.id = t.subject_id left join app_user u on u.id = x.substitute_id"
@@ -823,8 +823,8 @@ public class TimetableService {
     LocalDate today = LocalDate.now(IST);
     List<Slot> subs =
         jdbc.sql(
-                "select x.id, x.class_section_id, c.grade, c.section, ? day, x.period, t.subject_id, coalesce(s.name, t.label) subject_label,"
-                    + " x.substitute_id teacher_id, u.display_name teacher_name, t.room, null label"
+                "select x.id, x.class_section_id, c.grade, c.section, ? as day, x.period, t.subject_id, coalesce(s.name, t.label) subject_label,"
+                    + " x.substitute_id teacher_id, u.display_name teacher_name, t.room, null as label"
                     + " from substitution x join class_section c on c.id = x.class_section_id"
                     + " left join timetable_slot t on t.class_section_id = x.class_section_id and t.day = ? and t.period = x.period"
                     + " left join subject s on s.id = t.subject_id left join app_user u on u.id = x.substitute_id"
