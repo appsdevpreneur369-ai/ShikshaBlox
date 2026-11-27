@@ -16,6 +16,8 @@ function navItems(permissions: string[], hasSchool: boolean): NavItem[] {
       items.push({ href: "/enquiries", label: "Enquiries" });
     if (permissions.includes("students:manage"))
       items.push({ href: "/students", label: "Students" });
+    if (permissions.includes("attendance:mark") || permissions.includes("attendance:manage"))
+      items.push({ href: "/attendance", label: "Attendance" });
     if (permissions.includes("admissions:manage"))
       items.push({ href: "/admissions", label: "Admissions" });
     if (permissions.includes("frontoffice:manage"))
@@ -42,6 +44,7 @@ const ROLE_LABEL: Record<string, string> = {
   CONTENT_APPROVER: "Approver",
   ADMISSIONS_COUNSELLOR: "Counsellor",
   FRONT_OFFICE: "Front office",
+  TEACHER: "Teacher",
   CONTENT_EDITOR: "Editor",
   VIEWER: "Viewer",
 };

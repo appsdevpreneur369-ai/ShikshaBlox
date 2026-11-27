@@ -39,6 +39,39 @@ type Prefs = {
   language: string;
 };
 
+type ChildAttendance = {
+  studentId: string;
+  name: string;
+  monthPercent?: number | null;
+  yearPercent?: number | null;
+  daysMarked: number;
+  recent: { date: string; status: string; reason?: string | null }[];
+};
+type Leave = {
+  id: string;
+  studentId: string;
+  studentName: string;
+  fromDate: string;
+  toDate: string;
+  days: number;
+  reason: string;
+  status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
+  decisionNote?: string | null;
+};
+
+const MARK: Record<string, string> = {
+  A: "Absent",
+  L: "Late",
+  H: "Half day",
+  LV: "On leave",
+};
+const LEAVE_STATUS: Record<Leave["status"], string> = {
+  PENDING: "Waiting for the class teacher",
+  APPROVED: "Approved",
+  REJECTED: "Not approved",
+  CANCELLED: "Withdrawn",
+};
+
 const REQ_STATUS: Record<string, string> = {
   OPEN: "Received",
   IN_PROGRESS: "Being worked on",
@@ -242,6 +275,8 @@ export function ParentPortal() {
   const [requests, setRequests] = useState<Req[]>([]);
   const [ptm, setPtm] = useState<Ptm[]>([]);
   const [prefs, setPrefs] = useState<Prefs | null>(null);
+  const [attendance, setAttendance] = useState<ChildAttendance[]>([]);
+  const [leave, setLeave] = useState<Leave[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -252,12 +287,16 @@ export function ParentPortal() {
       return;
     }
     setMe(r.data!);
-    const [c, q, p, pr] = await Promise.all([
+    const [c, q, p, pr, at, lv] = await Promise.all([
       call<Circular[]>("circulars"),
       call<Req[]>("requests"),
       call<Ptm[]>("ptm"),
       call<Prefs>("preferences"),
+      call<ChildAttendance[]>("attendance"),
+      call<Leave[]>("leave"),
     ]);
+    setAttendance(at.data ?? []);
+    setLeave(lv.data ?? []);
     setCirculars(c.data ?? []);
     setRequests(q.data ?? []);
     setPtm(p.data ?? []);
@@ -340,6 +379,22 @@ export function ParentPortal() {
           </ul>
         )}
       </section>
+
+      {me.children.length > 0 && attendance.length > 0 && (
+        <AttendanceSection
+          kids={me.children}
+          attendance={attendance}
+          leave={leave}
+          onChanged={async () => {
+            const [at, lv] = await Promise.all([
+              call<ChildAttendance[]>("attendance"),
+              call<Leave[]>("leave"),
+            ]);
+            setAttendance(at.data ?? []);
+            setLeave(lv.data ?? []);
+          }}
+        />
+      )}
 
       <section aria-labelledby="circ">
         <h3 id="circ" className="mb-3 text-lg font-bold">
@@ -438,6 +493,150 @@ export function ParentPortal() {
 
       {prefs?.available && <PreferencesCard prefs={prefs} onSaved={setPrefs} />}
     </div>
+  );
+}
+
+const todayIst = () =>
+  new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
+
+function AttendanceSection({
+  kids,
+  attendance,
+  leave,
+  onChanged,
+}: {
+  kids: Child[];
+  attendance: ChildAttendance[];
+  leave: Leave[];
+  onChanged: () => Promise<void>;
+}) {
+  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [busy, setBusy] = useState(false);
+  async function apply(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const f = new FormData(form);
+    setBusy(true);
+    const r = await call<Leave>("leave", "POST", {
+      studentId: f.get("child"),
+      fromDate: f.get("from"),
+      toDate: f.get("to") || f.get("from"),
+      reason: f.get("reason"),
+    });
+    setBusy(false);
+    if (r.ok) {
+      form.reset();
+      setMsg({ text: "Sent to the class teacher. You will see the decision here.", ok: true });
+      await onChanged();
+    } else setMsg({ text: r.message ?? "Could not send.", ok: false });
+  }
+  async function cancel(id: string) {
+    const r = await call<Leave>(`leave/${id}/cancel`, "POST");
+    if (r.ok) await onChanged();
+    else setMsg({ text: r.message ?? "Could not withdraw.", ok: false });
+  }
+  const pct = (v?: number | null) => (v == null ? "–" : `${v}%`);
+  return (
+    <section aria-labelledby="att" className="grid gap-4">
+      <h3 id="att" className="text-lg font-bold">
+        Attendance &amp; leave
+      </h3>
+      <ul className="grid gap-3 sm:grid-cols-2">
+        {attendance.map((a) => (
+          <li key={a.studentId} className="sb-card p-5">
+            <p className="font-bold">{a.name}</p>
+            <p className="mt-1 flex flex-wrap gap-x-5 text-sm">
+              <span>
+                This month: <strong>{pct(a.monthPercent)}</strong>
+              </span>
+              <span>
+                This year: <strong>{pct(a.yearPercent)}</strong>
+              </span>
+            </p>
+            {a.recent.length > 0 ? (
+              <ul className="sb-muted mt-2 text-sm">
+                {a.recent.slice(0, 5).map((r) => (
+                  <li key={r.date}>
+                    {dateLong(r.date)}: {MARK[r.status] ?? r.status}
+                    {r.reason ? ` (${r.reason})` : ""}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="sb-muted mt-2 text-sm">
+                {a.daysMarked > 0 ? "No absences recently." : "No attendance recorded yet."}
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
+      {leave.length > 0 && (
+        <ul className="sb-card divide-y divide-black/5">
+          {leave.map((l) => (
+            <li key={l.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3">
+              <span className="min-w-[12rem] flex-1">
+                <span className="block font-semibold">
+                  {l.studentName}: {dateLong(l.fromDate)}
+                  {l.toDate !== l.fromDate ? ` – ${dateLong(l.toDate)}` : ""}
+                </span>
+                <span className="sb-muted text-xs">
+                  {l.reason}
+                  {l.decisionNote ? ` · School: ${l.decisionNote}` : ""}
+                </span>
+              </span>
+              <span className="text-sm">{LEAVE_STATUS[l.status]}</span>
+              {(l.status === "PENDING" || (l.status === "APPROVED" && l.fromDate > todayIst())) && (
+                <button
+                  type="button"
+                  className="sb-btn sb-btn-ghost text-primary text-sm"
+                  onClick={() => void cancel(l.id)}
+                >
+                  Withdraw
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+      <form onSubmit={apply} className="sb-card grid gap-3 p-5 sm:grid-cols-2">
+        <p className="font-bold sm:col-span-2">Apply for leave</p>
+        <label className="block sm:col-span-2">
+          <span className="mb-1.5 block text-sm font-semibold">Child</span>
+          <select name="child" className="sb-input" required>
+            {kids.map((k) => (
+              <option key={k.id} value={k.id}>
+                {k.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="block">
+          <span className="mb-1.5 block text-sm font-semibold">From</span>
+          <input type="date" name="from" className="sb-input" required />
+        </label>
+        <label className="block">
+          <span className="mb-1.5 block text-sm font-semibold">To (optional)</span>
+          <input type="date" name="to" className="sb-input" />
+        </label>
+        <label className="block sm:col-span-2">
+          <span className="mb-1.5 block text-sm font-semibold">Reason</span>
+          <input name="reason" className="sb-input" required maxLength={500} />
+        </label>
+        <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
+          <button type="submit" className="sb-btn sb-btn-primary sb-focus" disabled={busy}>
+            {busy ? "Sending…" : "Send to class teacher"}
+          </button>
+          {msg && (
+            <span
+              role={msg.ok ? "status" : "alert"}
+              className={`text-sm ${msg.ok ? "" : "font-semibold text-red-700"}`}
+            >
+              {msg.text}
+            </span>
+          )}
+        </div>
+      </form>
+    </section>
   );
 }
 

@@ -177,7 +177,8 @@ public class BroadcastService {
   public List<Broadcast> list() {
     entitlements.requireFeature(CommsService.MODULE, "broadcasts");
     List<UUID> ids =
-        jdbc.sql("select id from comms_broadcast order by created_at desc limit 200")
+        jdbc.sql(
+                "select id from comms_broadcast where kind = 'CIRCULAR' order by created_at desc limit 200")
             .query(UUID.class)
             .list();
     return ids.stream().map(this::load).toList();
@@ -385,6 +386,96 @@ public class BroadcastService {
       audit.record("comms.broadcast_cancelled", "comms_broadcast", id.toString(), null, null);
       return load(id);
     });
+  }
+
+  // ------------------------------------------------------------------ alerts (other modules)
+
+  /** Outcome of {@link #alert}: the queued broadcast, or why nothing was sent. */
+  public record AlertResult(UUID broadcastId, String skippedReason) {}
+
+  /**
+   * A one-off alert to the contacts with these phone numbers (e.g. an absence alert to a child's
+   * guardians), sent like any broadcast: consent and channel readiness per contact, quiet hours,
+   * the monthly cap and the wallet. The template is created as a draft with {@code defaultBody} if
+   * the school has none yet (email works straight away; WhatsApp after approval). Alerts are kept
+   * out of the circulars list. Runs in the caller's transaction, if any.
+   */
+  public AlertResult alert(
+      String title, String details, String templateName, String defaultBody, List<String> phones) {
+    if (comms.variants(templateName).isEmpty()) {
+      jdbc.sql(
+              "insert into comms_template (organization_id, name, language, category, subject, body)"
+                  + " values (?, ?, 'en', 'UTILITY', ?, ?) on conflict do nothing")
+          .params(
+              TenantContext.requireOrganizationId(),
+              templateName,
+              "{{school}}: {{title}}",
+              defaultBody)
+          .update();
+    }
+    List<String> keys =
+        phones.stream().filter(p -> p != null).map(CommsService::key).distinct().toList();
+    if (keys.isEmpty()) {
+      return new AlertResult(null, "No guardian phone number");
+    }
+    List<UUID> contacts =
+        jdbc.sql(
+                "select id from comms_contact where right(regexp_replace(phone, '\\D', '', 'g'), 10) = any(?::text[])")
+            .param(keys.toArray(String[]::new))
+            .query(UUID.class)
+            .list();
+    if (contacts.isEmpty()) {
+      return new AlertResult(null, "Guardian is not in the message contacts");
+    }
+    CommsService.Settings st = comms.loadSettings();
+    if (st.sentThisMonth() + contacts.size() > st.monthlyCap()) {
+      return new AlertResult(null, "Monthly message limit reached");
+    }
+    UUID id =
+        jdbc.sql(
+                "insert into comms_broadcast (organization_id, title, details, template_name, channels, kind,"
+                    + " audience_contacts, status, send_at, created_by)"
+                    + " values (?, ?, ?, ?, ?, 'ALERT', ?, 'DRAFT', null, ?) returning id")
+            .params(
+                TenantContext.requireOrganizationId(),
+                truncate(title, 160),
+                truncate(details, 8000),
+                templateName,
+                new String[] {"WHATSAPP", "SMS", "EMAIL"},
+                contacts.toArray(UUID[]::new),
+                TenantContext.userId().orElse(null))
+            .query(UUID.class)
+            .single();
+    Broadcast b = load(id);
+    long reach = plan(b).stream().filter(p -> p.channel != null).count();
+    if (reach == 0) {
+      jdbc.sql("delete from comms_broadcast where id = ?").param(id).update();
+      return new AlertResult(null, "No consent or no ready template for any channel");
+    }
+    jdbc.sql(
+            "update comms_broadcast set status = 'SCHEDULED', send_at = ?, updated_at = now() where id = ?")
+        .params(Timestamp.from(whenToSend(b, st, Instant.now())), id)
+        .update();
+    return new AlertResult(id, null);
+  }
+
+  /** Delivery counts of alerts (or any broadcasts), by broadcast id. */
+  public Map<UUID, Stats> stats(java.util.Collection<UUID> ids) {
+    Map<UUID, Stats> out = new HashMap<>();
+    for (UUID id : new HashSet<>(ids)) {
+      if (id != null) {
+        jdbc.sql("select 1 from comms_broadcast where id = ?")
+            .param(id)
+            .query(Integer.class)
+            .optional()
+            .ifPresent(x -> out.put(id, load(id).stats()));
+      }
+    }
+    return out;
+  }
+
+  private static String truncate(String s, int max) {
+    return s == null || s.length() <= max ? s : s.substring(0, max);
   }
 
   // ------------------------------------------------------------------ dispatcher
@@ -677,7 +768,16 @@ public class BroadcastService {
         new StringBuilder(
             "select id, name, phone, email, language, whatsapp_opt_in, sms_opt_in, email_opt_in from comms_contact");
     List<Object> p = new ArrayList<>();
-    if (!b.audienceTags().isEmpty()) {
+    UUID[] direct =
+        jdbc.sql("select audience_contacts from comms_broadcast where id = ?")
+            .param(b.id())
+            .query((rs, i) -> (UUID[]) rs.getArray(1).getArray())
+            .optional()
+            .orElse(new UUID[0]);
+    if (direct.length > 0) {
+      sql.append(" where id = any(?::uuid[])");
+      p.add(direct);
+    } else if (!b.audienceTags().isEmpty()) {
       sql.append(" where tags && ?::text[]");
       p.add(b.audienceTags().toArray(String[]::new));
     }

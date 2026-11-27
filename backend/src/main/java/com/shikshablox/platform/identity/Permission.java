@@ -29,6 +29,10 @@ public enum Permission {
   COMMS_MANAGE("comms:manage"),
   /** Students, guardians, classes, enrolments and promotion (M04). */
   STUDENTS_MANAGE("students:manage"),
+  /** Take attendance and decide leave for the sections a teacher is assigned to (M07). */
+  ATTENDANCE_MARK("attendance:mark"),
+  /** All sections' attendance, settings, corrections approval, registers and reports (M07). */
+  ATTENDANCE_MANAGE("attendance:manage"),
   /** Read the audit log. */
   AUDIT_VIEW("audit:view");
 

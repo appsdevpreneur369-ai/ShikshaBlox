@@ -68,6 +68,14 @@ const FEATURE_LABEL: Record<string, string> = {
   circulars: "Circulars & acknowledgements",
   requests: "Helpdesk requests",
   preferences: "Message preferences",
+  daily: "Daily attendance on a phone",
+  alerts: "Absence alerts to parents",
+  leave: "Leave applications",
+  corrections: "Corrections with approval",
+  registers: "Monthly registers",
+  periods: "Period-wise attendance",
+  reasons: "Absence reason codes",
+  concerns: "Chronic-absence alerts",
 };
 
 const MODULE_LABEL: Record<string, string> = {
@@ -81,6 +89,7 @@ const MODULE_LABEL: Record<string, string> = {
   COMMS: "Communication hub",
   SIS: "Student information",
   PORTAL: "Parent portal",
+  ATTENDANCE: "Attendance & leave",
 };
 
 function formatValue(key: string, value: number) {

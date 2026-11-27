@@ -1,5 +1,7 @@
 package com.shikshablox.modules.portal;
 
+import com.shikshablox.modules.attendance.AttendanceService;
+import com.shikshablox.modules.attendance.LeaveService;
 import com.shikshablox.modules.comms.BroadcastService;
 import com.shikshablox.modules.comms.CommsService;
 import com.shikshablox.platform.audit.AuditService;
@@ -111,6 +113,8 @@ public class PortalService {
   private final PasswordEncoder passwords;
   private final CommsService comms;
   private final BroadcastService broadcasts;
+  private final AttendanceService attendance;
+  private final LeaveService leave;
   private final String dummyHash;
 
   PortalService(
@@ -122,7 +126,9 @@ public class PortalService {
       EntitlementService entitlements,
       PasswordEncoder passwords,
       CommsService comms,
-      BroadcastService broadcasts) {
+      BroadcastService broadcasts,
+      AttendanceService attendance,
+      LeaveService leave) {
     this.resolver = resolver;
     this.jdbc = jdbc;
     this.tx = tx;
@@ -132,6 +138,8 @@ public class PortalService {
     this.passwords = passwords;
     this.comms = comms;
     this.broadcasts = broadcasts;
+    this.attendance = attendance;
+    this.leave = leave;
     this.dummyHash = passwords.encode("no-account-" + token(8));
   }
 
@@ -416,6 +424,38 @@ public class PortalService {
                 .list());
   }
 
+  /** Each child's attendance (empty when attendance is not in the school's plan). */
+  public List<AttendanceService.ChildAttendance> attendance(String host, String token) {
+    return asParent(
+        host,
+        token,
+        c ->
+            children(c.guardianId()).stream()
+                .map(ch -> attendance.child(ch.id()))
+                .filter(java.util.Objects::nonNull)
+                .toList());
+  }
+
+  public List<LeaveService.Leave> leave(String host, String token) {
+    return asParent(host, token, c -> leave.forGuardian(c.guardianId()));
+  }
+
+  public LeaveService.Leave applyLeave(String host, String token, LeaveService.LeaveInput in) {
+    return asParent(
+        host,
+        token,
+        c -> {
+          if (!limiter.tryAcquire("portal-leave:" + c.accountId(), 10, Duration.ofHours(1))) {
+            throw ApiException.tooManyRequests();
+          }
+          return leave.apply(c.guardianId(), in);
+        });
+  }
+
+  public LeaveService.Leave cancelLeave(String host, String token, UUID id) {
+    return asParent(host, token, c -> leave.cancel(c.guardianId(), id));
+  }
+
   public Preferences preferences(String host, String token) {
     return asParent(host, token, c -> toPrefs(comms.preferences(c.phone())));
   }
@@ -519,7 +559,9 @@ public class PortalService {
     if (v == null || !v.matches("^[0-9]{4,6}$")) {
       throw ApiException.badRequest("invalid_pin", "Choose a PIN of 4 to 6 digits.");
     }
-    if (v.chars().distinct().count() == 1 || "01234567890".contains(v) || "09876543210".contains(v)) {
+    if (v.chars().distinct().count() == 1
+        || "01234567890".contains(v)
+        || "09876543210".contains(v)) {
       throw ApiException.badRequest(
           "weak_pin", "Choose a PIN that isn't a repeated or running number.");
     }
