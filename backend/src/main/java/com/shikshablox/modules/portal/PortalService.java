@@ -2,6 +2,7 @@ package com.shikshablox.modules.portal;
 
 import com.shikshablox.modules.attendance.AttendanceService;
 import com.shikshablox.modules.attendance.LeaveService;
+import com.shikshablox.modules.certificates.CertificateService;
 import com.shikshablox.modules.comms.BroadcastService;
 import com.shikshablox.modules.comms.CommsService;
 import com.shikshablox.modules.exams.ReportService;
@@ -117,6 +118,7 @@ public class PortalService {
   private final AttendanceService attendance;
   private final LeaveService leave;
   private final ReportService reports;
+  private final CertificateService certificates;
   private final String dummyHash;
 
   PortalService(
@@ -131,7 +133,8 @@ public class PortalService {
       BroadcastService broadcasts,
       AttendanceService attendance,
       LeaveService leave,
-      ReportService reports) {
+      ReportService reports,
+      CertificateService certificates) {
     this.resolver = resolver;
     this.jdbc = jdbc;
     this.tx = tx;
@@ -144,6 +147,7 @@ public class PortalService {
     this.attendance = attendance;
     this.leave = leave;
     this.reports = reports;
+    this.certificates = certificates;
     this.dummyHash = passwords.encode("no-account-" + token(8));
   }
 
@@ -450,6 +454,36 @@ public class PortalService {
                 .map(ch -> reports.forParent(ch.id()))
                 .filter(java.util.Objects::nonNull)
                 .toList());
+  }
+
+  public record CertificatesView(
+      List<CertificateService.Requestable> types,
+      List<CertificateService.Certificate> certificates) {}
+
+  public CertificatesView certificates(String host, String token) {
+    return asParent(
+        host,
+        token,
+        c ->
+            new CertificatesView(
+                certificates.requestable(), certificates.forGuardian(c.guardianId())));
+  }
+
+  public CertificateService.Certificate requestCertificate(
+      String host, String token, UUID studentId, UUID templateId, String purpose) {
+    return asParent(
+        host,
+        token,
+        c -> {
+          if (!limiter.tryAcquire("portal-cert:" + c.accountId(), 5, Duration.ofHours(1))) {
+            throw ApiException.tooManyRequests();
+          }
+          return certificates.request(c.guardianId(), studentId, templateId, purpose);
+        });
+  }
+
+  public CertificateService.PrintView certificate(String host, String token, UUID id) {
+    return asParent(host, token, c -> certificates.forGuardianPrint(c.guardianId(), id));
   }
 
   public List<LeaveService.Leave> leave(String host, String token) {
