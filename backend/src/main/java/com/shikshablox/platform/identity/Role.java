@@ -19,6 +19,7 @@ import static com.shikshablox.platform.identity.Permission.MARKS_ENTER;
 import static com.shikshablox.platform.identity.Permission.PLATFORM_MANAGE;
 import static com.shikshablox.platform.identity.Permission.SCHOOL_MANAGE;
 import static com.shikshablox.platform.identity.Permission.STUDENTS_MANAGE;
+import static com.shikshablox.platform.identity.Permission.TIMETABLE_MANAGE;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -49,6 +50,7 @@ public enum Role {
           EXAMS_MANAGE,
           CERTIFICATES_MANAGE,
           HOMEWORK_POST,
+          TIMETABLE_MANAGE,
           AUDIT_VIEW)),
   SCHOOL_ADMIN(
       false,
@@ -70,6 +72,7 @@ public enum Role {
           EXAMS_MANAGE,
           CERTIFICATES_MANAGE,
           HOMEWORK_POST,
+          TIMETABLE_MANAGE,
           AUDIT_VIEW)),
   CONTENT_APPROVER(false, EnumSet.of(CONTENT_EDIT, CONTENT_PUBLISH, CONTENT_VIEW)),
   CONTENT_EDITOR(false, EnumSet.of(CONTENT_EDIT, CONTENT_VIEW)),
@@ -82,7 +85,7 @@ public enum Role {
   /** Teacher: attendance and leave for their assigned sections. */
   TEACHER(false, EnumSet.of(ATTENDANCE_MARK, MARKS_ENTER, HOMEWORK_POST, CONTENT_VIEW)),
   /** Exam cell / exams officer: exams, marks moderation, publishing, report cards. */
-  EXAM_CELL(false, EnumSet.of(EXAMS_MANAGE, MARKS_ENTER, CONTENT_VIEW));
+  EXAM_CELL(false, EnumSet.of(EXAMS_MANAGE, MARKS_ENTER, TIMETABLE_MANAGE, CONTENT_VIEW));
 
   private final boolean platform;
   private final Set<Permission> permissions;

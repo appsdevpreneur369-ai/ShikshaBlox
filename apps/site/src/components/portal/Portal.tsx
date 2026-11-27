@@ -321,6 +321,7 @@ export function ParentPortal() {
   const [cards, setCards] = useState<ReportCard[]>([]);
   const [certs, setCerts] = useState<Certs | null>(null);
   const [homework, setHomework] = useState<Hw[]>([]);
+  const [timetables, setTimetables] = useState<ChildTt[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -331,7 +332,7 @@ export function ParentPortal() {
       return;
     }
     setMe(r.data!);
-    const [c, q, p, pr, at, lv, rc, ce, hw] = await Promise.all([
+    const [c, q, p, pr, at, lv, rc, ce, hw, tt] = await Promise.all([
       call<Circular[]>("circulars"),
       call<Req[]>("requests"),
       call<Ptm[]>("ptm"),
@@ -341,7 +342,9 @@ export function ParentPortal() {
       call<ReportCard[]>("report-cards"),
       call<Certs>("certificates"),
       call<Hw[]>("homework"),
+      call<ChildTt[]>("timetable"),
     ]);
+    setTimetables(tt.data ?? []);
     setHomework(hw.data ?? []);
     setCerts(ce.data ?? null);
     setCards(rc.data ?? []);
@@ -429,6 +432,8 @@ export function ParentPortal() {
           </ul>
         )}
       </section>
+
+      {timetables.length > 0 && <TimetableSection items={timetables} />}
 
       {homework.length > 0 && (
         <HomeworkSection
@@ -1166,6 +1171,106 @@ function HomeworkSection({ items, onChanged }: { items: Hw[]; onChanged: () => P
           );
         })}
       </ul>
+    </section>
+  );
+}
+
+type TtPeriod = { label: string; start: string; end: string; break: boolean };
+type TtSlot = {
+  day: number;
+  period: number;
+  subject?: string | null;
+  label?: string | null;
+  teacher?: string | null;
+  room?: string | null;
+};
+type ChildTt = {
+  studentId: string;
+  name: string;
+  classLabel: string;
+  days: number[];
+  periods: TtPeriod[];
+  slots: TtSlot[];
+  substitutionsToday: TtSlot[];
+};
+const TT_DAY = ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+function TimetableSection({ items }: { items: ChildTt[] }) {
+  const today = ((new Date().getDay() + 6) % 7) + 1;
+  return (
+    <section aria-labelledby="tt" className="grid gap-3">
+      <h3 id="tt" className="text-lg font-bold">
+        Timetable
+      </h3>
+      {items.map((c) => {
+        const todays = c.periods
+          .map((p, i) => ({ p, i, s: c.slots.find((x) => x.day === today && x.period === i) }))
+          .filter((x) => !x.p.break && x.s);
+        return (
+          <details key={c.studentId} className="sb-card p-5">
+            <summary className="cursor-pointer">
+              <span className="font-bold">{c.name}</span>
+              <span className="sb-muted text-sm"> · {c.classLabel} · today and this week</span>
+            </summary>
+            {c.substitutionsToday.length > 0 && (
+              <p className="mt-3 rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                Today:{" "}
+                {c.substitutionsToday
+                  .map(
+                    (s) =>
+                      `${c.periods[s.period]?.label} taken by ${s.teacher ?? "another teacher"}`,
+                  )
+                  .join("; ")}
+              </p>
+            )}
+            {c.days.includes(today) && todays.length > 0 && (
+              <ul className="mt-3 grid gap-1 text-sm">
+                {todays.map(({ p, i, s }) => (
+                  <li key={i}>
+                    <span className="sb-muted">{p.start}</span> {s?.subject ?? s?.label}
+                    {s?.teacher ? ` · ${s.teacher}` : ""}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="mt-3 overflow-x-auto">
+              <table className="w-full min-w-[34rem] border-collapse text-xs">
+                <thead>
+                  <tr className="sb-muted">
+                    <th scope="col" className="py-1 pr-2 text-left font-semibold">
+                      Period
+                    </th>
+                    {c.days.map((d) => (
+                      <th key={d} scope="col" className="px-1 py-1 text-left font-semibold">
+                        {TT_DAY[d]}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {c.periods.map((p, i) =>
+                    p.break ? null : (
+                      <tr key={i} className="border-t border-black/5">
+                        <th scope="row" className="py-1 pr-2 text-left font-medium">
+                          {p.start}
+                        </th>
+                        {c.days.map((d) => {
+                          const s = c.slots.find((x) => x.day === d && x.period === i);
+                          return (
+                            <td key={d} className="px-1 py-1">
+                              {s?.subject ?? s?.label ?? ""}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ),
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        );
+      })}
     </section>
   );
 }
