@@ -12,7 +12,8 @@ if (!site || !studio)
   throw new Error("usage: node portal-check.mjs <site url> <studio url> [outDir]");
 fs.mkdirSync(out, { recursive: true });
 const RUN = `qa${Date.now().toString().slice(-6)}`;
-const PHONE = "+91 90000 68888";
+// A fresh number per run, so the per-phone sign-in rate limit of earlier runs doesn't apply.
+const PHONE = `+91 90000 7${String(Date.now() % 10000).padStart(4, "0")}`;
 const PIN = "2580";
 const problems = [];
 const browser = await chromium.launch();
@@ -62,12 +63,9 @@ if (!link?.startsWith(`${site}/parent/setup?code=`)) problems.push(`Invite link:
 // Parent on a phone.
 const parent = await browser.newContext({ ...devices["Galaxy S8"], reducedMotion: "reduce" });
 const pp = await parent.newPage();
+// Next adds its own (empty) role=alert route announcer; read the form's message.
 const alertText = async () =>
-  (await pp
-    .locator("[role=alert]")
-    .first()
-    .textContent({ timeout: 8000 })
-    .catch(() => "")) ?? "";
+  (await pp.locator("form [role=alert]").first().textContent({ timeout: 8000 }).catch(() => "")) ?? "";
 if (link) {
   await pp.goto(link, { waitUntil: "networkidle" });
   await pp.getByLabel("Mobile number").fill("+91 90000 11111");
