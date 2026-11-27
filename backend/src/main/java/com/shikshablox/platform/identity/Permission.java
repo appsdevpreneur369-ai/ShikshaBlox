@@ -33,6 +33,10 @@ public enum Permission {
   ATTENDANCE_MARK("attendance:mark"),
   /** All sections' attendance, settings, corrections approval, registers and reports (M07). */
   ATTENDANCE_MANAGE("attendance:manage"),
+  /** Enter marks, co-scholastic grades and remarks for assigned subjects and classes (M11). */
+  MARKS_ENTER("marks:enter"),
+  /** Subjects, exams, timetable, moderation, publishing and report cards for all classes (M11). */
+  EXAMS_MANAGE("exams:manage"),
   /** Read the audit log. */
   AUDIT_VIEW("audit:view");
 

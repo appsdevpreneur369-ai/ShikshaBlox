@@ -11,7 +11,9 @@ import static com.shikshablox.platform.identity.Permission.CONTENT_PUBLISH;
 import static com.shikshablox.platform.identity.Permission.CONTENT_VIEW;
 import static com.shikshablox.platform.identity.Permission.ENGAGEMENT_MANAGE;
 import static com.shikshablox.platform.identity.Permission.ENQUIRY_MANAGE;
+import static com.shikshablox.platform.identity.Permission.EXAMS_MANAGE;
 import static com.shikshablox.platform.identity.Permission.FRONT_OFFICE_MANAGE;
+import static com.shikshablox.platform.identity.Permission.MARKS_ENTER;
 import static com.shikshablox.platform.identity.Permission.PLATFORM_MANAGE;
 import static com.shikshablox.platform.identity.Permission.SCHOOL_MANAGE;
 import static com.shikshablox.platform.identity.Permission.STUDENTS_MANAGE;
@@ -41,6 +43,8 @@ public enum Role {
           STUDENTS_MANAGE,
           ATTENDANCE_MARK,
           ATTENDANCE_MANAGE,
+          MARKS_ENTER,
+          EXAMS_MANAGE,
           AUDIT_VIEW)),
   SCHOOL_ADMIN(
       false,
@@ -58,6 +62,8 @@ public enum Role {
           STUDENTS_MANAGE,
           ATTENDANCE_MARK,
           ATTENDANCE_MANAGE,
+          MARKS_ENTER,
+          EXAMS_MANAGE,
           AUDIT_VIEW)),
   CONTENT_APPROVER(false, EnumSet.of(CONTENT_EDIT, CONTENT_PUBLISH, CONTENT_VIEW)),
   CONTENT_EDITOR(false, EnumSet.of(CONTENT_EDIT, CONTENT_VIEW)),
@@ -67,7 +73,9 @@ public enum Role {
   /** Reception: front desk registers, appointments, post, lost & found. */
   FRONT_OFFICE(false, EnumSet.of(FRONT_OFFICE_MANAGE, ENGAGEMENT_MANAGE, CONTENT_VIEW)),
   /** Teacher: attendance and leave for their assigned sections. */
-  TEACHER(false, EnumSet.of(ATTENDANCE_MARK, CONTENT_VIEW));
+  TEACHER(false, EnumSet.of(ATTENDANCE_MARK, MARKS_ENTER, CONTENT_VIEW)),
+  /** Exam cell / exams officer: exams, marks moderation, publishing, report cards. */
+  EXAM_CELL(false, EnumSet.of(EXAMS_MANAGE, MARKS_ENTER, CONTENT_VIEW));
 
   private final boolean platform;
   private final Set<Permission> permissions;

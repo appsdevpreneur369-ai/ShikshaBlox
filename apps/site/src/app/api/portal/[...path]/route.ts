@@ -3,7 +3,16 @@ import { normaliseHost } from "@/lib/host";
 
 const API = process.env.API_INTERNAL_URL ?? "http://localhost:8080";
 const COOKIE = "sb_parent";
-const READS = new Set(["me", "circulars", "requests", "ptm", "preferences", "attendance", "leave"]);
+const READS = new Set([
+  "me",
+  "circulars",
+  "requests",
+  "ptm",
+  "preferences",
+  "attendance",
+  "leave",
+  "report-cards",
+]);
 const LEAVE_CANCEL = /^leave\/[0-9a-f-]{36}\/cancel$/;
 
 /**

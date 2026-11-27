@@ -4,6 +4,7 @@ import com.shikshablox.modules.attendance.AttendanceService;
 import com.shikshablox.modules.attendance.LeaveService;
 import com.shikshablox.modules.comms.BroadcastService;
 import com.shikshablox.modules.comms.CommsService;
+import com.shikshablox.modules.exams.ReportService;
 import com.shikshablox.platform.audit.AuditService;
 import com.shikshablox.platform.entitlement.EntitlementService;
 import com.shikshablox.platform.shared.RateLimiter;
@@ -115,6 +116,7 @@ public class PortalService {
   private final BroadcastService broadcasts;
   private final AttendanceService attendance;
   private final LeaveService leave;
+  private final ReportService reports;
   private final String dummyHash;
 
   PortalService(
@@ -128,7 +130,8 @@ public class PortalService {
       CommsService comms,
       BroadcastService broadcasts,
       AttendanceService attendance,
-      LeaveService leave) {
+      LeaveService leave,
+      ReportService reports) {
     this.resolver = resolver;
     this.jdbc = jdbc;
     this.tx = tx;
@@ -140,6 +143,7 @@ public class PortalService {
     this.broadcasts = broadcasts;
     this.attendance = attendance;
     this.leave = leave;
+    this.reports = reports;
     this.dummyHash = passwords.encode("no-account-" + token(8));
   }
 
@@ -432,6 +436,18 @@ public class PortalService {
         c ->
             children(c.guardianId()).stream()
                 .map(ch -> attendance.child(ch.id()))
+                .filter(java.util.Objects::nonNull)
+                .toList());
+  }
+
+  /** Each child's report card with published exams (children without results are left out). */
+  public List<ReportService.ReportCard> reportCards(String host, String token) {
+    return asParent(
+        host,
+        token,
+        c ->
+            children(c.guardianId()).stream()
+                .map(ch -> reports.forParent(ch.id()))
                 .filter(java.util.Objects::nonNull)
                 .toList());
   }

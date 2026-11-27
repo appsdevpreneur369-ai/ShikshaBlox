@@ -76,6 +76,15 @@ const FEATURE_LABEL: Record<string, string> = {
   periods: "Period-wise attendance",
   reasons: "Absence reason codes",
   concerns: "Chronic-absence alerts",
+  marks: "Marks entry",
+  grading: "Grade scales",
+  coscholastic: "Co-scholastic grades",
+  report_cards: "Report cards",
+  publish: "Publish results to parents",
+  timetable: "Exam timetable",
+  hall_tickets: "Hall tickets",
+  moderation: "Marks approval (moderation)",
+  analysis: "Result analysis",
 };
 
 const MODULE_LABEL: Record<string, string> = {
@@ -90,6 +99,7 @@ const MODULE_LABEL: Record<string, string> = {
   SIS: "Student information",
   PORTAL: "Parent portal",
   ATTENDANCE: "Attendance & leave",
+  EXAMS: "Exams & report cards",
 };
 
 function formatValue(key: string, value: number) {
