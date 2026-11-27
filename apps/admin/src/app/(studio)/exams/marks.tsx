@@ -262,7 +262,7 @@ function MarksSheet({
       </div>
       {s.note && s.entryStatus === "OPEN" && (
         <p className="rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-900">
-          Sent back by the exam cell: “{s.note}”
+          Note from the exam cell: “{s.note}”
         </p>
       )}
       {!s.editable && (

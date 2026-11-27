@@ -10,6 +10,10 @@ const [site, studio, out = "exams-shots"] = process.argv.slice(2).map((s) => s?.
 if (!site || !studio) throw new Error("usage: node exams-check.mjs <site url> <studio url> [outDir]");
 fs.mkdirSync(out, { recursive: true });
 const problems = [];
+process.on("uncaughtException", async (e) => {
+  console.log("CRASHED:", e.message);
+  process.exit(1);
+});
 const browser = await chromium.launch();
 
 async function signIn(ctx, email) {
@@ -34,8 +38,39 @@ async function signIn(ctx, email) {
 }
 
 const cell = await signIn(await browser.newContext(), "exams@greenfield.test");
-const ov = (await cell.api("exams/overview")).body;
-const pt2 = ov?.exams?.find((e) => e.name === "Periodic Test 2");
+// Puts Periodic Test 2 back as seeded: open, Class 1 A English with one mark, Class 3 A Maths submitted.
+async function restore(examId) {
+  const p = (await cell.api(`exams/${examId}/progress`)).body ?? [];
+  const e1 = p.find((t) => t.section === "Class 1 A" && t.subject === "English");
+  const m3 = p.find((t) => t.section === "Class 3 A" && t.subject === "Mathematics");
+  await cell.api(`exams/${examId}/status`, { method: "POST", data: { status: "MARKS_OPEN" } });
+  for (const t of [e1, m3]) {
+    if (t && t.status !== "OPEN")
+      await cell.api(`exams/${examId}/marks/moderate?sectionId=${t.sectionId}&subjectId=${t.subjectId}`, {
+        method: "POST",
+        data: { approve: false, note: "Reopened by the exam cell" },
+      });
+  }
+  if (e1) {
+    const qq = `sectionId=${e1.sectionId}&subjectId=${e1.subjectId}`;
+    const sh = (await cell.api(`exams/${examId}/marks?${qq}`)).body;
+    await cell.api(`exams/${examId}/marks?${qq}`, {
+      method: "PUT",
+      data: (sh?.rows ?? []).map((r, i) => ({ studentId: r.studentId, marks: i === 0 ? { M: 17 } : {} })),
+    });
+  }
+  if (m3) {
+    const r = await cell.api(`exams/${examId}/marks/submit?sectionId=${m3.sectionId}&subjectId=${m3.subjectId}`, { method: "POST" });
+    if (r.body?.entryStatus !== "SUBMITTED") problems.push(`Restore Class 3 A: ${r.status}`);
+  }
+}
+let ov = (await cell.api("exams/overview")).body;
+let pt2 = ov?.exams?.find((e) => e.name === "Periodic Test 2");
+if (pt2 && pt2.status !== "MARKS_OPEN") {
+  await restore(pt2.id); // an earlier run stopped part-way
+  ov = (await cell.api("exams/overview")).body;
+  pt2 = ov?.exams?.find((e) => e.name === "Periodic Test 2");
+}
 const hy = ov?.exams?.find((e) => e.name === "Half-Yearly Examination");
 if (!pt2 || pt2.status !== "MARKS_OPEN") problems.push(`Periodic Test 2: ${pt2?.status}`);
 if (hy?.status !== "PUBLISHED") problems.push("Half-Yearly not published");
@@ -105,7 +140,7 @@ if (!login.ok()) problems.push(`Demo parent sign-in: ${login.status()}`);
 const pp = await parent.newPage();
 await pp.goto(`${site}/parent`, { waitUntil: "networkidle" });
 await pp.getByRole("heading", { name: "Results & report cards" }).waitFor({ timeout: 15000 }).catch(() => problems.push("Portal has no results section"));
-const txt = (await pp.locator("section", { has: pp.getByRole("heading", { name: "Results & report cards" }) }).textContent()) ?? "";
+const txt = (await pp.getByRole("region", { name: "Results & report cards" }).textContent().catch(() => "")) ?? "";
 for (const w of ["Aarav Sharma", "Half-Yearly Examination", "Periodic Test 2"]) if (!txt.includes(w)) problems.push(`Portal results lack ${w}`);
 const ow2 = await pp.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 if (ow2 > 1) problems.push(`Portal scrolls sideways by ${ow2}px`);
@@ -134,17 +169,7 @@ for (const tab of ["Exams & timetable", "Subjects & teachers", "Analysis", "Grad
   await cp.screenshot({ path: `${out}/cell-${tab.replace(/\W+/g, "-").toLowerCase()}.png`, fullPage: true });
 }
 
-// ---------------------------------------------------------------- restore the demo state
-await cell.api(`exams/${pt2?.id}/status`, { method: "POST", data: { status: "MARKS_OPEN" } });
-await cell.api(`exams/${pt2?.id}/marks/moderate?${q}`, { method: "POST", data: { approve: false, note: "QA reset" } });
-await cell.api(`exams/${pt2?.id}/marks?${q}`, {
-  method: "PUT",
-  data: (sheet?.rows ?? []).map((r, i) => ({ studentId: r.studentId, marks: i === 0 ? { M: 17 } : {} })),
-});
-await cell.api(`exams/${pt2?.id}/marks/moderate?${q3}`, { method: "POST", data: { approve: false, note: "QA reset" } });
-const resub = await cell.api(`exams/${pt2?.id}/marks/submit?${q3}`, { method: "POST" });
-if (resub.body?.entryStatus !== "SUBMITTED") problems.push(`Restore Class 3 A: ${resub.status}`);
-
+await restore(pt2?.id);
 await browser.close();
 if (problems.length) {
   console.log("PROBLEMS:\n- " + problems.join("\n- "));

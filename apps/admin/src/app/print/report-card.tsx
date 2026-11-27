@@ -109,103 +109,12 @@ export function ReportCard({ r }: { r: ReportCardData }) {
         )}
       </dl>
 
-      <table className="mt-4 w-full border-collapse">
-        <thead>
-          <tr className="bg-gray-100">
-            <th scope="col" className="border border-gray-300 px-2 py-1 text-left">
-              Subject
-            </th>
-            {r.exams.map((e) => (
-              <th
-                key={e.examId}
-                scope="col"
-                className="border border-gray-300 px-2 py-1 text-center"
-              >
-                {e.name}
-                <span className="block text-[11px] font-normal text-gray-600">
-                  /{e.components.reduce((n, c) => n + c.max, 0)}
-                  {e.weight ? ` · ${e.weight}%` : ""}
-                </span>
-              </th>
-            ))}
-            {weighted && (
-              <th scope="col" className="border border-gray-300 px-2 py-1 text-center">
-                Year
-              </th>
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {r.subjects.map((s) => (
-            <tr key={s.subject}>
-              <th scope="row" className="border border-gray-300 px-2 py-1 text-left font-medium">
-                {s.subject}
-              </th>
-              {s.cells.map((c, i) => (
-                <td key={i} className="border border-gray-300 px-2 py-1 text-center tabular-nums">
-                  {!c ? (
-                    "–"
-                  ) : c.code ? (
-                    c.code
-                  ) : c.total == null ? (
-                    ""
-                  ) : (
-                    <>
-                      {c.total} <span className="text-gray-600">({c.grade})</span>
-                    </>
-                  )}
-                </td>
-              ))}
-              {weighted && (
-                <td className="border border-gray-300 px-2 py-1 text-center font-semibold tabular-nums">
-                  {s.weightedPercent != null ? `${s.weightedPercent}% (${s.weightedGrade})` : "–"}
-                </td>
-              )}
-            </tr>
-          ))}
-          <tr className="bg-gray-50 font-semibold">
-            <th scope="row" className="border border-gray-300 px-2 py-1 text-left">
-              Overall
-            </th>
-            {r.totals.map((t) => (
-              <td
-                key={t.examId}
-                className="border border-gray-300 px-2 py-1 text-center tabular-nums"
-              >
-                {t.percent != null ? `${t.percent}% (${t.grade})` : "–"}
-                {t.rank != null && (
-                  <span className="block text-[11px] font-normal">
-                    Rank {t.rank} of {t.of}
-                  </span>
-                )}
-              </td>
-            ))}
-            {weighted && (
-              <td className="border border-gray-300 px-2 py-1 text-center tabular-nums">
-                {r.weightedPercent != null ? `${r.weightedPercent}% (${r.weightedGrade})` : "–"}
-              </td>
-            )}
-          </tr>
-          <tr>
-            <th scope="row" className="border border-gray-300 px-2 py-1 text-left font-medium">
-              Result
-            </th>
-            {r.totals.map((t) => (
-              <td key={t.examId} className="border border-gray-300 px-2 py-1 text-center">
-                {t.passed == null ? "–" : t.passed ? "Pass" : "Needs improvement"}
-              </td>
-            ))}
-            {weighted && <td className="border border-gray-300" />}
-          </tr>
-        </tbody>
-      </table>
-
-      {r.coScholastic.length > 0 && (
-        <table className="mt-4 w-full border-collapse">
+      <div className="mt-4 overflow-x-auto print:overflow-visible">
+        <table className="w-full border-collapse">
           <thead>
             <tr className="bg-gray-100">
               <th scope="col" className="border border-gray-300 px-2 py-1 text-left">
-                Co-scholastic areas
+                Subject
               </th>
               {r.exams.map((e) => (
                 <th
@@ -214,25 +123,123 @@ export function ReportCard({ r }: { r: ReportCardData }) {
                   className="border border-gray-300 px-2 py-1 text-center"
                 >
                   {e.name}
+                  <span className="block text-[11px] font-normal text-gray-600">
+                    /{e.components.reduce((n, c) => n + c.max, 0)}
+                    {e.weight ? ` · ${e.weight}%` : ""}
+                  </span>
                 </th>
               ))}
+              {weighted && (
+                <th scope="col" className="border border-gray-300 px-2 py-1 text-center">
+                  Year
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
-            {r.coScholastic.map((c) => (
-              <tr key={c.subject}>
+            {r.subjects.map((s) => (
+              <tr key={s.subject}>
                 <th scope="row" className="border border-gray-300 px-2 py-1 text-left font-medium">
-                  {c.subject}
+                  {s.subject}
                 </th>
-                {r.exams.map((e) => (
-                  <td key={e.examId} className="border border-gray-300 px-2 py-1 text-center">
-                    {c.grades[e.examId] ?? "–"}
+                {s.cells.map((c, i) => (
+                  <td key={i} className="border border-gray-300 px-2 py-1 text-center tabular-nums">
+                    {!c ? (
+                      "–"
+                    ) : c.code ? (
+                      c.code
+                    ) : c.total == null ? (
+                      ""
+                    ) : (
+                      <>
+                        {c.total} <span className="text-gray-600">({c.grade})</span>
+                      </>
+                    )}
                   </td>
                 ))}
+                {weighted && (
+                  <td className="border border-gray-300 px-2 py-1 text-center font-semibold tabular-nums">
+                    {s.weightedPercent != null ? `${s.weightedPercent}% (${s.weightedGrade})` : "–"}
+                  </td>
+                )}
               </tr>
             ))}
+            <tr className="bg-gray-50 font-semibold">
+              <th scope="row" className="border border-gray-300 px-2 py-1 text-left">
+                Overall
+              </th>
+              {r.totals.map((t) => (
+                <td
+                  key={t.examId}
+                  className="border border-gray-300 px-2 py-1 text-center tabular-nums"
+                >
+                  {t.percent != null ? `${t.percent}% (${t.grade})` : "–"}
+                  {t.rank != null && (
+                    <span className="block text-[11px] font-normal">
+                      Rank {t.rank} of {t.of}
+                    </span>
+                  )}
+                </td>
+              ))}
+              {weighted && (
+                <td className="border border-gray-300 px-2 py-1 text-center tabular-nums">
+                  {r.weightedPercent != null ? `${r.weightedPercent}% (${r.weightedGrade})` : "–"}
+                </td>
+              )}
+            </tr>
+            <tr>
+              <th scope="row" className="border border-gray-300 px-2 py-1 text-left font-medium">
+                Result
+              </th>
+              {r.totals.map((t) => (
+                <td key={t.examId} className="border border-gray-300 px-2 py-1 text-center">
+                  {t.passed == null ? "–" : t.passed ? "Pass" : "Needs improvement"}
+                </td>
+              ))}
+              {weighted && <td className="border border-gray-300" />}
+            </tr>
           </tbody>
         </table>
+      </div>
+
+      {r.coScholastic.length > 0 && (
+        <div className="mt-4 overflow-x-auto print:overflow-visible">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-gray-100">
+                <th scope="col" className="border border-gray-300 px-2 py-1 text-left">
+                  Co-scholastic areas
+                </th>
+                {r.exams.map((e) => (
+                  <th
+                    key={e.examId}
+                    scope="col"
+                    className="border border-gray-300 px-2 py-1 text-center"
+                  >
+                    {e.name}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {r.coScholastic.map((c) => (
+                <tr key={c.subject}>
+                  <th
+                    scope="row"
+                    className="border border-gray-300 px-2 py-1 text-left font-medium"
+                  >
+                    {c.subject}
+                  </th>
+                  {r.exams.map((e) => (
+                    <td key={e.examId} className="border border-gray-300 px-2 py-1 text-center">
+                      {c.grades[e.examId] ?? "–"}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <div className="mt-4 grid gap-2">
