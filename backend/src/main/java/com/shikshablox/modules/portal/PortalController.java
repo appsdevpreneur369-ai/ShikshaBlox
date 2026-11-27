@@ -2,6 +2,7 @@ package com.shikshablox.modules.portal;
 
 import com.shikshablox.modules.attendance.AttendanceService;
 import com.shikshablox.modules.attendance.LeaveService;
+import com.shikshablox.modules.exams.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -133,6 +134,13 @@ class PortalController {
   List<AttendanceService.ChildAttendance> attendance(
       @RequestParam String host, @RequestHeader(value = H, required = false) String token) {
     return portal.attendance(host, token);
+  }
+
+  @GetMapping(P + "/report-cards")
+  @Operation(operationId = "portalReportCards", summary = "The children's published report cards")
+  List<ReportService.ReportCard> reportCards(
+      @RequestParam String host, @RequestHeader(value = H, required = false) String token) {
+    return portal.reportCards(host, token);
   }
 
   @GetMapping(P + "/leave")

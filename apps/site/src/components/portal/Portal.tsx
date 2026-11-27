@@ -59,6 +59,35 @@ type Leave = {
   decisionNote?: string | null;
 };
 
+type ReportCard = {
+  student: { id: string; name: string; classLabel: string };
+  exams: { examId: string; name: string; weight: number }[];
+  subjects: {
+    subject: string;
+    cells: ({
+      total?: number | null;
+      max: number;
+      grade?: string | null;
+      code?: string | null;
+    } | null)[];
+    weightedPercent?: number | null;
+    weightedGrade?: string | null;
+  }[];
+  coScholastic: { subject: string; grades: Record<string, string> }[];
+  totals: {
+    examId: string;
+    percent?: number | null;
+    grade?: string | null;
+    passed?: boolean | null;
+    rank?: number | null;
+    of?: number | null;
+    remark?: string | null;
+  }[];
+  weightedPercent?: number | null;
+  weightedGrade?: string | null;
+  attendancePercent?: number | null;
+};
+
 const MARK: Record<string, string> = {
   A: "Absent",
   L: "Late",
@@ -277,6 +306,7 @@ export function ParentPortal() {
   const [prefs, setPrefs] = useState<Prefs | null>(null);
   const [attendance, setAttendance] = useState<ChildAttendance[]>([]);
   const [leave, setLeave] = useState<Leave[]>([]);
+  const [cards, setCards] = useState<ReportCard[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -287,14 +317,16 @@ export function ParentPortal() {
       return;
     }
     setMe(r.data!);
-    const [c, q, p, pr, at, lv] = await Promise.all([
+    const [c, q, p, pr, at, lv, rc] = await Promise.all([
       call<Circular[]>("circulars"),
       call<Req[]>("requests"),
       call<Ptm[]>("ptm"),
       call<Prefs>("preferences"),
       call<ChildAttendance[]>("attendance"),
       call<Leave[]>("leave"),
+      call<ReportCard[]>("report-cards"),
     ]);
+    setCards(rc.data ?? []);
     setAttendance(at.data ?? []);
     setLeave(lv.data ?? []);
     setCirculars(c.data ?? []);
@@ -395,6 +427,8 @@ export function ParentPortal() {
           }}
         />
       )}
+
+      {cards.length > 0 && <ReportCards cards={cards} />}
 
       <section aria-labelledby="circ">
         <h3 id="circ" className="mb-3 text-lg font-bold">
@@ -636,6 +670,131 @@ function AttendanceSection({
           )}
         </div>
       </form>
+    </section>
+  );
+}
+
+function ReportCards({ cards }: { cards: ReportCard[] }) {
+  return (
+    <section aria-labelledby="rc" className="grid gap-4">
+      <h3 id="rc" className="text-lg font-bold">
+        Results &amp; report cards
+      </h3>
+      {cards.map((r) => {
+        const weighted = r.exams.some((e) => e.weight > 0);
+        return (
+          <details key={r.student.id} className="sb-card p-5" open={cards.length === 1}>
+            <summary className="cursor-pointer">
+              <span className="font-bold">{r.student.name}</span>
+              <span className="sb-muted text-sm">
+                {" "}
+                · {r.student.classLabel} ·{" "}
+                {r.totals
+                  .map((t) => {
+                    const e = r.exams.find((x) => x.examId === t.examId);
+                    return `${e?.name}: ${t.percent != null ? `${t.percent}% (${t.grade})` : "–"}`;
+                  })
+                  .join(" · ")}
+              </span>
+            </summary>
+            <div className="mt-3 overflow-x-auto">
+              <table className="w-full min-w-[28rem] border-collapse text-sm">
+                <thead>
+                  <tr className="sb-muted border-b border-black/10 text-left text-xs">
+                    <th scope="col" className="py-1.5 pr-2 font-semibold">
+                      Subject
+                    </th>
+                    {r.exams.map((e) => (
+                      <th
+                        key={e.examId}
+                        scope="col"
+                        className="px-2 py-1.5 text-center font-semibold"
+                      >
+                        {e.name}
+                      </th>
+                    ))}
+                    {weighted && (
+                      <th scope="col" className="px-2 py-1.5 text-center font-semibold">
+                        Year
+                      </th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {r.subjects.map((s) => (
+                    <tr key={s.subject} className="border-b border-black/5">
+                      <th scope="row" className="py-1.5 pr-2 text-left font-medium">
+                        {s.subject}
+                      </th>
+                      {s.cells.map((c, i) => (
+                        <td key={i} className="px-2 py-1.5 text-center tabular-nums">
+                          {!c
+                            ? "–"
+                            : c.code
+                              ? c.code
+                              : c.total == null
+                                ? ""
+                                : `${c.total}/${c.max} (${c.grade})`}
+                        </td>
+                      ))}
+                      {weighted && (
+                        <td className="px-2 py-1.5 text-center font-semibold tabular-nums">
+                          {s.weightedPercent != null
+                            ? `${s.weightedPercent}% (${s.weightedGrade})`
+                            : "–"}
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                  <tr className="font-bold">
+                    <th scope="row" className="py-1.5 pr-2 text-left">
+                      Overall
+                    </th>
+                    {r.totals.map((t) => (
+                      <td key={t.examId} className="px-2 py-1.5 text-center tabular-nums">
+                        {t.percent != null ? `${t.percent}% (${t.grade})` : "–"}
+                        {t.rank != null && (
+                          <span className="block text-xs font-normal">
+                            Rank {t.rank} of {t.of}
+                          </span>
+                        )}
+                      </td>
+                    ))}
+                    {weighted && (
+                      <td className="px-2 py-1.5 text-center tabular-nums">
+                        {r.weightedPercent != null
+                          ? `${r.weightedPercent}% (${r.weightedGrade})`
+                          : "–"}
+                      </td>
+                    )}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            {r.coScholastic.length > 0 && (
+              <p className="mt-3 text-sm">
+                <span className="font-semibold">Co-scholastic: </span>
+                {r.coScholastic
+                  .map((c) => `${c.subject} ${Object.values(c.grades).join("/")}`)
+                  .join(" · ")}
+              </p>
+            )}
+            {r.totals
+              .filter((t) => t.remark)
+              .map((t) => (
+                <p key={t.examId} className="mt-2 text-sm">
+                  <span className="font-semibold">Class teacher: </span>“{t.remark}”
+                </p>
+              ))}
+            {r.attendancePercent != null && (
+              <p className="mt-2 text-sm">
+                <span className="font-semibold">Attendance this year: </span>
+                {r.attendancePercent}%
+              </p>
+            )}
+          </details>
+        );
+      })}
     </section>
   );
 }
