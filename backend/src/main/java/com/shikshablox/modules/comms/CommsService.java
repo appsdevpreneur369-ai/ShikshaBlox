@@ -445,6 +445,62 @@ public class CommsService implements UsageMeter {
     return limit < 0 ? Long.MAX_VALUE : limit;
   }
 
+  /** A parent's own message preferences (portal), or null when they have no contact yet. */
+  public record Preferences(
+      boolean whatsapp, boolean sms, boolean email, boolean hasEmail, String language) {}
+
+  public Preferences preferences(String phone) {
+    if (!entitlements.hasModule(MODULE) || phone == null) {
+      return null;
+    }
+    return jdbc.sql(
+            "select whatsapp_opt_in, sms_opt_in, email_opt_in, email is not null, language from comms_contact"
+                + " where right(regexp_replace(phone, '\\D', '', 'g'), 10) = ?")
+        .param(key(phone))
+        .query((rs, i) ->
+            new Preferences(
+                rs.getBoolean(1),
+                rs.getBoolean(2),
+                rs.getBoolean(3),
+                rs.getBoolean(4),
+                rs.getString(5)))
+        .optional()
+        .orElse(null);
+  }
+
+  /** The parent sets their own opt-ins and language in the portal (logged as consent events). */
+  public Preferences setPreferences(
+      String phone, boolean whatsapp, boolean sms, boolean email, String language) {
+    entitlements.requireModule(MODULE);
+    String lang = language == null || !LANG.matcher(language).matches() ? null : language;
+    return tx.execute(s -> {
+      UUID id =
+          jdbc.sql(
+                  "select id from comms_contact where right(regexp_replace(phone, '\\D', '', 'g'), 10) = ?")
+              .param(key(phone))
+              .query(UUID.class)
+              .optional()
+              .orElseThrow(() -> ApiException.notFound("Contact"));
+      Contact before = loadContact(id);
+      boolean em = email && before.email() != null;
+      jdbc.sql(
+              "update comms_contact set whatsapp_opt_in = ?, sms_opt_in = ?, email_opt_in = ?,"
+                  + " language = coalesce(?, language), updated_at = now() where id = ?")
+          .params(whatsapp, sms, em, lang, id)
+          .update();
+      if (before.whatsappOptIn() != whatsapp) {
+        consent(id, "WHATSAPP", whatsapp, "PORTAL", "Changed by the parent in the portal");
+      }
+      if (before.smsOptIn() != sms) {
+        consent(id, "SMS", sms, "PORTAL", "Changed by the parent in the portal");
+      }
+      if (before.emailOptIn() != em) {
+        consent(id, "EMAIL", em, "PORTAL", "Changed by the parent in the portal");
+      }
+      return preferences(phone);
+    });
+  }
+
   /** The contact withdraws consent on every channel (link on a circular, or a reply). */
   void withdrawAll(UUID contactId, String source) {
     Contact c = loadContact(contactId);

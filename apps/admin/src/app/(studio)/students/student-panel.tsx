@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AlertTriangle, Download, ShieldAlert, Trash2, Upload, UserPlus, X } from "lucide-react";
 import { sb } from "@/lib/studio";
 import { Badge, Btn, Card, Field, inputCls, useAction } from "@/components/kit";
+import { PortalAccess } from "./portal-access";
 import {
   APAAR,
   GENDER,
@@ -730,6 +731,7 @@ function Guardians({
         Guardians are added to Messages (tagged with the class) but only receive messages once they
         have opted in there.
       </p>
+      <PortalAccess key={d.guardians.map((g) => g.guardianId).join()} studentId={sid} />
     </div>
   );
 }
