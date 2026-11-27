@@ -322,6 +322,7 @@ export function ParentPortal() {
   const [certs, setCerts] = useState<Certs | null>(null);
   const [homework, setHomework] = useState<Hw[]>([]);
   const [timetables, setTimetables] = useState<ChildTt[]>([]);
+  const [early, setEarly] = useState<EyFeed[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -332,7 +333,7 @@ export function ParentPortal() {
       return;
     }
     setMe(r.data!);
-    const [c, q, p, pr, at, lv, rc, ce, hw, tt] = await Promise.all([
+    const [c, q, p, pr, at, lv, rc, ce, hw, tt, ey] = await Promise.all([
       call<Circular[]>("circulars"),
       call<Req[]>("requests"),
       call<Ptm[]>("ptm"),
@@ -343,7 +344,9 @@ export function ParentPortal() {
       call<Certs>("certificates"),
       call<Hw[]>("homework"),
       call<ChildTt[]>("timetable"),
+      call<EyFeed[]>("early-years"),
     ]);
+    setEarly(ey.data ?? []);
     setTimetables(tt.data ?? []);
     setHomework(hw.data ?? []);
     setCerts(ce.data ?? null);
@@ -432,6 +435,8 @@ export function ParentPortal() {
           </ul>
         )}
       </section>
+
+      {early.length > 0 && <EarlyYearsSection items={early} />}
 
       {timetables.length > 0 && <TimetableSection items={timetables} />}
 
@@ -1271,6 +1276,113 @@ function TimetableSection({ items }: { items: ChildTt[] }) {
           </details>
         );
       })}
+    </section>
+  );
+}
+
+type EyObs = {
+  id: string;
+  observedOn: string;
+  domain?: string | null;
+  note: string;
+  photoUrl?: string | null;
+};
+type EyFeed = {
+  studentId: string;
+  name: string;
+  today?: {
+    arrival?: string | null;
+    meals: Record<string, string>;
+    napFrom?: string | null;
+    napTo?: string | null;
+    toilet?: number | null;
+    mood?: string | null;
+    activities?: string | null;
+    note?: string | null;
+  } | null;
+  observations: EyObs[];
+  pickups: { id: string; name: string; relation?: string | null }[];
+  achieved: number;
+  total: number;
+};
+const EY_MOOD: Record<string, string> = {
+  HAPPY: "😊 Happy",
+  CALM: "🙂 Calm",
+  TIRED: "😴 Tired",
+  UPSET: "😢 Upset",
+};
+const EY_MEAL: Record<string, string> = {
+  ALL: "ate all",
+  MOST: "ate most",
+  SOME: "ate some",
+  NONE: "did not eat",
+};
+
+function EarlyYearsSection({ items }: { items: EyFeed[] }) {
+  return (
+    <section aria-labelledby="ey" className="grid gap-3">
+      <h3 id="ey" className="text-lg font-bold">
+        Today at school
+      </h3>
+      {items.map((c) => (
+        <div key={c.studentId} className="sb-card grid gap-3 p-5">
+          <p className="font-bold">
+            {c.name}
+            <span className="sb-muted text-sm font-normal">
+              {" "}
+              · {c.achieved} of {c.total} milestones reached
+            </span>
+          </p>
+          {c.today ? (
+            <ul className="grid gap-1 text-sm">
+              {c.today.mood && <li>Mood: {EY_MOOD[c.today.mood] ?? c.today.mood}</li>}
+              {c.today.arrival && <li>Arrived at {c.today.arrival.slice(0, 5)}</li>}
+              {Object.entries(c.today.meals).map(([m, v]) => (
+                <li key={m}>
+                  {m}: {EY_MEAL[v] ?? v}
+                </li>
+              ))}
+              {c.today.napFrom && (
+                <li>
+                  Nap {c.today.napFrom.slice(0, 5)}
+                  {c.today.napTo ? `–${c.today.napTo.slice(0, 5)}` : ""}
+                </li>
+              )}
+              {c.today.activities && <li>Activities: {c.today.activities}</li>}
+              {c.today.note && <li className="font-semibold">Teacher: {c.today.note}</li>}
+            </ul>
+          ) : (
+            <p className="sb-muted text-sm">Today&apos;s diary is not filled in yet.</p>
+          )}
+          {c.observations.length > 0 && (
+            <div className="grid gap-2">
+              <p className="text-sm font-semibold">Recent moments</p>
+              {c.observations.map((o) => (
+                <div key={o.id} className="flex gap-3 text-sm">
+                  {o.photoUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={o.photoUrl}
+                      alt={`A moment on ${dateLong(o.observedOn)}`}
+                      className="size-20 shrink-0 rounded-xl object-cover"
+                    />
+                  )}
+                  <p>
+                    <span className="sb-muted">{dateLong(o.observedOn)}: </span>
+                    {o.note}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+          {c.pickups.length > 0 && (
+            <p className="sb-muted text-xs">
+              Also allowed to collect:{" "}
+              {c.pickups.map((p) => `${p.name}${p.relation ? ` (${p.relation})` : ""}`).join(", ")}
+            </p>
+          )}
+        </div>
+      ))}
     </section>
   );
 }

@@ -5,6 +5,7 @@ import com.shikshablox.modules.attendance.LeaveService;
 import com.shikshablox.modules.certificates.CertificateService;
 import com.shikshablox.modules.comms.BroadcastService;
 import com.shikshablox.modules.comms.CommsService;
+import com.shikshablox.modules.earlyyears.EarlyYearsService;
 import com.shikshablox.modules.exams.ReportService;
 import com.shikshablox.modules.homework.HomeworkService;
 import com.shikshablox.modules.timetable.TimetableService;
@@ -123,6 +124,7 @@ public class PortalService {
   private final CertificateService certificates;
   private final HomeworkService homework;
   private final TimetableService timetable;
+  private final EarlyYearsService earlyYears;
   private final String dummyHash;
 
   PortalService(
@@ -140,7 +142,8 @@ public class PortalService {
       ReportService reports,
       CertificateService certificates,
       HomeworkService homework,
-      TimetableService timetable) {
+      TimetableService timetable,
+      EarlyYearsService earlyYears) {
     this.resolver = resolver;
     this.jdbc = jdbc;
     this.tx = tx;
@@ -156,6 +159,7 @@ public class PortalService {
     this.certificates = certificates;
     this.homework = homework;
     this.timetable = timetable;
+    this.earlyYears = earlyYears;
     this.dummyHash = passwords.encode("no-account-" + token(8));
   }
 
@@ -531,6 +535,11 @@ public class PortalService {
                 .map(ch -> timetable.forStudent(ch.id()))
                 .filter(java.util.Objects::nonNull)
                 .toList());
+  }
+
+  /** Today's diary and recent observations of pre-primary children. */
+  public List<EarlyYearsService.ChildFeed> earlyYears(String host, String token) {
+    return asParent(host, token, c -> earlyYears.feed(c.guardianId()));
   }
 
   public List<LeaveService.Leave> leave(String host, String token) {
