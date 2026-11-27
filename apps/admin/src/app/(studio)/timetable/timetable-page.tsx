@@ -235,7 +235,9 @@ function WeekGrid({
 }
 
 function ClassView({ ov }: { ov: Overview }) {
-  const [sectionId, setSectionId] = useState(ov.sections[0]?.id ?? "");
+  const [sectionId, setSectionId] = useState(
+    (ov.sections.find((s) => /d/.test(s.grade)) ?? ov.sections[0])?.id ?? "",
+  );
   const [grid, setGrid] = useState<Grid | null>(null);
   const [edit, setEdit] = useState<{ day: number; period: number } | null>(null);
   const [form, setForm] = useState({ subjectId: "", label: "", teacherId: "", room: "" });
@@ -457,7 +459,9 @@ function MineView({ settings }: { settings: Settings }) {
 
 function LoadsView({ ov }: { ov: Overview }) {
   const toast = useToast();
-  const [sectionId, setSectionId] = useState(ov.sections[0]?.id ?? "");
+  const [sectionId, setSectionId] = useState(
+    (ov.sections.find((s) => /d/.test(s.grade)) ?? ov.sections[0])?.id ?? "",
+  );
   const [grid, setGrid] = useState<Grid | null>(null);
   const [rows, setRows] = useState<Load[]>([]);
   const [pick, setPick] = useState<string[]>([]);
