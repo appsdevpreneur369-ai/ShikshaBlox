@@ -88,6 +88,7 @@ if (link) {
     .catch(() => problems.push("Setup did not open the portal"));
   await pp
     .getByText(`${RUN} Kid`)
+    .first()
     .waitFor({ timeout: 15000 })
     .catch(() => problems.push("Portal does not show the child"));
   if (!(await pp.getByText("Class 3 A").count())) problems.push("Portal does not show the class");
@@ -176,6 +177,7 @@ if (link) {
   await pp.getByRole("button", { name: "Sign in" }).click();
   await pp
     .getByText(`${RUN} Kid`)
+    .first()
     .waitFor({ timeout: 15000 })
     .catch(() => problems.push("Sign in with the right PIN failed"));
 

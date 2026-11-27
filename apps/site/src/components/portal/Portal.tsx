@@ -560,8 +560,8 @@ function AttendanceSection({
     setBusy(false);
     if (r.ok) {
       form.reset();
-      setMsg({ text: "Sent to the class teacher. You will see the decision here.", ok: true });
       await onChanged();
+      setMsg({ text: "Sent to the class teacher. You will see the decision here.", ok: true });
     } else setMsg({ text: r.message ?? "Could not send.", ok: false });
   }
   async function cancel(id: string) {
