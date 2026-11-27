@@ -44,6 +44,9 @@ const admin = await signIn(await browser.newContext(), "admin@greenfield.test");
 const created = [];
 const cleanup = async () => {
   await admin.api("certificates/settings", { method: "PUT", data: { requireApproval: false } });
+  for (const c of (await admin.api("certificates?status=REQUESTED")).body ?? [])
+    if (/^qa\d{6} /.test(c.purpose ?? ""))
+      await admin.api(`certificates/${c.id}/decision`, { method: "POST", data: { approve: false, note: "QA clean-up" } });
   for (const c of (await admin.api(`certificates?q=${RUN}`)).body ?? [])
     if (c.status === "ISSUED")
       await admin.api(`certificates/${c.id}/cancel`, {
