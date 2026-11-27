@@ -45,6 +45,12 @@ public class UserService {
         });
   }
 
+  /** Whether an account with this email exists (in any school). Not inside a transaction. */
+  public boolean exists(String email) {
+    String normalised = AuthService.normaliseEmail(email);
+    return TenantContext.callAsSystem("find user", () -> users.findByEmail(normalised).isPresent());
+  }
+
   /** Grants a role. School roles need an organization; the platform role must not have one. */
   public void grantRole(UUID userId, UUID organizationId, Role role) {
     if (role.platform() != (organizationId == null)) {

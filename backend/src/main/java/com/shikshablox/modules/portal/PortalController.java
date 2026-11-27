@@ -1,5 +1,7 @@
 package com.shikshablox.modules.portal;
 
+import com.shikshablox.modules.attendance.AttendanceService;
+import com.shikshablox.modules.attendance.LeaveService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -124,6 +126,38 @@ class PortalController {
   List<PortalService.PtmItem> ptm(
       @RequestParam String host, @RequestHeader(value = H, required = false) String token) {
     return portal.ptm(host, token);
+  }
+
+  @GetMapping(P + "/attendance")
+  @Operation(operationId = "portalAttendance", summary = "The children's attendance")
+  List<AttendanceService.ChildAttendance> attendance(
+      @RequestParam String host, @RequestHeader(value = H, required = false) String token) {
+    return portal.attendance(host, token);
+  }
+
+  @GetMapping(P + "/leave")
+  @Operation(operationId = "portalLeave", summary = "The children's leave requests")
+  List<LeaveService.Leave> leave(
+      @RequestParam String host, @RequestHeader(value = H, required = false) String token) {
+    return portal.leave(host, token);
+  }
+
+  @PostMapping(P + "/leave")
+  @Operation(operationId = "portalApplyLeave", summary = "Apply for leave for a child")
+  LeaveService.Leave applyLeave(
+      @RequestParam String host,
+      @RequestHeader(value = H, required = false) String token,
+      @RequestBody LeaveService.LeaveInput req) {
+    return portal.applyLeave(host, token, req);
+  }
+
+  @PostMapping(P + "/leave/{id}/cancel")
+  @Operation(operationId = "portalCancelLeave", summary = "Withdraw a leave request")
+  LeaveService.Leave cancelLeave(
+      @RequestParam String host,
+      @RequestHeader(value = H, required = false) String token,
+      @PathVariable UUID id) {
+    return portal.cancelLeave(host, token, id);
   }
 
   @GetMapping(P + "/preferences")

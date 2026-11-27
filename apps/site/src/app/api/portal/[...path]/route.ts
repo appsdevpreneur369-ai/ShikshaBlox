@@ -3,7 +3,8 @@ import { normaliseHost } from "@/lib/host";
 
 const API = process.env.API_INTERNAL_URL ?? "http://localhost:8080";
 const COOKIE = "sb_parent";
-const READS = new Set(["me", "circulars", "requests", "ptm", "preferences"]);
+const READS = new Set(["me", "circulars", "requests", "ptm", "preferences", "attendance", "leave"]);
+const LEAVE_CANCEL = /^leave\/[0-9a-f-]{36}\/cancel$/;
 
 /**
  * Same-origin bridge for the parent portal. Sign-in responses set the session token in an
@@ -19,7 +20,12 @@ async function handle(request: NextRequest, ctx: { params: Promise<{ path: strin
   const allowed =
     (method === "GET" && READS.has(action)) ||
     (method === "PUT" && action === "preferences") ||
-    (method === "POST" && (action === "login" || action === "setup" || action === "logout"));
+    (method === "POST" &&
+      (action === "login" ||
+        action === "setup" ||
+        action === "logout" ||
+        action === "leave" ||
+        LEAVE_CANCEL.test(action)));
   if (!host || !allowed) return NextResponse.json({ detail: "Not found" }, { status: 404 });
   if (method !== "GET" && request.headers.get("x-portal") !== "1") {
     // Cross-site forms can't set custom headers (CSRF protection on top of SameSite cookies).
