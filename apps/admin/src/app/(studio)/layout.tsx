@@ -21,6 +21,12 @@ function navItems(permissions: string[], hasSchool: boolean): NavItem[] {
     if (permissions.includes("marks:enter") || permissions.includes("exams:manage"))
       items.push({ href: "/exams", label: "Exams" });
     if (permissions.includes("homework:post")) items.push({ href: "/homework", label: "Homework" });
+    if (
+      ["timetable:manage", "attendance:mark", "marks:enter", "homework:post"].some((p) =>
+        permissions.includes(p),
+      )
+    )
+      items.push({ href: "/timetable", label: "Timetable" });
     if (permissions.includes("certificates:manage"))
       items.push({ href: "/certificates", label: "Certificates" });
     if (permissions.includes("admissions:manage"))

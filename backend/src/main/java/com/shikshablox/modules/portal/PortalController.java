@@ -5,6 +5,7 @@ import com.shikshablox.modules.attendance.LeaveService;
 import com.shikshablox.modules.certificates.CertificateService;
 import com.shikshablox.modules.exams.ReportService;
 import com.shikshablox.modules.homework.HomeworkService;
+import com.shikshablox.modules.timetable.TimetableService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -221,6 +222,13 @@ class PortalController {
         text,
         file == null ? null : file.getOriginalFilename(),
         content);
+  }
+
+  @GetMapping(P + "/timetable")
+  @Operation(operationId = "portalTimetable", summary = "The children's class timetables")
+  List<TimetableService.ChildTimetable> timetable(
+      @RequestParam String host, @RequestHeader(value = H, required = false) String token) {
+    return portal.timetables(host, token);
   }
 
   @GetMapping(P + "/leave")

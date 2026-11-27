@@ -19,8 +19,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Sample homework for the fictional Greenfield Demo School: Class 1 A English (handed in online,
- * with a rubric) due on the next school day, a marked piece from last week, and Class 3 A EVS.
- * Runs once. Demo data only.
+ * with a rubric) due on the next school day, a marked piece from last week, and Class 3 A EVS. Runs
+ * once. Demo data only.
  */
 @Component
 @Order(41)
@@ -51,7 +51,11 @@ class DemoHomeworkSeeder implements ApplicationRunner {
       TenantContext.callInTenant(
           org.id(),
           () -> {
-            if (jdbc.sql("select count(*) from homework where title = ?").param(MARKER).query(Long.class).single() > 0) {
+            if (jdbc.sql("select count(*) from homework where title = ?")
+                    .param(MARKER)
+                    .query(Long.class)
+                    .single()
+                > 0) {
               return null;
             }
             tx.executeWithoutResult(s -> seed(org.id()));
@@ -64,7 +68,11 @@ class DemoHomeworkSeeder implements ApplicationRunner {
   }
 
   private void seed(UUID org) {
-    String year = jdbc.sql("select current_year from sis_settings").query(String.class).optional().orElse(null);
+    String year =
+        jdbc.sql("select current_year from sis_settings")
+            .query(String.class)
+            .optional()
+            .orElse(null);
     if (year == null) {
       return;
     }
@@ -72,22 +80,47 @@ class DemoHomeworkSeeder implements ApplicationRunner {
     UUID c1a = section(year, "Class 1", "A");
     UUID c3a = section(year, "Class 3", "A");
     UUID teacher =
-        jdbc.sql("select id from app_user where email = 'teacher@greenfield.test'").query(UUID.class).optional().orElse(null);
+        jdbc.sql("select id from app_user where email = 'teacher@greenfield.test'")
+            .query(UUID.class)
+            .optional()
+            .orElse(null);
     LocalDate today = LocalDate.now(IST);
     LocalDate next = today.plusDays(1);
     if (next.getDayOfWeek() == DayOfWeek.SUNDAY) {
       next = next.plusDays(1);
     }
     if (c1a != null) {
-      insert(org, c1a, subject(year, "Class 1", "English"), MARKER,
+      insert(
+          org,
+          c1a,
+          subject(year, "Class 1", "English"),
+          MARKER,
           "Read the story on pages 12 to 15 of your English reader aloud with a parent. Write five new words you found, with a"
-              + " picture for each.", today.minusDays(1), next, true, null,
-          "[{\"criterion\":\"Five words written\",\"points\":5},{\"criterion\":\"Neat pictures\",\"points\":5}]", teacher);
+              + " picture for each.",
+          today.minusDays(1),
+          next,
+          true,
+          null,
+          "[{\"criterion\":\"Five words written\",\"points\":5},{\"criterion\":\"Neat pictures\",\"points\":5}]",
+          teacher);
       UUID done =
-          insert(org, c1a, subject(year, "Class 1", "Mathematics"), "Count and colour: worksheet 6 (sample)",
-              "Count the objects in each box and colour the right number.", today.minusDays(9), today.minusDays(6), true, 10.0,
-              "[]", teacher);
-      UUID aarav = jdbc.sql("select id from student where name = 'Aarav Sharma'").query(UUID.class).optional().orElse(null);
+          insert(
+              org,
+              c1a,
+              subject(year, "Class 1", "Mathematics"),
+              "Count and colour: worksheet 6 (sample)",
+              "Count the objects in each box and colour the right number.",
+              today.minusDays(9),
+              today.minusDays(6),
+              true,
+              10.0,
+              "[]",
+              teacher);
+      UUID aarav =
+          jdbc.sql("select id from student where name = 'Aarav Sharma'")
+              .query(UUID.class)
+              .optional()
+              .orElse(null);
       if (aarav != null) {
         jdbc.sql(
                 "insert into homework_submission (organization_id, homework_id, student_id, text, submitted_at, status, points, feedback,"
@@ -98,25 +131,55 @@ class DemoHomeworkSeeder implements ApplicationRunner {
       }
     }
     if (c3a != null) {
-      insert(org, c3a, subject(year, "Class 3", "Environmental Studies"), "Plants around my home (sample)",
-          "Collect three different leaves, paste them in your notebook and write where you found each.", today, today.plusDays(4),
-          false, null, "[]", null);
+      insert(
+          org,
+          c3a,
+          subject(year, "Class 3", "Environmental Studies"),
+          "Plants around my home (sample)",
+          "Collect three different leaves, paste them in your notebook and write where you found each.",
+          today,
+          today.plusDays(4),
+          false,
+          null,
+          "[]",
+          null);
     }
   }
 
-  private UUID insert(UUID org, UUID section, UUID subject, String title, String details, LocalDate assigned, LocalDate due,
-      boolean submissions, Double max, String rubric, UUID by) {
+  private UUID insert(
+      UUID org,
+      UUID section,
+      UUID subject,
+      String title,
+      String details,
+      LocalDate assigned,
+      LocalDate due,
+      boolean submissions,
+      Double max,
+      String rubric,
+      UUID by) {
     return jdbc.sql(
             "insert into homework (organization_id, class_section_id, subject_id, title, details, assigned_on, due_on, allow_submissions,"
                 + " max_points, rubric, created_by) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?::jsonb, ?) returning id")
-        .params(org, section, subject, title, details, assigned, due, submissions,
-            max == null ? null : java.math.BigDecimal.valueOf(max), rubric, by)
+        .params(
+            org,
+            section,
+            subject,
+            title,
+            details,
+            assigned,
+            due,
+            submissions,
+            max == null ? null : java.math.BigDecimal.valueOf(max),
+            rubric,
+            by)
         .query(UUID.class)
         .single();
   }
 
   private UUID section(String year, String grade, String section) {
-    return jdbc.sql("select id from class_section where academic_year = ? and grade = ? and section = ?")
+    return jdbc.sql(
+            "select id from class_section where academic_year = ? and grade = ? and section = ?")
         .params(year, grade, section)
         .query(UUID.class)
         .optional()

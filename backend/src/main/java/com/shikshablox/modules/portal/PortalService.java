@@ -7,6 +7,7 @@ import com.shikshablox.modules.comms.BroadcastService;
 import com.shikshablox.modules.comms.CommsService;
 import com.shikshablox.modules.exams.ReportService;
 import com.shikshablox.modules.homework.HomeworkService;
+import com.shikshablox.modules.timetable.TimetableService;
 import com.shikshablox.platform.audit.AuditService;
 import com.shikshablox.platform.entitlement.EntitlementService;
 import com.shikshablox.platform.shared.RateLimiter;
@@ -121,6 +122,7 @@ public class PortalService {
   private final ReportService reports;
   private final CertificateService certificates;
   private final HomeworkService homework;
+  private final TimetableService timetable;
   private final String dummyHash;
 
   PortalService(
@@ -137,7 +139,8 @@ public class PortalService {
       LeaveService leave,
       ReportService reports,
       CertificateService certificates,
-      HomeworkService homework) {
+      HomeworkService homework,
+      TimetableService timetable) {
     this.resolver = resolver;
     this.jdbc = jdbc;
     this.tx = tx;
@@ -152,6 +155,7 @@ public class PortalService {
     this.reports = reports;
     this.certificates = certificates;
     this.homework = homework;
+    this.timetable = timetable;
     this.dummyHash = passwords.encode("no-account-" + token(8));
   }
 
@@ -515,6 +519,18 @@ public class PortalService {
           }
           return homework.submit(c.guardianId(), homeworkId, studentId, text, filename, content);
         });
+  }
+
+  /** Each child's class timetable (children whose class has none are left out). */
+  public List<TimetableService.ChildTimetable> timetables(String host, String token) {
+    return asParent(
+        host,
+        token,
+        c ->
+            children(c.guardianId()).stream()
+                .map(ch -> timetable.forStudent(ch.id()))
+                .filter(java.util.Objects::nonNull)
+                .toList());
   }
 
   public List<LeaveService.Leave> leave(String host, String token) {

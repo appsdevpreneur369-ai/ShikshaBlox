@@ -14,6 +14,7 @@ const READS = new Set([
   "report-cards",
   "certificates",
   "homework",
+  "timetable",
 ]);
 const HW_FILE = /^homework\/files\/[0-9a-f-]{36}$/;
 const CERT = /^certificates\/[0-9a-f-]{36}$/;

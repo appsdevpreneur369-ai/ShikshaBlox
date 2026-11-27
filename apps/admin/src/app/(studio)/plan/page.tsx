@@ -97,6 +97,11 @@ const FEATURE_LABEL: Record<string, string> = {
   submissions: "Hand in online",
   rubrics: "Rubrics",
   feedback: "Marks & feedback",
+  grid: "Class timetables",
+  clash_check: "Teacher & room clash checks",
+  timetable_parent_view: "Timetable in the parent portal",
+  generator: "Timetable generator",
+  substitutions: "Daily substitutions",
 };
 
 const MODULE_LABEL: Record<string, string> = {
@@ -114,6 +119,7 @@ const MODULE_LABEL: Record<string, string> = {
   EXAMS: "Exams & report cards",
   CERTIFICATES: "Certificates",
   HOMEWORK: "Homework",
+  TIMETABLE: "Timetable",
 };
 
 function formatValue(key: string, value: number) {

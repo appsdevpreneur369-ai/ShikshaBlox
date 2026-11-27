@@ -43,6 +43,8 @@ public enum Permission {
   CERTIFICATES_MANAGE("certificates:manage"),
   /** Post homework to own classes, see and mark submissions (M10). */
   HOMEWORK_POST("homework:post"),
+  /** Bell schedule, class timetables, generator and daily substitutions (M08). */
+  TIMETABLE_MANAGE("timetable:manage"),
   /** Read the audit log. */
   AUDIT_VIEW("audit:view");
 
