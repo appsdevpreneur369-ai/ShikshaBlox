@@ -91,6 +91,12 @@ const FEATURE_LABEL: Record<string, string> = {
   custom_templates: "Your own templates",
   approval: "Principal approval",
   parent_requests: "Requests from parents",
+  homework_post: "Post homework",
+  attachments: "Attachments",
+  homework_alerts: "Homework alerts to parents",
+  submissions: "Hand in online",
+  rubrics: "Rubrics",
+  feedback: "Marks & feedback",
 };
 
 const MODULE_LABEL: Record<string, string> = {
@@ -107,6 +113,7 @@ const MODULE_LABEL: Record<string, string> = {
   ATTENDANCE: "Attendance & leave",
   EXAMS: "Exams & report cards",
   CERTIFICATES: "Certificates",
+  HOMEWORK: "Homework",
 };
 
 function formatValue(key: string, value: number) {

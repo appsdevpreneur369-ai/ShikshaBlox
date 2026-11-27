@@ -41,6 +41,8 @@ public enum Permission {
    * Prepare and issue certificates (TC, bonafide, character, study) and keep the register (M32).
    */
   CERTIFICATES_MANAGE("certificates:manage"),
+  /** Post homework to own classes, see and mark submissions (M10). */
+  HOMEWORK_POST("homework:post"),
   /** Read the audit log. */
   AUDIT_VIEW("audit:view");
 

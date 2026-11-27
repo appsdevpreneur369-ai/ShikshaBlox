@@ -4,6 +4,7 @@ import com.shikshablox.modules.attendance.AttendanceService;
 import com.shikshablox.modules.attendance.LeaveService;
 import com.shikshablox.modules.certificates.CertificateService;
 import com.shikshablox.modules.exams.ReportService;
+import com.shikshablox.modules.homework.HomeworkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -171,6 +172,55 @@ class PortalController {
       @RequestHeader(value = H, required = false) String token,
       @PathVariable UUID id) {
     return portal.certificate(host, token, id);
+  }
+
+  @GetMapping(P + "/homework")
+  @Operation(operationId = "portalHomework", summary = "The children's homework")
+  List<HomeworkService.ChildHomework> homework(
+      @RequestParam String host, @RequestHeader(value = H, required = false) String token) {
+    return portal.homework(host, token);
+  }
+
+  @GetMapping(P + "/homework/files/{fileId}")
+  @Operation(
+      operationId = "portalHomeworkFile",
+      summary = "Download link for a homework attachment")
+  java.util.Map<String, String> homeworkFile(
+      @RequestParam String host,
+      @RequestHeader(value = H, required = false) String token,
+      @PathVariable UUID fileId) {
+    return java.util.Map.of("url", portal.homeworkFile(host, token, fileId));
+  }
+
+  @PostMapping(
+      value = P + "/homework/{id}/submit",
+      consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+  @Operation(operationId = "portalSubmitHomework", summary = "Hand in a child's work")
+  HomeworkService.Submission submitHomework(
+      @RequestParam String host,
+      @RequestHeader(value = H, required = false) String token,
+      @PathVariable UUID id,
+      @RequestParam UUID studentId,
+      @RequestParam(required = false) String text,
+      @org.springframework.web.bind.annotation.RequestPart(value = "file", required = false)
+          org.springframework.web.multipart.MultipartFile file) {
+    byte[] content = null;
+    if (file != null && !file.isEmpty()) {
+      try {
+        content = file.getBytes();
+      } catch (java.io.IOException e) {
+        throw com.shikshablox.platform.shared.web.ApiException.badRequest(
+            "upload_failed", "The file could not be read.");
+      }
+    }
+    return portal.submitHomework(
+        host,
+        token,
+        id,
+        studentId,
+        text,
+        file == null ? null : file.getOriginalFilename(),
+        content);
   }
 
   @GetMapping(P + "/leave")

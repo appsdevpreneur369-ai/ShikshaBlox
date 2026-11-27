@@ -6,6 +6,7 @@ import com.shikshablox.modules.certificates.CertificateService;
 import com.shikshablox.modules.comms.BroadcastService;
 import com.shikshablox.modules.comms.CommsService;
 import com.shikshablox.modules.exams.ReportService;
+import com.shikshablox.modules.homework.HomeworkService;
 import com.shikshablox.platform.audit.AuditService;
 import com.shikshablox.platform.entitlement.EntitlementService;
 import com.shikshablox.platform.shared.RateLimiter;
@@ -119,6 +120,7 @@ public class PortalService {
   private final LeaveService leave;
   private final ReportService reports;
   private final CertificateService certificates;
+  private final HomeworkService homework;
   private final String dummyHash;
 
   PortalService(
@@ -134,7 +136,8 @@ public class PortalService {
       AttendanceService attendance,
       LeaveService leave,
       ReportService reports,
-      CertificateService certificates) {
+      CertificateService certificates,
+      HomeworkService homework) {
     this.resolver = resolver;
     this.jdbc = jdbc;
     this.tx = tx;
@@ -148,6 +151,7 @@ public class PortalService {
     this.leave = leave;
     this.reports = reports;
     this.certificates = certificates;
+    this.homework = homework;
     this.dummyHash = passwords.encode("no-account-" + token(8));
   }
 
@@ -484,6 +488,33 @@ public class PortalService {
 
   public CertificateService.PrintView certificate(String host, String token, UUID id) {
     return asParent(host, token, c -> certificates.forGuardianPrint(c.guardianId(), id));
+  }
+
+  public List<HomeworkService.ChildHomework> homework(String host, String token) {
+    return asParent(host, token, c -> homework.forGuardian(c.guardianId()));
+  }
+
+  public String homeworkFile(String host, String token, UUID fileId) {
+    return asParent(host, token, c -> homework.fileUrlForGuardian(c.guardianId(), fileId));
+  }
+
+  public HomeworkService.Submission submitHomework(
+      String host,
+      String token,
+      UUID homeworkId,
+      UUID studentId,
+      String text,
+      String filename,
+      byte[] content) {
+    return asParent(
+        host,
+        token,
+        c -> {
+          if (!limiter.tryAcquire("portal-hw:" + c.accountId(), 30, Duration.ofHours(1))) {
+            throw ApiException.tooManyRequests();
+          }
+          return homework.submit(c.guardianId(), homeworkId, studentId, text, filename, content);
+        });
   }
 
   public List<LeaveService.Leave> leave(String host, String token) {

@@ -13,7 +13,9 @@ const READS = new Set([
   "leave",
   "report-cards",
   "certificates",
+  "homework",
 ]);
+const HW_FILE = /^homework\/files\/[0-9a-f-]{36}$/;
 const CERT = /^certificates\/[0-9a-f-]{36}$/;
 const LEAVE_CANCEL = /^leave\/[0-9a-f-]{36}\/cancel$/;
 
@@ -29,7 +31,7 @@ async function handle(request: NextRequest, ctx: { params: Promise<{ path: strin
   const action = path.join("/");
   const method = request.method;
   const allowed =
-    (method === "GET" && (READS.has(action) || CERT.test(action))) ||
+    (method === "GET" && (READS.has(action) || CERT.test(action) || HW_FILE.test(action))) ||
     (method === "PUT" && action === "preferences") ||
     (method === "POST" &&
       (action === "login" ||
