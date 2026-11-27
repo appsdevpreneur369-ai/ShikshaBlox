@@ -3,6 +3,7 @@ package com.shikshablox.modules.portal;
 import com.shikshablox.modules.attendance.AttendanceService;
 import com.shikshablox.modules.attendance.LeaveService;
 import com.shikshablox.modules.certificates.CertificateService;
+import com.shikshablox.modules.earlyyears.EarlyYearsService;
 import com.shikshablox.modules.exams.ReportService;
 import com.shikshablox.modules.homework.HomeworkService;
 import com.shikshablox.modules.timetable.TimetableService;
@@ -229,6 +230,13 @@ class PortalController {
   List<TimetableService.ChildTimetable> timetable(
       @RequestParam String host, @RequestHeader(value = H, required = false) String token) {
     return portal.timetables(host, token);
+  }
+
+  @GetMapping(P + "/early-years")
+  @Operation(operationId = "portalEarlyYears", summary = "Pre-primary daily feed")
+  List<EarlyYearsService.ChildFeed> earlyYears(
+      @RequestParam String host, @RequestHeader(value = H, required = false) String token) {
+    return portal.earlyYears(host, token);
   }
 
   @GetMapping(P + "/leave")

@@ -106,6 +106,13 @@ const FEATURE_LABEL: Record<string, string> = {
   coverage: "Syllabus coverage meter",
   lesson_plans: "Lesson plans with review",
   observations: "Classroom observations",
+  diary: "Daily diary",
+  milestones: "Developmental milestones",
+  ey_observations: "Observations",
+  parent_feed: "Daily parent feed",
+  photos: "Photos",
+  learning_stories: "Learning stories",
+  pickup: "Pickup authorisation",
 };
 
 const MODULE_LABEL: Record<string, string> = {
@@ -125,6 +132,7 @@ const MODULE_LABEL: Record<string, string> = {
   HOMEWORK: "Homework",
   TIMETABLE: "Timetable",
   CURRICULUM: "Curriculum & lesson plans",
+  EARLY_YEARS: "Early years",
 };
 
 function formatValue(key: string, value: number) {
