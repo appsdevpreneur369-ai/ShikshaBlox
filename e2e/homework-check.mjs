@@ -64,7 +64,7 @@ const hw = made.body?.[0];
 if (made.status !== 201 || !hw?.id) problems.push(`Post homework: ${made.status}`);
 const up = await teacher.api(`homework/${hw?.id}/files`, {
   method: "POST",
-  multipart: { file: { name: "spelling-list.txt", mimeType: "text/plain", buffer: Buffer.from("cat, bat, hat, mat, rat, sat, pat, fat, vat, chat") } },
+  multipart: { file: { name: "spelling-list.pdf", mimeType: "application/pdf", buffer: fs.readFileSync(new URL("./fixtures/tiny.pdf", import.meta.url)) } },
 });
 if (up.body?.files?.length !== 1) problems.push(`Attachment: ${up.status} ${JSON.stringify(up.body)?.slice(0, 120)}`);
 

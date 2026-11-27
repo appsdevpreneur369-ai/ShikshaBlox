@@ -324,10 +324,11 @@ function NewHomework({ ov, onDone }: { ov: Overview; onDone: () => void }) {
           onChange={(e) => setDetails(e.target.value)}
         />
       </Field>
-      <Field label="Attachments (up to 5 files, 10 MB each)">
+      <Field label="Attachments (PDF, JPG or PNG; up to 5 files, 10 MB each)">
         <input
           type="file"
           multiple
+          accept="application/pdf,image/jpeg,image/png"
           onChange={(e) => setFiles(Array.from(e.target.files ?? []).slice(0, 5))}
           className="text-sm"
         />

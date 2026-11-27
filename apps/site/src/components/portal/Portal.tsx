@@ -1129,12 +1129,12 @@ function HomeworkSection({ items, onChanged }: { items: Hw[]; onChanged: () => P
                       </label>
                       <label className="block">
                         <span className="mb-1.5 block font-semibold">
-                          Photo or file (optional, 8 MB)
+                          Photo or PDF (optional, 8 MB)
                         </span>
                         <input
                           name="file"
                           type="file"
-                          accept="image/*,.pdf,.doc,.docx"
+                          accept="image/jpeg,image/png,application/pdf"
                           className="text-sm"
                         />
                       </label>
