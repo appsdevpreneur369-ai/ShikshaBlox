@@ -320,6 +320,7 @@ export function ParentPortal() {
   const [leave, setLeave] = useState<Leave[]>([]);
   const [cards, setCards] = useState<ReportCard[]>([]);
   const [certs, setCerts] = useState<Certs | null>(null);
+  const [homework, setHomework] = useState<Hw[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -330,7 +331,7 @@ export function ParentPortal() {
       return;
     }
     setMe(r.data!);
-    const [c, q, p, pr, at, lv, rc, ce] = await Promise.all([
+    const [c, q, p, pr, at, lv, rc, ce, hw] = await Promise.all([
       call<Circular[]>("circulars"),
       call<Req[]>("requests"),
       call<Ptm[]>("ptm"),
@@ -339,7 +340,9 @@ export function ParentPortal() {
       call<Leave[]>("leave"),
       call<ReportCard[]>("report-cards"),
       call<Certs>("certificates"),
+      call<Hw[]>("homework"),
     ]);
+    setHomework(hw.data ?? []);
     setCerts(ce.data ?? null);
     setCards(rc.data ?? []);
     setAttendance(at.data ?? []);
@@ -426,6 +429,13 @@ export function ParentPortal() {
           </ul>
         )}
       </section>
+
+      {homework.length > 0 && (
+        <HomeworkSection
+          items={homework}
+          onChanged={async () => setHomework((await call<Hw[]>("homework")).data ?? [])}
+        />
+      )}
 
       {me.children.length > 0 && attendance.length > 0 && (
         <AttendanceSection
@@ -982,6 +992,180 @@ function CertificatesSection({
           </div>
         </form>
       )}
+    </section>
+  );
+}
+
+type HwFile = { id: string; name: string; sizeBytes: number };
+type HwSubmission = {
+  status: "SUBMITTED" | "RETURNED" | "GRADED";
+  text?: string | null;
+  fileName?: string | null;
+  late: boolean;
+  points?: number | null;
+  feedback?: string | null;
+};
+type Hw = {
+  id: string;
+  studentId: string;
+  studentName: string;
+  subject?: string | null;
+  title: string;
+  details?: string | null;
+  dueOn: string;
+  files: HwFile[];
+  allowSubmissions: boolean;
+  closed: boolean;
+  maxPoints?: number | null;
+  submission?: HwSubmission | null;
+};
+
+function HomeworkSection({ items, onChanged }: { items: Hw[]; onChanged: () => Promise<void> }) {
+  const [open, setOpen] = useState<string | null>(null);
+  const [msg, setMsg] = useState<{ key: string; text: string; ok: boolean } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
+  async function file(id: string) {
+    const r = await call<{ url: string }>(`homework/files/${id}`);
+    if (r.ok && r.data) window.open(r.data.url, "_blank", "noopener");
+  }
+  async function submit(h: Hw, e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const key = h.id + h.studentId;
+    const form = new FormData(e.currentTarget);
+    const f = form.get("file");
+    if (f instanceof File && f.size === 0) form.delete("file");
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/portal-upload/homework/${h.id}?studentId=${h.studentId}`, {
+        method: "POST",
+        headers: { "X-Portal": "1" },
+        body: form,
+      });
+      const data = (await res.json().catch(() => ({}))) as { detail?: string };
+      if (res.ok) {
+        await onChanged();
+        setMsg({ key, text: "Handed in. The teacher will see it.", ok: true });
+      } else setMsg({ key, text: data.detail ?? "Could not hand in.", ok: false });
+    } catch {
+      setMsg({ key, text: "We could not reach the school. Please try again.", ok: false });
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <section aria-labelledby="hw" className="grid gap-3">
+      <h3 id="hw" className="text-lg font-bold">
+        Homework
+      </h3>
+      <ul className="sb-card divide-y divide-black/5">
+        {items.map((h) => {
+          const key = h.id + h.studentId;
+          const s = h.submission;
+          return (
+            <li key={key} className="px-4 py-3">
+              <button
+                type="button"
+                className="flex w-full flex-wrap items-center gap-x-3 gap-y-1 text-left"
+                aria-expanded={open === key}
+                onClick={() => setOpen(open === key ? null : key)}
+              >
+                <span className="min-w-[12rem] flex-1">
+                  <span className="block font-semibold">{h.title}</span>
+                  <span className="sb-muted text-xs">
+                    {h.studentName}
+                    {h.subject ? ` · ${h.subject}` : ""}
+                  </span>
+                </span>
+                <span className={`text-sm ${h.dueOn < today && !s ? "text-red-700" : ""}`}>
+                  Due {dateLong(h.dueOn)}
+                </span>
+                {s && (
+                  <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-800">
+                    {s.status === "GRADED"
+                      ? `Marked${s.points != null ? ` ${s.points}${h.maxPoints ? `/${h.maxPoints}` : ""}` : ""}`
+                      : s.status === "RETURNED"
+                        ? "Redo asked"
+                        : "Handed in"}
+                  </span>
+                )}
+              </button>
+              {open === key && (
+                <div className="mt-3 grid gap-3 text-sm">
+                  {h.details && <p className="whitespace-pre-line">{h.details}</p>}
+                  {h.files.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {h.files.map((f) => (
+                        <button
+                          key={f.id}
+                          type="button"
+                          className="sb-btn sb-btn-ghost text-primary text-sm"
+                          onClick={() => void file(f.id)}
+                        >
+                          📎 {f.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {s?.feedback && (
+                    <p className="rounded-xl bg-amber-50 px-3 py-2">
+                      <span className="font-semibold">Teacher: </span>
+                      {s.feedback}
+                    </p>
+                  )}
+                  {h.allowSubmissions && s?.status !== "GRADED" && !h.closed && (
+                    <form onSubmit={(e) => void submit(h, e)} className="grid gap-2">
+                      <label className="block">
+                        <span className="mb-1.5 block font-semibold">
+                          {s ? "Hand in again" : "Hand in"} (answer)
+                        </span>
+                        <textarea
+                          name="text"
+                          rows={3}
+                          maxLength={4000}
+                          className="sb-input"
+                          defaultValue={s?.text ?? ""}
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="mb-1.5 block font-semibold">
+                          Photo or PDF (optional, 8 MB)
+                        </span>
+                        <input
+                          name="file"
+                          type="file"
+                          accept="image/jpeg,image/png,application/pdf"
+                          className="text-sm"
+                        />
+                      </label>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <button
+                          type="submit"
+                          className="sb-btn sb-btn-primary sb-focus"
+                          disabled={busy}
+                        >
+                          {busy ? "Sending…" : "Hand in"}
+                        </button>
+                        {msg?.key === key && (
+                          <span
+                            role={msg.ok ? "status" : "alert"}
+                            className={msg.ok ? "" : "font-semibold text-red-700"}
+                          >
+                            {msg.text}
+                          </span>
+                        )}
+                      </div>
+                    </form>
+                  )}
+                  {h.allowSubmissions && h.closed && !s && (
+                    <p className="sb-muted">The due date has passed; please talk to the teacher.</p>
+                  )}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </section>
   );
 }
