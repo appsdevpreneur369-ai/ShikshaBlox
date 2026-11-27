@@ -27,6 +27,8 @@ function navItems(permissions: string[], hasSchool: boolean): NavItem[] {
       )
     )
       items.push({ href: "/timetable", label: "Timetable" });
+    if (permissions.includes("curriculum:manage") || permissions.includes("homework:post"))
+      items.push({ href: "/curriculum", label: "Curriculum" });
     if (permissions.includes("certificates:manage"))
       items.push({ href: "/certificates", label: "Certificates" });
     if (permissions.includes("admissions:manage"))

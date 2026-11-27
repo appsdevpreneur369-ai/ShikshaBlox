@@ -102,6 +102,10 @@ const FEATURE_LABEL: Record<string, string> = {
   timetable_parent_view: "Timetable in the parent portal",
   generator: "Timetable generator",
   substitutions: "Daily substitutions",
+  syllabus: "Syllabus by unit and month",
+  coverage: "Syllabus coverage meter",
+  lesson_plans: "Lesson plans with review",
+  observations: "Classroom observations",
 };
 
 const MODULE_LABEL: Record<string, string> = {
@@ -120,6 +124,7 @@ const MODULE_LABEL: Record<string, string> = {
   CERTIFICATES: "Certificates",
   HOMEWORK: "Homework",
   TIMETABLE: "Timetable",
+  CURRICULUM: "Curriculum & lesson plans",
 };
 
 function formatValue(key: string, value: number) {

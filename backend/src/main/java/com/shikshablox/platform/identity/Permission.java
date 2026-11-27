@@ -45,6 +45,8 @@ public enum Permission {
   HOMEWORK_POST("homework:post"),
   /** Bell schedule, class timetables, generator and daily substitutions (M08). */
   TIMETABLE_MANAGE("timetable:manage"),
+  /** Syllabus, coverage overview, lesson-plan review and classroom observations (M09). */
+  CURRICULUM_MANAGE("curriculum:manage"),
   /** Read the audit log. */
   AUDIT_VIEW("audit:view");
 
