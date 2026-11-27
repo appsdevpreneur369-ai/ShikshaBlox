@@ -559,7 +559,7 @@ public class CertificateService {
           v.put("student.object", "FEMALE".equals(g) ? "her" : "MALE".equals(g) ? "him" : "them");
           v.put("guardian.name", rs.getString("guardian"));
           v.put("school.name", rs.getString("school"));
-          return null;
+          return Boolean.TRUE;
         })
         .optional()
         .orElseThrow(() -> ApiException.notFound("Student"));
