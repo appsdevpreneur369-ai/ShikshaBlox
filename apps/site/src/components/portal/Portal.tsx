@@ -88,6 +88,18 @@ type ReportCard = {
   attendancePercent?: number | null;
 };
 
+type Cert = {
+  id: string;
+  title: string;
+  number?: string | null;
+  status: "REQUESTED" | "PENDING_APPROVAL" | "ISSUED" | "CANCELLED" | "REJECTED";
+  studentName: string;
+  purpose?: string | null;
+  statusNote?: string | null;
+  verifyUrl?: string | null;
+};
+type Certs = { types: { templateId: string; name: string }[]; certificates: Cert[] };
+
 const MARK: Record<string, string> = {
   A: "Absent",
   L: "Late",
@@ -307,6 +319,7 @@ export function ParentPortal() {
   const [attendance, setAttendance] = useState<ChildAttendance[]>([]);
   const [leave, setLeave] = useState<Leave[]>([]);
   const [cards, setCards] = useState<ReportCard[]>([]);
+  const [certs, setCerts] = useState<Certs | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -317,7 +330,7 @@ export function ParentPortal() {
       return;
     }
     setMe(r.data!);
-    const [c, q, p, pr, at, lv, rc] = await Promise.all([
+    const [c, q, p, pr, at, lv, rc, ce] = await Promise.all([
       call<Circular[]>("circulars"),
       call<Req[]>("requests"),
       call<Ptm[]>("ptm"),
@@ -325,7 +338,9 @@ export function ParentPortal() {
       call<ChildAttendance[]>("attendance"),
       call<Leave[]>("leave"),
       call<ReportCard[]>("report-cards"),
+      call<Certs>("certificates"),
     ]);
+    setCerts(ce.data ?? null);
     setCards(rc.data ?? []);
     setAttendance(at.data ?? []);
     setLeave(lv.data ?? []);
@@ -429,6 +444,16 @@ export function ParentPortal() {
       )}
 
       {cards.length > 0 && <ReportCards cards={cards} />}
+
+      {certs &&
+        me.children.length > 0 &&
+        (certs.types.length > 0 || certs.certificates.length > 0) && (
+          <CertificatesSection
+            kids={me.children}
+            data={certs}
+            onChanged={async () => setCerts((await call<Certs>("certificates")).data ?? null)}
+          />
+        )}
 
       <section aria-labelledby="circ">
         <h3 id="circ" className="mb-3 text-lg font-bold">
@@ -795,6 +820,168 @@ function ReportCards({ cards }: { cards: ReportCard[] }) {
           </details>
         );
       })}
+    </section>
+  );
+}
+
+const CERT_STATUS: Record<Cert["status"], string> = {
+  REQUESTED: "Requested",
+  PENDING_APPROVAL: "Being prepared",
+  ISSUED: "Ready",
+  CANCELLED: "Cancelled",
+  REJECTED: "Not issued",
+};
+
+type CertView = {
+  certificate: Cert & { body?: string | null; issuedAt?: string | null };
+  school: string;
+  signatoryName?: string | null;
+  signatoryTitle: string;
+};
+
+function CertificatesSection({
+  kids,
+  data,
+  onChanged,
+}: {
+  kids: Child[];
+  data: Certs;
+  onChanged: () => Promise<void>;
+}) {
+  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [view, setView] = useState<CertView | null>(null);
+  async function request(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const f = new FormData(form);
+    setBusy(true);
+    const r = await call<Cert>("certificates", "POST", {
+      studentId: f.get("child"),
+      templateId: f.get("type"),
+      purpose: f.get("purpose"),
+    });
+    setBusy(false);
+    if (r.ok) {
+      form.reset();
+      await onChanged();
+      setMsg({ text: "Request sent. The school will let you know when it is ready.", ok: true });
+    } else setMsg({ text: r.message ?? "Could not send.", ok: false });
+  }
+  async function open(id: string) {
+    const r = await call<CertView>(`certificates/${id}`);
+    if (r.ok && r.data) setView(r.data);
+  }
+  return (
+    <section aria-labelledby="certs" className="grid gap-4">
+      <h3 id="certs" className="text-lg font-bold">
+        Certificates
+      </h3>
+      {data.certificates.length > 0 && (
+        <ul className="sb-card divide-y divide-black/5">
+          {data.certificates.map((c) => (
+            <li key={c.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3">
+              <span className="min-w-[12rem] flex-1">
+                <span className="block font-semibold">
+                  {c.title} · {c.studentName}
+                </span>
+                <span className="sb-muted text-xs">
+                  {c.number ? `${c.number} · ` : ""}
+                  {c.purpose ?? ""}
+                  {c.statusNote && c.status === "REJECTED" ? ` · School: ${c.statusNote}` : ""}
+                </span>
+              </span>
+              <span className="text-sm">{CERT_STATUS[c.status]}</span>
+              {c.status === "ISSUED" && (
+                <button
+                  type="button"
+                  className="sb-btn sb-btn-ghost text-primary text-sm"
+                  onClick={() => void open(c.id)}
+                >
+                  View
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+      {view && (
+        <div className="sb-card p-5" role="region" aria-label={view.certificate.title}>
+          <p className="sb-muted text-xs">{view.school}</p>
+          <p className="text-lg font-bold">
+            {view.certificate.title} · {view.certificate.number}
+          </p>
+          <p className="mt-3 text-sm whitespace-pre-line">{view.certificate.body}</p>
+          <p className="mt-3 text-sm">
+            {view.signatoryName ? `${view.signatoryName}, ` : ""}
+            {view.signatoryTitle}
+          </p>
+          {view.certificate.verifyUrl && (
+            <p className="sb-muted mt-2 text-xs">
+              Anyone can check it at{" "}
+              <a className="text-primary underline" href={view.certificate.verifyUrl}>
+                {view.certificate.verifyUrl}
+              </a>
+              . Collect the signed and sealed copy from the school office.
+            </p>
+          )}
+          <button
+            type="button"
+            className="sb-btn sb-btn-ghost text-primary mt-2 text-sm"
+            onClick={() => setView(null)}
+          >
+            Close
+          </button>
+        </div>
+      )}
+      {data.types.length > 0 && (
+        <form onSubmit={request} className="sb-card grid gap-3 p-5 sm:grid-cols-2">
+          <p className="font-bold sm:col-span-2">Ask for a certificate</p>
+          <label className="block">
+            <span className="mb-1.5 block text-sm font-semibold">Certificate</span>
+            <select name="type" className="sb-input" required>
+              {data.types.map((t) => (
+                <option key={t.templateId} value={t.templateId}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block">
+            <span className="mb-1.5 block text-sm font-semibold">For</span>
+            <select name="child" className="sb-input" required>
+              {kids.map((k) => (
+                <option key={k.id} value={k.id}>
+                  {k.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block sm:col-span-2">
+            <span className="mb-1.5 block text-sm font-semibold">Purpose</span>
+            <input
+              name="purpose"
+              className="sb-input"
+              required
+              maxLength={200}
+              placeholder="e.g. passport application"
+            />
+          </label>
+          <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
+            <button type="submit" className="sb-btn sb-btn-primary sb-focus" disabled={busy}>
+              {busy ? "Sending…" : "Send request"}
+            </button>
+            {msg && (
+              <span
+                role={msg.ok ? "status" : "alert"}
+                className={`text-sm ${msg.ok ? "" : "font-semibold text-red-700"}`}
+              >
+                {msg.text}
+              </span>
+            )}
+          </div>
+        </form>
+      )}
     </section>
   );
 }

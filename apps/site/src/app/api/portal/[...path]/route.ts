@@ -12,7 +12,9 @@ const READS = new Set([
   "attendance",
   "leave",
   "report-cards",
+  "certificates",
 ]);
+const CERT = /^certificates\/[0-9a-f-]{36}$/;
 const LEAVE_CANCEL = /^leave\/[0-9a-f-]{36}\/cancel$/;
 
 /**
@@ -27,13 +29,14 @@ async function handle(request: NextRequest, ctx: { params: Promise<{ path: strin
   const action = path.join("/");
   const method = request.method;
   const allowed =
-    (method === "GET" && READS.has(action)) ||
+    (method === "GET" && (READS.has(action) || CERT.test(action))) ||
     (method === "PUT" && action === "preferences") ||
     (method === "POST" &&
       (action === "login" ||
         action === "setup" ||
         action === "logout" ||
         action === "leave" ||
+        action === "certificates" ||
         LEAVE_CANCEL.test(action)));
   if (!host || !allowed) return NextResponse.json({ detail: "Not found" }, { status: 404 });
   if (method !== "GET" && request.headers.get("x-portal") !== "1") {

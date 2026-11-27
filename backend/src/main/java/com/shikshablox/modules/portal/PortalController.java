@@ -2,6 +2,7 @@ package com.shikshablox.modules.portal;
 
 import com.shikshablox.modules.attendance.AttendanceService;
 import com.shikshablox.modules.attendance.LeaveService;
+import com.shikshablox.modules.certificates.CertificateService;
 import com.shikshablox.modules.exams.ReportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -34,6 +35,8 @@ class PortalController {
   record SetupRequest(String code, String phone, String pin) {}
 
   record LoginRequest(String phone, String pin) {}
+
+  record CertificateRequest(UUID studentId, UUID templateId, String purpose) {}
 
   record PreferencesRequest(boolean whatsapp, boolean sms, boolean email, String language) {}
 
@@ -141,6 +144,33 @@ class PortalController {
   List<ReportService.ReportCard> reportCards(
       @RequestParam String host, @RequestHeader(value = H, required = false) String token) {
     return portal.reportCards(host, token);
+  }
+
+  @GetMapping(P + "/certificates")
+  @Operation(
+      operationId = "portalCertificates",
+      summary = "Certificate types and the children's certificates")
+  PortalService.CertificatesView certificates(
+      @RequestParam String host, @RequestHeader(value = H, required = false) String token) {
+    return portal.certificates(host, token);
+  }
+
+  @PostMapping(P + "/certificates")
+  @Operation(operationId = "portalRequestCertificate", summary = "Ask the school for a certificate")
+  CertificateService.Certificate requestCertificate(
+      @RequestParam String host,
+      @RequestHeader(value = H, required = false) String token,
+      @RequestBody CertificateRequest req) {
+    return portal.requestCertificate(host, token, req.studentId(), req.templateId(), req.purpose());
+  }
+
+  @GetMapping(P + "/certificates/{id}")
+  @Operation(operationId = "portalCertificate", summary = "An issued certificate")
+  CertificateService.PrintView certificate(
+      @RequestParam String host,
+      @RequestHeader(value = H, required = false) String token,
+      @PathVariable UUID id) {
+    return portal.certificate(host, token, id);
   }
 
   @GetMapping(P + "/leave")

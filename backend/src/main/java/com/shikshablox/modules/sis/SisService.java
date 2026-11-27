@@ -661,6 +661,17 @@ public class SisService implements UsageMeter {
                 "has_history",
                 "This student has records for several years. Withdraw them instead.");
           }
+          long certificates =
+              jdbc.sql(
+                      "select count(*) from certificate where student_id = ? and status = 'ISSUED'")
+                  .param(id)
+                  .query(Long.class)
+                  .single();
+          if (certificates > 0) {
+            throw ApiException.conflict(
+                "has_certificates",
+                "Certificates have been issued to this student. Withdraw them instead, or cancel the certificates first.");
+          }
           List<String> k =
               jdbc.sql("select storage_key from student_document where student_id = ?")
                   .param(id)

@@ -37,6 +37,10 @@ public enum Permission {
   MARKS_ENTER("marks:enter"),
   /** Subjects, exams, timetable, moderation, publishing and report cards for all classes (M11). */
   EXAMS_MANAGE("exams:manage"),
+  /**
+   * Prepare and issue certificates (TC, bonafide, character, study) and keep the register (M32).
+   */
+  CERTIFICATES_MANAGE("certificates:manage"),
   /** Read the audit log. */
   AUDIT_VIEW("audit:view");
 

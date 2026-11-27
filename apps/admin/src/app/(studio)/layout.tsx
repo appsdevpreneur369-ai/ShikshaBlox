@@ -20,6 +20,8 @@ function navItems(permissions: string[], hasSchool: boolean): NavItem[] {
       items.push({ href: "/attendance", label: "Attendance" });
     if (permissions.includes("marks:enter") || permissions.includes("exams:manage"))
       items.push({ href: "/exams", label: "Exams" });
+    if (permissions.includes("certificates:manage"))
+      items.push({ href: "/certificates", label: "Certificates" });
     if (permissions.includes("admissions:manage"))
       items.push({ href: "/admissions", label: "Admissions" });
     if (permissions.includes("frontoffice:manage"))

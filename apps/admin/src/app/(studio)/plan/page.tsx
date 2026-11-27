@@ -85,6 +85,12 @@ const FEATURE_LABEL: Record<string, string> = {
   hall_tickets: "Hall tickets",
   moderation: "Marks approval (moderation)",
   analysis: "Result analysis",
+  standard_certificates: "TC, bonafide, character & study certificates",
+  issue_register: "Issue register",
+  qr_verification: "QR verification",
+  custom_templates: "Your own templates",
+  approval: "Principal approval",
+  parent_requests: "Requests from parents",
 };
 
 const MODULE_LABEL: Record<string, string> = {
@@ -100,6 +106,7 @@ const MODULE_LABEL: Record<string, string> = {
   PORTAL: "Parent portal",
   ATTENDANCE: "Attendance & leave",
   EXAMS: "Exams & report cards",
+  CERTIFICATES: "Certificates",
 };
 
 function formatValue(key: string, value: number) {
